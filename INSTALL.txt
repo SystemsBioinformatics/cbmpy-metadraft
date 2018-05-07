@@ -1,0 +1,15 @@
+Installation
+============
+
+Install CBMPy (http://www.cbmpy.net)
+
+Copy MetaDraft to your home directory and to run it:
+
+python metadraft.py
+
+If you have any problems with it just apparently hanging for a while, 
+look in the help-->syslog menu for error messages. Or in the log subdirectory.
+
+Please read and agree with the LICENCE.txt for usage and distribution.
+
+(c) Brett G. Olivier, Amsterdam, 2016-2017, all rights reserved.
