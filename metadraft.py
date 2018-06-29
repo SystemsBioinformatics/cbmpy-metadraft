@@ -57,7 +57,7 @@ except ImportError:
     HAVE_DOCX = False
 
 
-__version__ = '0.8.1'
+__version__ = '0.8.5'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
@@ -166,12 +166,15 @@ class StreamToLogger(object):
 
 
 ## 0: developer, 1: partner, 2: public
-RELEASE_STATUS = 1
+RELEASE_STATUS = 0
 
 if RELEASE_STATUS > 0:
     __DEBUG__ = False
+    __DEL_BLAST_TMP__ = True
 else:
     __DEBUG__ = True
+    # disable cleanup in developer mode (optional)
+    __DEL_BLAST_TMP__ = False
 
 class MetaDraftGUI(QWidget):
     appwindow = None
@@ -183,7 +186,7 @@ class MetaDraftGUI(QWidget):
     _tmpDir_ = os.path.join(cDir, 'tmp')
     __SYSLOG_ENABLED__ = True
     __DEBUG__ = __DEBUG__
-    __DEL_BLAST_TMP__ = True
+    __DEL_BLAST_TMP__ = __DEL_BLAST_TMP__
     _next_id_ = 1
     _DAT_MODELS = None
     _DAT_SEARCH_RES = None
@@ -1665,6 +1668,16 @@ class MetaDraftGUI(QWidget):
 
             rid = R.getId()
 
+            DEBUG_RID = 'R_FE3DHBZSabcpp'
+
+            if rid == DEBUG_RID:
+                print('\nXXXXXXXXXXXXXXXXXX\n')
+                _GPR_ = self._DAT_MODELS[R._organism_].getGPRforReaction(rid)
+                print(_GPR_.getAssociationStr())
+                print(_GPR_.getGeneIds())
+                print(_GPR_.getGeneLabels())
+                time.sleep(5)
+
             # store group information
             if R._organism_ not in new_groups:
                 new_groups[R._organism_] = {'grp_map' : self.func_getGroupMembership(self._DAT_MODELS[R._organism_]),
@@ -1706,7 +1719,8 @@ class MetaDraftGUI(QWidget):
 
             used_gids = []
             altlabels = {}
-            #print(self._gene_selected_ids_)
+            if rid == DEBUG_RID:
+                print(self._gene_selected_ids_)
             for g_ in gids:
                 G = self._DAT_MODELS[R._organism_].getGeneByLabel(g_)
                 if g_ not in self._gene_selected_ids_:
@@ -1715,7 +1729,8 @@ class MetaDraftGUI(QWidget):
                 else:
                     used_gids.append(g_)
                     altlabels[G.getId()] = new2old[G.getLabel()]
-
+            if rid == DEBUG_RID:
+                print(altlabels)
             #for g_ in used_gids:
                 #altlabels[G.getId()] = slx[tlx.index(g_)]
 
@@ -1726,13 +1741,24 @@ class MetaDraftGUI(QWidget):
                     for a_ in list(R.annotation):
                         if a_.startswith('gbank_seq_'):
                             R.annotation.pop(a_)
+                if rid == DEBUG_RID:
+                    G_ = self.model.getGene('G_b0588')
+                    print('YYYYYYYYYYYYYYYYYYYYYY')
+                    print(G_.getId())
+                    print(G_.getLabel())
 
         del_unknowns = []
         for g in self.model.genes:
             if g.getLabel() == 'unknown':
                 del_unknowns.append(g.getId())
 
-        _gene_selected_labels_ = [self.model.getGeneIdFromLabel(new2old[g]) for g in self._gene_selected_ids_]
+        _gene_selected_labels_ = [self.model.getGeneIdFromLabel(new2old[g])
+                                  for g in self._gene_selected_ids_]
+
+
+        print(del_unknowns)
+        print(_gene_selected_labels_)
+
         for GPR in self.model.gpr:
             for gid in GPR.getGeneIds():
                 if gid not in _gene_selected_labels_:
@@ -1805,6 +1831,16 @@ class MetaDraftGUI(QWidget):
             G.setName('MetaDraft reactions {}'.format(o))
             G.setNotes('These {} reactions were included from the {} model using MetaDraft (https://github.com/SystemsBioinformatics/metadraft) ver. {}'.format(len(new_groups[o]['grpd']), o, __version__))
             G.addMember([self._DAT_MODELS[o].getReaction(r_) for r_ in new_groups[o]['grpd']])
+
+        IDIOT = False
+        for r_ in self.model.getReactionIds():
+            if self.model.getGPRforReaction(r_) is None:
+                print(r_)
+                IDIOT = True
+        if IDIOT:
+            self.model.serializeToDisk('debug_model.dat')
+            print('SERELEEZIFIED BAD MODEL')
+            time.sleep(2)
 
         return self.model
 
@@ -2971,17 +3007,27 @@ class MetaDraftGUI(QWidget):
                 self._gene_score_limits_[0] = low
                 self._gene_score_limits_[1] = high
 
+                # DEBUG
+                self.table_gene.setSortingEnabled(False)
+
                 for gidx in range(self.table_gene.rowCount()):
+                    score = 1000
                     try:
                         score = float(str(self.table_gene.item(gidx, 2).text()).strip())
                     except ValueError:
                         continue
-                    checked = QtCore.Qt.Unchecked
                     if score >= low and score <= high:
-                        checked = QtCore.Qt.Checked
-                    self.table_gene.item(gidx, 3).setCheckState(checked)
-                self.widget_tablegene_selectApp.close()
+                        self.table_gene.item(gidx, 3).setCheckState(Qt.Checked)
+                    else:
+                        self.table_gene.item(gidx, 3).setCheckState(Qt.Unchecked)
 
+                    # print(low, score, self.table_gene.item(gidx, 2).text(), high, self.table_gene.item(gidx, 3).checkState())
+
+                # DEBUG
+                self.table_gene.setSortingEnabled(True)
+                self.table_gene.update()
+
+                self.widget_tablegene_selectApp.close()
 
             applybut = QPushButton(self.widget_tablegene_selectApp)
             applybut.setText('Apply')
@@ -2996,6 +3042,7 @@ class MetaDraftGUI(QWidget):
             layout.addWidget(applybut, 2, 0, 1, 2)
 
             self.widget_tablegene_selectApp.show()
+
 
 
         self.widget_tablegene_rclickmenu = QMenu()
