@@ -263,6 +263,7 @@ class MetaDraftGUI(QWidget):
     gene_prefix = 'in_'
     reaction_table_loading = False
     gene_table_loading = False
+    _updateGeneMap_disable_info_update_ = False
     CURRENT_SELECTION_STATE = None
     REACT_LAST_CHECKED_ROW = 0
     GENE_LAST_CHECKED_ROW = 0
@@ -1634,7 +1635,6 @@ class MetaDraftGUI(QWidget):
         for c_ in tmp_compartments:
             self.model.createCompartment(c_)
 
-
         selected_reactions = ['{}{}{}'.format(str(self.table_reaction.item(ridx, 0).text()).strip(), self.id_sep,\
                                               str(self.table_reaction.item(ridx, 3).text()).strip())\
                               for ridx in range(self.table_reaction.rowCount()) if self.table_reaction.item(ridx, 2).checkState()]
@@ -1644,40 +1644,37 @@ class MetaDraftGUI(QWidget):
 
         dup_re_db = {}
 
-        gk = self._gene_selected_map_.keys()
+        gk = [k for k in self._gene_selected_map_ if self._gene_selected_map_[k]]
         slx = []
         tlx = []
-        new2old = {}
-        for x in gk:
-            x = x.split(self.id_sep)
+        target2source = {}
+        #source2target = {}
+
+        for x0 in gk:
+            x = x0.split(self.id_sep)
             slx.append(x[0][len(self.gene_prefix):])
             tlx.append(x[1])
-            new2old.update({x[1] : x[0][len(self.gene_prefix):]})
-        #print(slx)
-        #print(tlx)
-        #print(new2old)
+            if tlx[-1] not in target2source:
+                target2source.update({tlx[-1] : slx[-1]})
+                #source2target.update({x0[len(self.gene_prefix):].replace(self.id_sep, '_') : tlx[-1]})
+            else:
+                print(slx[-1], tlx[-1])
+                print('\n\nWARNING GENE ID LABEL ISSUE: src={},  target={}\n\n'.format(slx[-1], tlx[-1]))
+        #print(target2source.keys())
+        #print(self._gene_selected_map_)
+        print('\ngsm={}, gk={}, slx={}, tlx={}, t2s={}'.format(len(self._gene_selected_map_), len(gk), len(slx), len(tlx), len(target2source)))
 
         new_groups = {}
+        OLD_GPR_MAP = {}
+        orthogenes = {}
         for r_ in selected_reactions:
-            R = self.selected_reactions[r_]['obj'].clone()
-            #R.setAnnotation('metadraft_template', R._organism_)
-
-            #print('-', R.__objref__)
-            #for r in R.reagents:
-                #print('--', r.__objref__)
+            # clone reaction object to work with and get a reference to the associated GPR
+            reac = self.selected_reactions[r_]['obj']
+            oldGPR = reac.__objref__().getGPRforReaction(reac.getId())
+            R = reac.clone()
+            del reac
 
             rid = R.getId()
-
-            DEBUG_RID = 'R_FE3DHBZSabcpp'
-
-            if rid == DEBUG_RID:
-                print('\nXXXXXXXXXXXXXXXXXX\n')
-                _GPR_ = self._DAT_MODELS[R._organism_].getGPRforReaction(rid)
-                print(_GPR_.getAssociationStr())
-                print(_GPR_.getGeneIds())
-                print(_GPR_.getGeneLabels())
-                time.sleep(5)
-
             # store group information
             if R._organism_ not in new_groups:
                 new_groups[R._organism_] = {'grp_map' : self.func_getGroupMembership(self._DAT_MODELS[R._organism_]),
@@ -1685,118 +1682,152 @@ class MetaDraftGUI(QWidget):
             else:
                 new_groups[R._organism_]['grpd'].append(rid)
 
-
             R.setCompartmentId(self.default_compartment)
             DUP_R = False
             notes = self.readNotesFromNotesDB(R._organism_, R.getId(), user, self._DAT_NOTESDB_KEY_)
             if notes != '':
                 R.setNotes('<p>{}</p>'.format(notes))
-            try:
-                self.model.addReaction(R, create_default_bounds=False)
-                self.model.createReactionBounds(rid, self.selected_reactions[r_]['obj'].getLowerBound(), self.selected_reactions[r_]['obj'].getUpperBound())
+            if R.getId() not in self.model.__global_id__:
                 ridnew = rid
-            except RuntimeError:
-                #R.__objref__ = None
+            else:
                 if rid in dup_re_db:
                     dup_re_db[rid] = dup_re_db[rid] + 1
                 else:
                     dup_re_db[rid] = 1
                 ridnew = '{}_copy_{}'.format(rid, dup_re_db[rid])
                 dup_re_db[ridnew] = dup_re_db[rid]
-                #print(dup_re_db)
                 R.setId(ridnew)
-                self.model.addReaction(R, create_default_bounds=False)
-                # add equation as
-                self.model.createReactionBounds(ridnew, self.selected_reactions[r_]['obj'].getLowerBound(), self.selected_reactions[r_]['obj'].getUpperBound())
                 print('Suspected duplicate reaction ID detected {} included as {}!'.format(rid, ridnew))
 
-            gpr = self._DAT_MODELS[R._organism_].getGPRforReaction(rid)
-            gene_ass = gene_ass_original = gpr.getAssociationStr()
+            self.model.addReaction(R, create_default_bounds=False)
+            self.model.createReactionBounds(ridnew, self.selected_reactions[r_]['obj'].getLowerBound(), self.selected_reactions[r_]['obj'].getUpperBound())
 
-            gids = gpr.getGeneLabels()
-            gids.sort()
-            gids.reverse()
+            OLD_GPR_MAP[R.getId()] = {'tree' : oldGPR.getTree(),
+                                      'id2lbl' : {g.getId() : g.getLabel() for g in oldGPR.getGenes()},
+                                      'lbl2id' : {g.getLabel() : g.getId() for g in oldGPR.getGenes()},
+                                      'genes' : [g.clone() for g in oldGPR.getGenes()]
+                                     }
+            del oldGPR
 
-            used_gids = []
-            altlabels = {}
-            if rid == DEBUG_RID:
-                print(self._gene_selected_ids_)
-            for g_ in gids:
-                G = self._DAT_MODELS[R._organism_].getGeneByLabel(g_)
-                if g_ not in self._gene_selected_ids_:
-                    #gene_ass = gene_ass.replace(g_, 'unknown')
-                    altlabels[G.getId()] = 'unknown'
+            #for g in OLD_GPR_MAP[R.getId()]['genes']:
+                #if g.getLabel() in self.selected_reactions[r_]['genematch']:
+                    ##test orthology match
+                    ##gid2 = '{}_{}'.format(target2source[g.getLabel()], g.getLabel())
+                    #gid2 = '{}'.format(target2source[g.getLabel()])
+                    #lbl2 = target2source[g.getLabel()]
+                    #if gid2 not in self.model.getGeneIds():
+                        #if lbl2 not in self.model.getGeneLabels():
+                            #self.model.addGene(g)
+                            #g.setId(gid2)
+                            #g.setLabel(lbl2)
+                        #else:
+                            #gid1 = self.model.getGeneByLabel(lbl2).getId()
+                            #print('Ortholog duplicate labels: {} {} {}'.format(gid2, gid1, lbl2))
+                            #if source2target[gid1] not in orthogenes:
+                                #orthogenes[source2target[gid1]] = [source2target[gid2]]
+                            #else:
+                                #if source2target[gid2] not in orthogenes[source2target[gid1]]:
+                                    #orthogenes[source2target[gid1]].append(source2target[gid2])
+
+
+        def createGPRmetadraft(protein, gprtree, gid, name, altlabels):
+            if altlabels is None:
+                altlabels = {}
+            if gprtree != '' and gprtree is not None:
+                if gid == None:
+                    gid = '%s_assoc' % protein
+                gpr = cbmpy.CBModel.GeneProteinAssociation(gid, protein)
+                self.model.addGPRAssociation(gpr)
+                if name == None:
+                    name = gid
+                gpr.setName(name)
+                gpr.createAssociationAndGeneRefsFromTree(gprtree, altlabels=altlabels)
+
+
+        def renameGeneIdRefsInGPRTree(gprd, old, new):
+            """
+            Recursively rename genes in a gprtree
+
+            """
+            for k in list(gprd):
+                if k.startswith('_AND_'):
+                    renameGeneIdRefsInGPRTree(gprd[k], old, new)
+                elif k.startswith('_OR_'):
+                    renameGeneIdRefsInGPRTree(gprd[k], old, new)
+                elif k == old:
+                    gprd.pop(k)
+                    gprd[new] = new
+
+        def deleteGeneFromTree(D, delid):
+            """
+            Recursively delete a gene Id from a gprTree.
+
+            """
+            for k in list(D):
+                if k == delid:
+                    D.pop(k)
+                elif len(k) == 0:
+                    D.pop(k)
+                elif len(D[k]) == 1:
+                    D.update(D.pop(k))
+                elif k.startswith('_AND_') or k.startswith('_OR_'):
+                    D[k] = deleteGeneFromTree(D[k], delid)
+                    if len(D[k]) == 0:
+                        D.pop(k)
+                    elif len(D[k]) == 1:
+                        D.update(D.pop(k))
+            return D
+
+
+# deletestart
+
+# deletend
+
+        # deal with orthogenes/GPR's here
+
+        #print('target2source')
+        #cbmpy.CBTools.pprint.pprint(target2source)
+        #cbmpy.CBTools.pprint.pprint(source2target)
+
+        #dakeys = OLD_GPR_MAP.keys()[-2:]
+        #print(dakeys)
+        #cbmpy.CBTools.pprint.pprint([OLD_GPR_MAP[p] for p in dakeys])
+
+        #print('\nGPRmap')
+        #print(OLD_GPR_MAP.keys()[-3])
+        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-3]])
+        #print(OLD_GPR_MAP.keys()[-2])
+        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-2]])
+
+        #print('\northogenes')
+        #cbmpy.CBTools.pprint.pprint(orthogenes)
+
+        for react in OLD_GPR_MAP:
+            gprinf = OLD_GPR_MAP[react]
+            for g in gprinf['id2lbl'].keys():
+                if gprinf['id2lbl'][g] in target2source:
+                    renameGeneIdRefsInGPRTree(gprinf['tree'], g, target2source[gprinf['id2lbl'][g]])
                 else:
-                    used_gids.append(g_)
-                    altlabels[G.getId()] = new2old[G.getLabel()]
-            if rid == DEBUG_RID:
-                print(altlabels)
-            #for g_ in used_gids:
-                #altlabels[G.getId()] = slx[tlx.index(g_)]
-
-            if not DUP_R:
-                self.model.createGeneProteinAssociation(ridnew, gene_ass, altlabels=altlabels)
-                R.setAnnotation('GENE_ASSOCIATION_ORIGINAL', gene_ass_original)
-                if self.NO_EXPORT_SEQ:
-                    for a_ in list(R.annotation):
-                        if a_.startswith('gbank_seq_'):
-                            R.annotation.pop(a_)
-                if rid == DEBUG_RID:
-                    G_ = self.model.getGene('G_b0588')
-                    print('YYYYYYYYYYYYYYYYYYYYYY')
-                    print(G_.getId())
-                    print(G_.getLabel())
-
-        del_unknowns = []
-        for g in self.model.genes:
-            if g.getLabel() == 'unknown':
-                del_unknowns.append(g.getId())
-
-        _gene_selected_labels_ = [self.model.getGeneIdFromLabel(new2old[g])
-                                  for g in self._gene_selected_ids_]
+                    renameGeneIdRefsInGPRTree(gprinf['tree'], g, 'UNKNOWN')
+                    #gprinf['tree'] = deleteGeneFromTreegprinf['tree'], g)
 
 
-        print(del_unknowns)
-        print(_gene_selected_labels_)
+        #print('\nGPRmap')
+        #print(OLD_GPR_MAP.keys()[-3])
+        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-3]])
+        #print(OLD_GPR_MAP.keys()[-2])
+        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-2]])
 
-        for GPR in self.model.gpr:
-            for gid in GPR.getGeneIds():
-                if gid not in _gene_selected_labels_:
-                    if gid not in del_unknowns:
-                        del_unknowns.append(gid)
-                        print('Added nasty gene:', gid)
+        for rid in self.model.getReactionIds():
+            if rid in OLD_GPR_MAP:
+                createGPRmetadraft(rid,
+                    OLD_GPR_MAP[rid]['tree'],
+                    gid='gpr_{}'.format(rid),
+                    name='{} computationally generated by MetaDraft'.format(rid),
+                    altlabels=OLD_GPR_MAP[rid]['id2lbl'])
+            else:
+                print('WARNING: no GPR for reaction {}'.format(rid))
 
-
-        for gid in list(set(del_unknowns)):
-            self.model.deleteGene(gid)
-
-        #self.model.deleteGene('G_b2416')
-
-        for g in self.model.genes:
-            g.setId('{}_{}'.format(cbmpy.CBModel.fixId(g.getLabel()), g.getId()))
-
-        for gpr in self.model.gpr:
-            self.model.getReaction(gpr.getProtein()).setAnnotation('GENE_ASSOCIATION', gpr.getAssociationStr())
-
-        model_gene_ids = self.model.getGeneIds()
-        for g_ in model_gene_ids:
-            notes = self.readNotesFromNotesDB(g_, g_, user, self._DAT_NOTESDB_KEY_)
-            if notes != '':
-                self.model.getGene(g_).setNotes('<p>{}</p>'.format(notes))
-                #print('gn', self.model.getGene(g_).getNotes())
-
-        model_gene_lbls = self.model.getGeneLabels()
-        #for r in range(self.table_gene.rowCount()):
-            #srcg = str(self.table_gene.item(r, 0).text())[len(self.gene_prefix):]
-            #matchg = str(self.table_gene.item(r, 1).text())
-            #score = str(self.table_gene.item(r, 2).text())
-            #org = str(self.table_gene.item(r, 4).text())
-            ##print(srcg, matchg, score, org)
-            #if srcg in model_gene_lbls:
-                #G = self.model.getGeneByLabel(srcg)
-                #G.setAnnotation('metadraft_match', matchg)
-                #G.setAnnotation('metadraft_score', score)
-                #G.setAnnotation('metadraft_template', org)
 
         # generate new group information
         cntr = 1
@@ -1832,15 +1863,14 @@ class MetaDraftGUI(QWidget):
             G.setNotes('These {} reactions were included from the {} model using MetaDraft (https://github.com/SystemsBioinformatics/metadraft) ver. {}'.format(len(new_groups[o]['grpd']), o, __version__))
             G.addMember([self._DAT_MODELS[o].getReaction(r_) for r_ in new_groups[o]['grpd']])
 
-        IDIOT = False
-        for r_ in self.model.getReactionIds():
-            if self.model.getGPRforReaction(r_) is None:
-                print(r_)
-                IDIOT = True
+        IDIOT = True
+        #for r_ in self.model.getReactionIds():
+            #if self.model.getGPRforReaction(r_) is None:
+                #print('-->', r_)
+                #IDIOT = True
         if IDIOT:
             self.model.serializeToDisk('debug_model.dat')
-            print('SERELEEZIFIED BAD MODEL')
-            time.sleep(2)
+            print('SERELEEZIFIED MODEL ...')
 
         return self.model
 
@@ -3010,6 +3040,9 @@ class MetaDraftGUI(QWidget):
                 # DEBUG
                 self.table_gene.setSortingEnabled(False)
 
+                # this stops the info panel updating on cell check
+                self._updateGeneMap_disable_info_update_ = True
+
                 for gidx in range(self.table_gene.rowCount()):
                     score = 1000
                     try:
@@ -3022,6 +3055,10 @@ class MetaDraftGUI(QWidget):
                         self.table_gene.item(gidx, 3).setCheckState(Qt.Unchecked)
 
                     # print(low, score, self.table_gene.item(gidx, 2).text(), high, self.table_gene.item(gidx, 3).checkState())
+
+                # restore normal behaviour
+                self._updateGeneMap_disable_info_update_ = False
+
 
                 # DEBUG
                 self.table_gene.setSortingEnabled(True)
@@ -3224,14 +3261,20 @@ class MetaDraftGUI(QWidget):
             mid = str(self.table_gene.item(r, 0).text())
             tid = str(self.table_gene.item(r, 1).text())
             key = '{}{}{}'.format(mid, self.id_sep, tid)
-            if self.table_gene.item(r, 3).checkState() == Qt.Checked:
-                mmap[key] = True
-            else:
-                mmap[key] = False
+            if tid != '':
+                #print(key)
+                if key in mmap:
+                    print('IMPOSSIBLE DUPLICATE MMAP KEY')
+                    time.sleep(1)
+                if self.table_gene.item(r, 3).checkState() == Qt.Checked:
+                    mmap[key] = True
+                else:
+                    mmap[key] = False
         return mmap
 
     def widgetTableGene_getSelectedIds(self):
         #tuple([str(self.table_gene.item(r, 1).text()) for r in range(self.table_gene.rowCount()) if self.table_gene.item(r, 3).checkState() == Qt.Checked])
+
         if self._gene_selected_map_ is not None:
             return [i.split(self.id_sep)[1] for i in self._gene_selected_map_ if self._gene_selected_map_[i]]
         else:
@@ -3917,6 +3960,9 @@ class MetaDraftGUI(QWidget):
     def _updateGeneMap_(self, from_click=False):
         self._gene_selected_map_ = self.widgetTableGene_getMap()
         self._gene_selected_ids_ = self.widgetTableGene_getSelectedIds()
+        # this allows high level methods to disable the information display update
+        if self._updateGeneMap_disable_info_update_:
+            from_click = False
         if from_click:
             row = self.GENE_LAST_CHECKED_ROW
             gene = str(self.table_gene.item(row, 1).text())
@@ -3924,10 +3970,10 @@ class MetaDraftGUI(QWidget):
             #print(row, gene, genesrc)
             html = self.buildHtmlStringsGene(gene, genesrc)
             self.widgetDisplayReact_update(html)
-            self.status_bar.showMessage('Selected Genes: {}'.format(len(self._gene_selected_ids_)))
-            #print(self._gene_selected_map_)
-            #print(self._gene_selected_ids_)
-            #print('G', len(self._gene_selected_map_), len(self._gene_selected_ids_))
+        self.status_bar.showMessage('Selected Genes: {}'.format(len(self._gene_selected_ids_)))
+        #print(self._gene_selected_map_)
+        #print(self._gene_selected_ids_)
+        #print('G', len(self._gene_selected_map_), len(self._gene_selected_ids_))
 
     @pyqtSlot(int)
     def onTabChange(self, idx):
