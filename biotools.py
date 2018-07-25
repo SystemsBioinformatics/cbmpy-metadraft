@@ -152,6 +152,7 @@ def checkModelLocusTags(sbml, genbank):
     gprMapAnnot = {}
     gnoprMap = {}
     fileNum = 0
+    no_locus_tag = []
     for G in genbank:
         print('CheckModelLocusTags is processing: {}'.format(G))
         for seq_record in SeqIO.parse(G, "genbank"):
@@ -195,9 +196,17 @@ def checkModelLocusTags(sbml, genbank):
 
         GBFile = file(G, 'r')
 
+        USING_GENE_NAME = False
         for cds in Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile):
             if cds.seq != None:
-                gprMap[cds.name] = cds
+                if cds.name != '<unknown name>':
+                    gprMap[cds.name] = cds
+                elif 'gene' in cds.annotations:
+                    gprMap[cds.annotations['gene']] = cds
+                    USING_GENE_NAME = True
+                    no_locus_tag.append(cds.annotations['gene'])
+                else:
+                    gnoprMap[cds.name] = cds
             else:
                 gnoprMap[cds.name] = cds
         GBFile.close()
@@ -209,6 +218,8 @@ def checkModelLocusTags(sbml, genbank):
             #print(g_)
             if g_ != 'None':
                 oldLoTags.append(g_)
+
+    #cbmpy.CBTools.pprint.pprint(gprMap)
 
     oldtags = [gprMap[a].annotations['old_locus_tag'].split(' ') + [a] for a in gprMap if 'old_locus_tag' in gprMap[a].annotations]
     oldtags2 = [gnoprMap[a].annotations['old_locus_tag'].split(' ') + [a] for a in gnoprMap if 'old_locus_tag' in gnoprMap[a].annotations]
@@ -253,8 +264,12 @@ def checkModelLocusTags(sbml, genbank):
                 F.write('UNKNOWN,{}\n'.format(g_))
         else:
             good.append(g_)
-    print('\n')
     F.close()
+    if USING_GENE_NAME:
+        print('\nINFO: model contained {} genes without locus tags. For these genes \
+the /gene name was used instead. This gene name may not be unique, please check model!!'.\
+                                                    format(len(no_locus_tag)))
+
     #cbmpy.CBTools.storeObj(gprMap, sbml.replace('.xml', '.seqplus.dat'))
 
     return good, updated, noseq, unknown, cmod, gprMap, gprMapAnnot
@@ -587,7 +602,8 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
             data = {'id' : cds.name,
                     'pid' : cds.id,
                     'annotation' : json.dumps(cds.annotations),
-                    'seq' : str(cds.seq),
+                    #'seq' : str(cds.seq),
+                    'seq' : '',
                     'type' : 'cds',
                     'db_xref' : gendb.URLEncode(str(cds.dbxrefs))
             }
