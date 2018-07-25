@@ -1,5 +1,3 @@
-__DEBUG__ = False
-
 def writeInparanoidBase(fname, head, user, body):
     F = open(fname, mode='w')
     F.write(head)
@@ -89,10 +87,11 @@ my $usage =" Usage: inparanoid.pl <FASTAFILE with sequences of species A> <FASTA
 # Set following variables:                                                    #
 ###############################################################################
 """
+__DEBUG__ = False
 
 def buildUser(CONFIGKEYS, WINKEYS, LINUXKEYS):
-    print(CONFIGKEYS)
-    print(WINKEYS)
+    #print(CONFIGKEYS)
+    #print(WINKEYS)
     WINCONFIG = WINKEYS.copy()
     WINCONFIG.update(CONFIGKEYS)
     if __DEBUG__: print(WINCONFIG)
@@ -159,7 +158,7 @@ my $segment_coverage_cutoff = {PY_segment_coverage_cutoff}; 	# Actually matching
 					# For example, segments 1-10 and 90-100 gives a total length of 20.
 
 """.format(**WINCONFIG)
-    print(USERWIN)
+    #print(USERWIN)
 
     USERLINUX = """
 # What do you want the program to do?                                         #
