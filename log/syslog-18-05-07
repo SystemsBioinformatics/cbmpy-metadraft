@@ -1,6 +1,0 @@
-INFO:STDOUT:INITDB: initialising geneDB
-INFO:STDOUT:CREATE TABLE GENES ( id TEXT PRIMARY KEY, pid TEXT, type TEXT, annotation TEXT, db_xref TEXT, notes TEXT, rdf TEXT, sbo TEXT, seq TEXT )
-INFO:STDOUT:Table GENES does not exist, creating it
-INFO:STDOUT:INITDB: initialising notesDB
-INFO:STDOUT:CREATE TABLE NOTES ( unixtime REAL PRIMARY KEY, user TEXT, model TEXT, id TEXT, notes TEXT, other TEXT )
-INFO:STDOUT:Table NOTES does not exist, creating it
