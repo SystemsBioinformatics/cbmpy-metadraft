@@ -1705,7 +1705,7 @@ class MetaDraftGUI(QWidget):
             self.model.addReaction(R, create_default_bounds=False)
             self.model.createReactionBounds(ridnew, self.selected_reactions[r_]['obj'].getLowerBound(), self.selected_reactions[r_]['obj'].getUpperBound())
 
-            OLD_GPR_MAP[R.getId()] = {'tree' : oldGPR.getTree(),
+            OLD_GPR_MAP[R.getId()] = {'tree' : oldGPR.getTreeCopy(),
                                       'id2lbl' : {g.getId() : g.getLabel() for g in oldGPR.getGenes()},
                                       'lbl2id' : {g.getLabel() : g.getId() for g in oldGPR.getGenes()},
                                       'genes' : [g.clone() for g in oldGPR.getGenes()]
