@@ -196,6 +196,8 @@ class MetaDraftGUI(QWidget):
     _CONFIG_ = None
     _SRC_TRG_MAP_ = None
     _DAT_NOTESDB_KEY_ = None
+    CREATE_TEMPLATE_V2 = True
+    CREATE_TEMPLATE_ZIP = False
 
     NO_EXPORT_SEQ = True
     SEQUENCE_MATCH = 'orthfind1'
@@ -267,6 +269,7 @@ class MetaDraftGUI(QWidget):
     reaction_table_loading = False
     gene_table_loading = False
     _updateGeneMap_disable_info_update_ = False
+
     CURRENT_SELECTION_STATE = None
     REACT_LAST_CHECKED_ROW = 0
     GENE_LAST_CHECKED_ROW = 0
@@ -689,9 +692,12 @@ class MetaDraftGUI(QWidget):
     def menu_helpAbout(self):
 
         title = "About MetaDraft"
-        msg = "This is the MetaDraft version {}-({}), https://github.com/SystemsBioinformatics/metadraft. MetaDraft uses PySCeS-CBMPy (http://cbmpy.sourceforge.net) technology, both part of the MetaToolkit project.\n\n".format(metadraft_version, cbmpy.__version__)
-        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2015-2017. All rights reserved\n"
-        msg += "\nFor help and support please contact Brett Olivier:\nemail: b.g.olivier@vu.nl\n"
+        msg = "This is the MetaDraft version {}-({}), https://systemsbioinformatics.github.io/cbmpy-metadraft/.\n"
+        msg += "MetaDraft makes use of CBMPy (http://cbmpy.sourceforge.net) technology and is part of the\n"
+        msg += "MetaToolkit project (https://systemsbioinformatics.github.io/metatoolkit/).\n\n".format(metadraft_version, cbmpy.__version__)
+        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2015-2018. All rights reserved\n"
+        msg += "\nFor support please use the GitHub issue tracker or contact the developers.\n\n\n"
+        msg += "MetaDraft is distributed with template models, some of which are derived from the UCSD BiGG2 model repository.\n"
         if HAVE_QT4:
             qtv = 'Qt4'
         else:
@@ -1553,7 +1559,9 @@ class MetaDraftGUI(QWidget):
                 try:
                     ret = biotools.createSeqplusModel(modlist, sbml_dir, self.seqplus_files, 'usr',\
                                                       gene_db=self._genedb_path_,\
-                                                      add_cobra_annot=False)
+                                                      add_cobra_annot=False,
+                                                      useV2=self.CREATE_TEMPLATE_V2,
+                                                      compress_output=self.CREATE_TEMPLATE_ZIP)
                 except AssertionError:
                     QApplication.restoreOverrideCursor()
                     title = 'Create SeQPlus Template Model: error'

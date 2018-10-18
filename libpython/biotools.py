@@ -26,6 +26,7 @@ Contact email: b.g.olivier@vu.nl
 """
 
 import os, sys, random, copy, time, math, json, xlwt
+import sqlite3
 
 cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
 dataDir = os.path.join(cDir, 'data')
@@ -160,12 +161,13 @@ def readFASTAFile(fname):
     return CDS_features, GENE_features, MISC_features
 
 
-def checkModelLocusTags(sbml, genbank):
+def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
     """
     Checks the gene identifiers (assuming they are locus tags) against a genbank file of the same organism
 
     - *sbml* the model SBML (*.xml) file
     - *genbank* the associated GenBank (*.gbk) full file_s) (including CDS annotations and sequences)
+    - *allow_gene_names* allow gene names, non-unique as gene identifiers if locus tags are not present. USE WITH CAUTION!!!
 
     """
 
@@ -228,7 +230,8 @@ def checkModelLocusTags(sbml, genbank):
             if cds.seq != None:
                 if cds.name != '<unknown name>':
                     gprMap[cds.name] = cds
-                elif 'gene' in cds.annotations:
+                # this is dangerous as there is no defined 1:1 mapping
+                elif 'gene' in cds.annotations and allow_gene_names:
                     gprMap[cds.annotations['gene']] = cds
                     USING_GENE_NAME = True
                     no_locus_tag.append(cds.annotations['gene'])
@@ -296,16 +299,20 @@ def checkModelLocusTags(sbml, genbank):
         print('\nINFO: model contained {} genes without locus tags. For these genes \
 the /gene name was used instead. This gene name may not be unique, please check model!!'.\
                                                     format(len(no_locus_tag)))
+        #print(no_locus_tag)
 
     #cbmpy.CBTools.storeObj(gprMap, sbml.replace('.xml', '.seqplus.dat'))
 
-    return good, updated, noseq, unknown, cmod, gprMap, gprMapAnnot
+    return good, updated, noseq, unknown, cmod, gprMap, gprMapAnnot, no_locus_tag
 
 
-def addSeqAnnotation(emod, gpr, good, updated, update_tags=True):
+def addSeqAnnotation(emod, gpr, good, updated, update_tags=True, no_locus_tag=None):
     # now we annotate the reactions with the sequences and optionally update all the gene
     # names to match the current GenBank locus tags
     geneAnnot = {}
+
+    if no_locus_tag is None:
+        no_locus_tag = []
 
     for gp in emod.gpr:
         #if emod.__FBC_VERSION__ < 2:
@@ -314,6 +321,9 @@ def addSeqAnnotation(emod, gpr, good, updated, update_tags=True):
         geneIDs = gp.getGeneLabels()
         for g_ in geneIDs:
             if g_ in good:
+                if g_ in no_locus_tag:
+                    print('-> {}, {}, {}\n{}'.format(g_, gpr[g_].id, gpr[g_].name, gpr[g_]))
+
                 emod.getReaction(gp.getProtein()).setAnnotation('gbank_seq_{}'.format(g_),'{}'.format(str(gpr[g_].seq)))
                 gp.setAnnotation('gbank_seq', '{}'.format(str(gpr[g_].seq)))
                 gp.setAnnotation('gbank_id', '{}'.format(str(gpr[g_].id)))
@@ -330,15 +340,16 @@ def addSeqAnnotation(emod, gpr, good, updated, update_tags=True):
                 gp.setAnnotation('gbank_description', '{}'.format(str(gpr[updated[g_]].description)))
                 if updated[g_] not in geneAnnot:
                     geneAnnot[updated[g_]] = gp.getAnnotations()
+
     #print(geneAnnot)
     if update_tags and len(updated) > 0:
         if emod.__FBC_VERSION__ < 2:
             #updateGeneIdsFBCv1(emod, updated, geneAnnot, annotation_key='GENE ASSOCIATION', replace_existing=True)
-            updateGeneIdsFBCv2(emod, updated, geneAnnot, replace_existing=True)
+            updateGeneIdsFBCv2(emod, updated, geneAnnot, replace_existing=True, no_locus_tag=no_locus_tag)
         else:
-            updateGeneIdsFBCv2(emod, updated, geneAnnot, replace_existing=True)
+            updateGeneIdsFBCv2(emod, updated, geneAnnot, replace_existing=True, no_locus_tag=no_locus_tag)
 
-def updateGeneIdsFBCv2(emod, updated, gene_annotation, replace_existing=True):
+def updateGeneIdsFBCv2(emod, updated, gene_annotation, replace_existing=True, no_locus_tag=None):
     """
     Update gene locus tags from updated dictionary. If this fails it tries some standard annotation
     keys: GENE ASSOCIATION, GENE_ASSOCIATION, gene_association, gene association.
@@ -349,6 +360,8 @@ def updateGeneIdsFBCv2(emod, updated, gene_annotation, replace_existing=True):
      - *replace_existing* [default=True] replace existing annotations, otherwise only new ones are added
 
     """
+    if no_locus_tag is None:
+        no_locus_tag = []
     for of_ in updated:
         G = emod.getGeneByLabel(of_)
         G.setLabel(updated[of_])
@@ -626,6 +639,7 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
     for cds in GBcds:
         if cds.seq != None and not gendb.checkEntryInColumn(table, idxc, cds.name):
             #ltags.append(cds.name)
+            ADD2DB = True
             data = {'id' : cds.name,
                     'pid' : cds.id,
                     'annotation' : json.dumps(cds.annotations),
@@ -634,8 +648,22 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
                     'type' : 'cds',
                     'db_xref' : gendb.URLEncode(str(cds.dbxrefs))
             }
-            cntr += 1
-            gendb.insertData(table, data, commit=False)
+
+            if data['id'] == '<unknown name>':
+                ADD2DB = False
+                # adding dodgy non-LT genes is not feasible as no 1:1 mapping is possible
+                #if 'gene' in cds.annotations:
+                    #data['id'] = cds.annotations['gene']
+                #else:
+                    #ADD2DB = False
+            else:
+                ADD2DB = True
+                try:
+                    gendb.insertData(table, data, commit=False)
+                    cntr += 1
+                except sqlite3.IntegrityError:
+                    print('ERROR: gene id {} already exists')
+
     gendb.db_cursor.connection.commit()
     GBFile.close()
     ## turns out this is not needed as db_xrefs can be obtained from cds annotations, left here just in case
@@ -707,7 +735,7 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
     writeFASTA(outF, proteins)
     return outF
 
-def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_cobra_annot=False, useV2=False, compress_output=False):
+def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_cobra_annot=False, useV2=True, compress_output=False):
     """
     This function takes pairs of models and genbank files, updates the locus tags in the model (if necessary),
     merges GenBank annotation, including AA sequences, into the SBML model::
@@ -773,10 +801,10 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
             del DB, f_
 
         # First we see if we can map the gene association "genes" to the genbank locus tags
-        good, updated, noseq, unknown, emod, gpr, gprannot = checkModelLocusTags(fmod, fgb)
+        good, updated, noseq, unknown, emod, gpr, gprannot, no_locus_tag = checkModelLocusTags(fmod, fgb)
         print('\ngood: {}\nupdated: {}\nnoseq: {}\nunknown: {}\n'.format(len(good), updated, noseq, unknown))
         # Now we annotate the model with the genbank sequences
-        addSeqAnnotation(emod, gpr, good, updated, update_tags=True)
+        addSeqAnnotation(emod, gpr, good, updated, update_tags=True, no_locus_tag=no_locus_tag)
         #if emod.__FBC_VERSION__ < 2:
             #LD['gene2reaction'] = emod.getAllProteinGeneAssociations()
             #LD['reaction2gene'] = emod.getAllGeneProteinAssociations()
@@ -805,7 +833,10 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
                 LD['reaction2gene'].pop(k_)
                 #time.sleep(1)
 
-        sbmlfname = os.path.split(fmod)[-1].replace('.xml','.seqplus.xml')
+        if not compress_output:
+            sbmlfname = os.path.split(fmod)[-1].replace('.xml','.seqplus.xml')
+        else:
+            sbmlfname = os.path.split(fmod)[-1].replace('.xml','.seqplus.gz.xml')
         sbmloutalt = os.path.join(model_dir, '({})-({}'.format(oid, sbmlfname.replace('.seqplus.',').seqplus.')))
         #sbmloutalt = '({})-({})-({}'.format(lib_set, oid, sbmlfname.replace('.seqplus.',').seqplus.'))
         if not useV2:
