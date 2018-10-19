@@ -428,9 +428,16 @@ class MetaDraftGUI(QWidget):
         # GENEDB
         self._genedb_ = cbmpy.CBNetDB.DBTools()
         if not os.path.exists(os.path.join(self.cDir, self._genedb_path_)):
-            print('INITDB: initialising geneDB')
-            self._genedb_.connectSQLiteDB(self._genedb_path_)
-            self._genedb_.createDBTable('GENES',  self._genedb_sqlcols_)
+            if os.path.exists(os.path.join(self.cDir, self._genedb_path_+'.zip')):
+                print('INITDB: extracting geneDB archive: {}'.format(self._genedb_path_+'.zip'))
+                zip_ref = zipfile.ZipFile(self._genedb_path_+'.zip', 'r')
+                zip_ref.extractall(self._dbx_dir_)
+                zip_ref.close()
+                self._genedb_.connectSQLiteDB(self._genedb_path_)
+            else:
+                print('INITDB: initialising geneDB')
+                self._genedb_.connectSQLiteDB(self._genedb_path_)
+                self._genedb_.createDBTable('GENES',  self._genedb_sqlcols_)
         else:
             print('INITDB: connecting geneDB')
             self._genedb_.connectSQLiteDB(self._genedb_path_)
