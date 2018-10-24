@@ -59,6 +59,7 @@ except ImportError:
     HAVE_DOCX = False
 
 metadraft_version = '0.9.0'
+metadraft_db_version = '2018-1'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
@@ -175,7 +176,7 @@ if RELEASE_STATUS > 0:
 else:
     DEBUG_MODE = True
     # disable cleanup in developer mode (optional)
-    DEL_BLAST_TMP = False
+    DEL_BLAST_TMP = True
 
 class MetaDraftGUI(QWidget):
     appwindow = None
@@ -245,11 +246,12 @@ class MetaDraftGUI(QWidget):
     excel_save_dir = cDir
     excel_file_name = ''
     data_input_files = cDir
-    seqplus_files = os.path.join(cDir, 'lib_model')
-    result_files = os.path.join(cDir, 'blast_results')
     blast_work_dir = os.path.join(cDir, 'data_blast')
     blast_tools = os.path.join(cDir, 'bin_base')
-    metaproteome_files = os.path.join(cDir, 'lib_metaproteome')
+    result_files = os.path.join(cDir, 'blast_results')
+    seqplus_files = os.path.join(cDir, 'modeldb', metadraft_db_version, 'lib_model')
+    metaproteome_files = os.path.join(cDir, 'modeldb', metadraft_db_version, 'lib_metaproteome')
+    _dbx_dir_ = os.path.join(cDir, 'modeldb', metadraft_db_version, 'dbx')
     link_file = ''
     metaproteome_file = ''
     result_file = ''
@@ -258,9 +260,9 @@ class MetaDraftGUI(QWidget):
     _genedb_ = None
     _ortfind1_ = 'NUd4c2FoVDFTSUlq'
     _dummy_gene_obj_ = None
-    _dbx_dir_ = os.path.join(cDir, 'dbx')
-    _genedb_path_ = os.path.join(_dbx_dir_, '_metadraft_genedb.sql')
-    _notesdb_path_ = os.path.join(_dbx_dir_, '_metadraft_notesdb.sql')
+
+    _genedb_path_ = None
+    _notesdb_path_ = None
     config_file = '_metadraft.cfg'
     regex = None
     id_sep = '@'
@@ -297,13 +299,23 @@ class MetaDraftGUI(QWidget):
             self.initSysLog()
 
         # create subdirectories for various things (they should exist)
-        for f_ in [self.seqplus_files, self.result_files, self.blast_work_dir, self.blast_tools, self.metaproteome_files, self._tmpDir_]:
+        for f_ in [self.result_files, self.blast_work_dir, self.blast_tools, self._tmpDir_]:
             if not os.path.exists(f_):
                 os.makedirs(f_)
 
-        # create default user result directory
-        if not os.path.exists(os.path.join(self.result_files, self.func_getCurrentUser())):
-            os.makedirs(os.path.join(self.result_files, self.func_getCurrentUser()))
+        # check that there are the necessary model templates and database otherwise use minimal default
+        if not os.path.exists(self.seqplus_files):
+            self.seqplus_files = os.path.join(cDir, 'modeldb', 'default', 'lib_model')
+        if not os.path.exists(self.metaproteome_files):
+            self.metaproteome_files = os.path.join(cDir, 'modeldb', 'default', 'lib_metaproteome')
+            os.makedirs(self.metaproteome_files)
+        if not os.path.exists(self._dbx_dir_):
+            self._dbx_dir_ = os.path.join(cDir, 'modeldb', 'default', 'dbx')
+
+        self._genedb_path_ = os.path.join(self._dbx_dir_, '_metadraft_genedb.sql')
+        self._notesdb_path_ = os.path.join(self._dbx_dir_, '_metadraft_notesdb.sql')
+
+
 
         self.regex = {'GOterm' : re.compile('GO:\\d{7}')}
 
