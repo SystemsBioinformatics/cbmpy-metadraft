@@ -2967,9 +2967,9 @@ class MetaDraftGUI(QWidget):
                 linkDict[o]["sbml_out"] = os.path.join(self.seqplus_files, sbml1)
                 linkDict[o]["sbml_out_generic"] = os.path.join(self.seqplus_files, sbml2)
 
-            #print(linkDict[o]["sbml_out"])
-            #print(linkDict[o]["sbml_out_generic"])
-
+            if type(linkDict[o]) == dict and 'data_path' in linkDict[o]:
+                linkDict[o]['data_path'] = self.seqplus_files
+                print(linkDict[o]['data_path'])
         # "phylogenetic filtering" or "user defined ranking of organisims using reaction id's"
         if optimized_metaproteome:
             biotools.idFilter(linkDict, oid_list)
@@ -3002,6 +3002,9 @@ class MetaDraftGUI(QWidget):
         Fj = open(os.path.join(outDir, lfname), 'w')
         json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
         Fj.close()
+
+
+
 
         #for n in range(len(biotools.IDMAP0)):
             #print(len(biotools.IDMAP0[n]), len(biotools.IDMAP1[n]))
