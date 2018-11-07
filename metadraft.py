@@ -31,10 +31,10 @@ def run_metadraft():
     widget_splash = QSplashScreen(QPixmap("images/metatoolkit1-03.jpg"))
     widget_splash.show()
     if RELEASE_STATUS == 2:
-        widget_splash.showMessage("Ver {}-({}) beta\nAuthor: Brett G. Olivier PhD\n(c) Brett G. Olivier, Amsterdam, 2017.\nSee Help - About for more details\nb.g.olivier@vu.nl".format(metadraft_version, cbmpy.__version__), alignment=Qt.AlignBottom)
-        time.sleep(7)
+        widget_splash.showMessage("Ver {}-({}) beta\nAuthor: Brett G. Olivier PhD\n(c) Brett G. Olivier, Amsterdam, 2017-2018.\nSee Help - About for more details.".format(metadraft_version, cbmpy.__version__), alignment=Qt.AlignBottom)
+        time.sleep(3)
     else:
-        widget_splash.showMessage("Ver {}-({}) beta\n(c) Brett G. Olivier, Amsterdam, 2017-2018.\nSee Help - About for more details\nb.g.olivier@vu.nl".format(metadraft_version, cbmpy.__version__), alignment=Qt.AlignBottom)
+        widget_splash.showMessage("Ver {}-({}) beta\n(c) Brett G. Olivier, Amsterdam, 2017-2018.\nSee Help - About for more details.".format(metadraft_version, cbmpy.__version__), alignment=Qt.AlignBottom)
         if RELEASE_STATUS == 1:
             time.sleep(2)
     ex = MetaDraftApp()

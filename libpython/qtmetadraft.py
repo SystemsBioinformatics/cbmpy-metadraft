@@ -249,6 +249,7 @@ class MetaDraftGUI(QWidget):
     blast_work_dir = os.path.join(cDir, 'data_blast')
     blast_tools = os.path.join(cDir, 'bin_base')
     result_files = os.path.join(cDir, 'blast_results')
+    modeldb_base = os.path.join(cDir, 'modeldb', metadraft_db_version)
     seqplus_files = os.path.join(cDir, 'modeldb', metadraft_db_version, 'lib_model')
     metaproteome_files = os.path.join(cDir, 'modeldb', metadraft_db_version, 'lib_metaproteome')
     _dbx_dir_ = os.path.join(cDir, 'modeldb', metadraft_db_version, 'dbx')
@@ -304,13 +305,18 @@ class MetaDraftGUI(QWidget):
                 os.makedirs(f_)
 
         # check that there are the necessary model templates and database otherwise use minimal default
-        if not os.path.exists(self.seqplus_files):
-            self.seqplus_files = os.path.join(cDir, 'modeldb', 'default', 'lib_model')
-        if not os.path.exists(self.metaproteome_files):
-            self.metaproteome_files = os.path.join(cDir, 'modeldb', 'default', 'lib_metaproteome')
-            os.makedirs(self.metaproteome_files)
-        if not os.path.exists(self._dbx_dir_):
-            self._dbx_dir_ = os.path.join(cDir, 'modeldb', 'default', 'dbx')
+        if not os.path.exists(self.modeldb_base):
+            if not os.path.exists(self.seqplus_files):
+                self.seqplus_files = os.path.join(cDir, 'modeldb', 'default', 'lib_model')
+            if not os.path.exists(self.metaproteome_files):
+                self.metaproteome_files = os.path.join(cDir, 'modeldb', 'default', 'lib_metaproteome')
+                os.makedirs(self.metaproteome_files)
+            if not os.path.exists(self._dbx_dir_):
+                self._dbx_dir_ = os.path.join(cDir, 'modeldb', 'default', 'dbx')
+        else:
+            if not os.path.exists(self.metaproteome_files):
+                os.makedirs(self.metaproteome_files)
+
 
         self._genedb_path_ = os.path.join(self._dbx_dir_, '_metadraft_genedb.sql')
         self._notesdb_path_ = os.path.join(self._dbx_dir_, '_metadraft_notesdb.sql')
@@ -3949,6 +3955,9 @@ class MetaDraftGUI(QWidget):
         self.tree_results.clear()
         #print(self.result_files)
         root = os.path.join(self.result_files, self.func_getCurrentUser())
+        print(root)
+        if not os.path.exists(root):
+            os.makedirs(root)
         root = self.getDirectoryStructure(root)[self.func_getCurrentUser()]
         #print(root)
         self.widgetResultTree_item(self.tree_results.invisibleRootItem(), root)
