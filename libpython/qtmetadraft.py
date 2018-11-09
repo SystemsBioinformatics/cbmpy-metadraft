@@ -1899,7 +1899,7 @@ class MetaDraftGUI(QWidget):
             G.setNotes('These {} reactions were included from the {} model using MetaDraft (https://github.com/SystemsBioinformatics/metadraft) ver. {}'.format(len(new_groups[o]['grpd']), o, metadraft_version))
             G.addMember([self._DAT_MODELS[o].getReaction(r_) for r_ in new_groups[o]['grpd']])
 
-        IDIOT = True
+        IDIOT = False
         #for r_ in self.model.getReactionIds():
             #if self.model.getGPRforReaction(r_) is None:
                 #print('-->', r_)
