@@ -364,29 +364,9 @@ if ($use_outgroup){
 	    $idC{$name} = int($id);
 	    $nameC[$id] = $name;
 	}
-    }
-    $C = $id;
-    print "$C sequences in file $fasta_seq_fileC\\n";
-    close C;
-    if ($output){
-	print OUTPUT "$C sequences in file $fasta_seq_fileC\\n";
-    }
-}
-if ($show_times){
-    ($user_time,,,) = times;
-    printf ("Indexing sequences took %.2f seconds\\n", ($user_time - $prev_time));
-    $prev_time = $user_time;
-}
-
-#################################################
-# Run BLAST if not done already
-#################################################
-if ($run_blast){
-    print "Trying to run BLAST now - this may take several hours ... or longer!\\n";
-    print STDERR "Formatting BLAST databases\\n";
-    system ("$formatdb -i $fasta_seq_fileA");
-    system ("$formatdb -i $fasta_seq_fileB") if (@ARGV >= 2);
-    system ("$formatdb -i $fasta_seq_fileC") if ($use_outgroup);
+    } $fasta_seq_fileA");
+    system ("$formatdb -i $fasta_seq_fileB -p T") if (@ARGV >= 2);
+    system ("$formatdb -i $fasta_seq_fileC -p T") if ($use_outgroup);
     print STDERR "Done formatting\\nStarting BLAST searches...\\n";
 
 # Run blast only if the files do not already exist is not default.
@@ -1743,7 +1723,7 @@ sub bootstrap{
     close B;
     close DB;
 
-    system "$formatdb -i $db_file";
+    system "$formatdb -i $db_file -p T";
     # Use soft masking in 1-pass mode for simplicity.
     system "$blastall -F\\"m S\\" -i $query_file -z 5000000 -d $db_file -p blastp -M $matrix -m7 | $blastParser 0 -a > $seq_id2.faa";
 
@@ -1928,7 +1908,7 @@ sub do_blast_2pass {
 		close (FHT);
 
 		# Run Blast and add to output
-		system ("$formatdb -i $tmpd");
+		system ("$formatdb -i $tmpd" -p T);
 		system ("$blastall -C0 -FF -i $tmpi -d $tmpd -p blastp -v $Fld[3] -b $Fld[3] -M $matrix -z 5000000 -m7 | $blastParser $score_cutoff >> $Fld[4]");
 	}
 
@@ -2138,9 +2118,9 @@ if ($show_times){
 if ($run_blast){
     print "Trying to run BLAST now - this may take several hours ... or days in worst case!\\n";
     print STDERR "Formatting BLAST databases\\n";
-    system ("$formatdb -i $fasta_seq_fileA");
-    system ("$formatdb -i $fasta_seq_fileB") if (@ARGV >= 2);
-    system ("$formatdb -i $fasta_seq_fileC") if ($use_outgroup);
+    system ("$formatdb -i $fasta_seq_fileA -p T");
+    system ("$formatdb -i $fasta_seq_fileB -p T") if (@ARGV >= 2);
+    system ("$formatdb -i $fasta_seq_fileC -p T") if ($use_outgroup);
     print STDERR "Done formatting\\nStarting BLAST searches...\\n";
 
 # Run blast only if the files do not already exist is not default.
@@ -3497,7 +3477,7 @@ sub bootstrap{
     close B;
     close DB;
 
-    system "$formatdb -i $db_file";
+    system "$formatdb -i $db_file -p T";
     # Use soft masking in 1-pass mode for simplicity.
     system "$blastall -F\\"m S\\" -i $query_file -z 5000000 -d $db_file -p blastp -M $matrix -m7 | ./$blastParser 0 -a > $seq_id2.faa";
 
@@ -3682,7 +3662,7 @@ sub do_blast_2pass {
 		close (FHT);
 
 		# Run Blast and add to output
-		system ("$formatdb -i $tmpd");
+		system ("$formatdb -i $tmpd -p T");
 		system ("$blastall -C0 -FF -i $tmpi -d $tmpd -p blastp -v $Fld[3] -b $Fld[3] -M $matrix -z 5000000 -m7 | ./$blastParser $score_cutoff >> $Fld[4]");
 	}
 
