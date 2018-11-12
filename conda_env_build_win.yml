@@ -1,0 +1,57 @@
+name: metadraft2
+channels:
+  - sbmlteam
+  - bgoli
+  - defaults
+dependencies:
+  - cbmpy=0.7.21=py27_0
+  - backports=1.0=py27_1
+  - backports.functools_lru_cache=1.5=py27_1
+  - backports_abc=0.5=py27h0ec6b72_0
+  - biopython=1.72=py27h39f3610_0
+  - blas=1.0=mkl
+  - ca-certificates=2018.03.07=0
+  - certifi=2018.10.15=py27_0
+  - cycler=0.10.0=py27h59acbbf_0
+  - fastcache=1.0.2=py27h0c8e037_2
+  - freetype=2.9.1=h4d385ea_1
+  - functools32=3.2.3.2=py27_1
+  - futures=3.2.0=py27_0
+  - icc_rt=2017.0.4=h97af966_0
+  - icu=58.2=h2aa20d9_1
+  - intel-openmp=2019.0=118
+  - jpeg=9b=ha175dff_2
+  - kiwisolver=1.0.1=py27hc56fc5f_0
+  - libpng=1.6.35=h7a46e7a_0
+  - matplotlib=2.2.3=py27h263d877_0
+  - mkl=2019.0=118
+  - mkl_fft=1.0.6=py27hac4a418_0
+  - mpmath=1.0.0=py27_2
+  - nose=1.3.7=py27_2
+  - numpy=1.15.4=py27hbe4291b_0
+  - numpy-base=1.15.4=py27h2753ae9_0
+  - openssl=1.0.2p=h0c8e037_0
+  - pip=18.1=py27_0
+  - pyparsing=2.3.0=py27_0
+  - pyqt=5.6.0=py27h6e61f57_6
+  - python=2.7.15=h2880e7c_3
+  - python-dateutil=2.7.5=py27_0
+  - pytz=2018.7=py27_0
+  - qt=5.6.2=vc9hc26998b_12
+  - setuptools=40.5.0=py27_0
+  - singledispatch=3.4.0.3=py27h3f9d112_0
+  - sip=4.18.1=py27hc56fc5f_2
+  - six=1.11.0=py27_1
+  - sqlite=3.25.2=h0c8e037_0
+  - sympy=1.3=py27_0
+  - tornado=5.1.1=py27h0c8e037_0
+  - vc=9=h7299396_1
+  - vs2008_runtime=9.00.30729.1=hfaea7d5_1
+  - wheel=0.32.2=py27_0
+  - wincertstore=0.2=py27hf04cefb_0
+  - xlrd=1.1.0=py27_1
+  - xlwt=1.3.0=py27h2271735_0
+  - zlib=1.2.11=hbc2faf4_2
+  - python-libsbml=5.17.0=py27_0
+prefix: C:\Anaconda\envs\metadraft2
+
