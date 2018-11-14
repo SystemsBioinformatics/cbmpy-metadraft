@@ -24,6 +24,7 @@ Author: Brett G. Olivier PhD
 Contact email: b.g.olivier@vu.nl
 
 """
+from __future__ import division, print_function
 from __future__ import absolute_import
 
 def run_metadraft():
@@ -43,17 +44,21 @@ def run_metadraft():
 
 
 if __name__ == '__main__':
+    import os
+    import systemtest
+
+    output_msg = []
+    BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg = systemtest.test_blast(output_msg)
+    if not ( BLAST_OK or BLAST_HAVE_LOCAL ):
+        print(output_msg[0])
+        os.sys.exit(1)
+    elif BLAST_HAVE_LOCAL:
+        print("\nMetaDraft requires NCBI BLAST but can make use of it's own distribution. I have set the PATH for you but please consider adding \'{}\' to your local '{}' environment variable to remove this message. Please see README.md for details.\n".format(systemtest.local_blast_path, pth))
+
     import libpython.qtmetadraft
     from libpython.qtmetadraft import *
     print(API_VERSION)
     __version__ = metadraft_version
     run_metadraft()
 
-    #import profile
-    #profile.run('main()', 'profile.tmp')
-
-    #import pstats
-    #p = pstats.Stats('profile.tmp')
-    #p.sort_stats('cumulative').print_stats(50)
-    #p.sort_stats('time').print_stats(50)
 
