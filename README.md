@@ -25,7 +25,7 @@ MetaDraft ships with a single model template, to install the current template se
 
 You have now downloaded the latest version of MetaDraft, next please install the required Python dependencies. How you do this will depend on whether you want to use Conda or PIP.
 
-## Creating a custom Anaconda Python evironment
+## Creating a custom Anaconda Python environment
 
 The following commands will create custom virtual environments with all the Python dependencies needed to run MetaDraft. Of course it is also possible to install the individual packages using "conda" or "pip" see the *requirements.txt* file for details of the required packages (see "pip" instructions below).
 
