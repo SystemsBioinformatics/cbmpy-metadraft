@@ -25,6 +25,9 @@ Contact email: b.g.olivier@vu.nl
 
 """
 
+from __future__ import division, print_function
+from __future__ import absolute_import
+
 import os, sys, random, copy, time, math, json, xlwt
 import sqlite3
 
@@ -223,7 +226,7 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
                 cmod.setAnnotation('genbank_{}'.format(r_), gprMapAnnot[seq_record.id][r_])
             fileNum += 1
 
-        GBFile = file(G, 'r')
+        GBFile = open(G, 'r')
 
         USING_GENE_NAME = False
         for cds in Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile):
@@ -272,7 +275,7 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
     unknown = []
     noseq = []
     good = []
-    F = file(sbml.replace('.xml', '.seqcheck.csv'),'w')
+    F = open(sbml.replace('.xml', '.seqcheck.csv'),'w')
     #if cmod.__FBC_VERSION__ < 2:
         #geneIDs = cmod.getGeneIds()
     #else:
@@ -487,9 +490,9 @@ def createMegaGenomeBasic(fname, fdir, input_files=None):
             else:
                 print('File {} does not exist'.format(os.path.join(fdir, f_)))
 
-    Fout = file(fname, 'w')
+    Fout = open(fname, 'w')
     for f_ in catlist:
-        F = file(f_, 'r')
+        F = open(f_, 'r')
         Fout.write(F.read())
         Fout.flush()
         F.close()
@@ -513,7 +516,7 @@ def createMetaProteome(fname, link, optimized=True, paranoid_style=True, K=0.13)
 
     metaprotdat = {}
 
-    F = file(fname, 'w')
+    F = open(fname, 'w')
     outseq = []
     total_prot_length = 0
     #protein_lengths = {}
@@ -587,7 +590,7 @@ def idFilter(link, oidList):
     """
     idmap = []
     for o_ in oidList:
-        keys = list(link[o_]['reaction2gene'].viewkeys())
+        keys = list(link[o_]['reaction2gene'].keys())
         idmap.append(set(keys))
 
     idx = copy.deepcopy(idmap[0])
@@ -632,7 +635,7 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
     """
     #print(gbkf)
     assert(os.path.exists(gbkf))
-    GBFile = file(gbkf, 'r')
+    GBFile = open(gbkf, 'r')
     GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
     cntr = 0
     #ltags = []
@@ -717,7 +720,7 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
             if cntr == 0:
                 outF = fasta.replace('.gbk', '.in.fasta').replace('.gbff', '.in.fasta').replace('.gb', '.in.fasta')
                 cntr += 1
-            GBFile = file(fasta, 'r')
+            GBFile = open(fasta, 'r')
             GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
             for cds in GBcds:
                 if cds.seq != None:
@@ -827,7 +830,7 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
         LD['taxon_id'] = taxId
 
         # this is almost "certain" never to happen but just in case .... check for reactions without genes
-        for k_ in list(LD['reaction2gene'].viewkeys()):
+        for k_ in list(LD['reaction2gene'].keys()):
             if len(LD['reaction2gene'][k_]) == 0:
                 print('INFO: Reaction has no genes associated:', k_, LD['reaction2gene'][k_])
                 LD['reaction2gene'].pop(k_)
@@ -915,7 +918,7 @@ def createCDSdb(list_of_files):
     output = {}
     for gbkf in list_of_files:
         output[gbkf] = []
-        GBFile = file(gbkf, 'r')
+        GBFile = open(gbkf, 'r')
         GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
         cntr = 0
         for cds in GBcds:

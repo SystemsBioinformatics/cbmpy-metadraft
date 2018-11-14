@@ -25,6 +25,9 @@ Contact email: b.g.olivier@vu.nl
 
 """
 
+from __future__ import division, print_function
+from __future__ import absolute_import
+
 ## http://qt-project.org/forums/viewthread/26126
 ## http://stackoverflow.com/questions/2304199/how-to-sort-a-qtablewidget-with-my-own-code
 ## http://qt-project.org/doc/qt-4.8/qtablewidgetitem.html
@@ -46,10 +49,11 @@ for name in API_NAMES:
     sip.setapi(name, API_VERSION)
 
 cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
-import numpy
-import biotools
-import wrap_orthfind1 as bionoid
-import report_templates
+from . import biotools
+from . import wrap_orthfind1 as bionoid
+from . import report_templates
+
+
 import cbmpy
 
 try:
@@ -832,7 +836,7 @@ class MetaDraftGUI(QWidget):
         seq = []
         seqout = {}
         if fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
-            GBFile = file(fname, 'r')
+            GBFile = open(fname, 'r')
             GBcds = biotools.Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
             for cds in GBcds:
                 if cds.seq != None:
@@ -1038,6 +1042,7 @@ class MetaDraftGUI(QWidget):
         </body>
         </html>
         """
+        html = html.replace('\n','')
         cp = self.metadraft_rpt_footer
         QApplication.restoreOverrideCursor()
         return html.format(cp)
@@ -1157,9 +1162,9 @@ class MetaDraftGUI(QWidget):
         textWindow.setOpenLinks(True)
         textWindow.setReadOnly(True)
         try:
-            textWindow.setText(html)
+            textWindow.setText(html.strip())
         except TypeError:
-            textWindow.setText(str(html))
+            textWindow.setText(str(html).strip())
 
         @pyqtSlot()
         def exportHTML():
@@ -1168,7 +1173,10 @@ class MetaDraftGUI(QWidget):
             filename = str(self.saveFile('Save report', self._history_save_dir_, '*.html'))
             try:
                 F = open(filename, 'w')
-                F.write(html)
+                try:
+                    F.write(html.replace('\n','').strip())
+                except TypeError:
+                    F.write(str(html).replace('\n','').strip())
                 F.close()
             except IOError:
                 print('exportHTML, no filename')
@@ -1180,9 +1188,9 @@ class MetaDraftGUI(QWidget):
             url = 'file://' + path
             with open(path, 'w') as f:
                 try:
-                    f.write(html)
+                    f.write(html.replace('\n','').strip())
                 except TypeError:
-                    f.write(str(html))
+                    f.write(str(html).replace('\n','').strip())
             webbrowser.open_new_tab(url)
             self.widget_reportViewApp.close()
 
@@ -1202,7 +1210,6 @@ class MetaDraftGUI(QWidget):
         #addnotes = QPushButton(self.widget_reportViewApp)
         #addnotes.setText('Add notes')
         #addnotes.clicked.connect(addNotes)
-
 
         layout = QGridLayout(self.widget_reportViewApp)
         layout.setSpacing(10)
@@ -1230,8 +1237,6 @@ class MetaDraftGUI(QWidget):
         print(bionoid.CONFIGKEYS)
         self.widget_config = ConfigPanelWidgetINP(bionoid, 'CONFIGKEYS')
         print(bionoid.CONFIGKEYS)
-
-
 
 
     @pyqtSlot(QAction)
@@ -1984,25 +1989,37 @@ class MetaDraftGUI(QWidget):
 
         tfn = os.path.join(arch_dir, '1_summary_report.html')
         F = open(tfn, 'w')
-        F.write(srpt)
+        try:
+            F.write(srpt)
+        except TypeError:
+            F.write(str(srpt).strip())
         F.close()
         zf.write(tfn, arcname='1_summary_report.html')
 
         tfn = os.path.join(arch_dir, '2_gene_report.html')
         F = open(tfn, 'w')
-        F.write(grpt)
+        try:
+            F.write(grpt.replace('\n',''))
+        except TypeError:
+            F.write(str(grpt).replace('\n','').strip())
         F.close()
         zf.write(tfn, arcname='2_gene_report.html')
 
         tfn = os.path.join(arch_dir, '3_reaction_report.html')
         F = open(tfn, 'w')
-        F.write(rrpt)
+        try:
+            F.write(rrpt.replace('\n',''))
+        except TypeError:
+            F.write(str(rrpt).replace('\n','').strip())
         F.close()
         zf.write(tfn, arcname='3_reaction_report.html')
 
         tfn = os.path.join(arch_dir, '4_metabolite_report.html')
         F = open(tfn, 'w')
-        F.write(mrpt)
+        try:
+            F.write(mrpt.replace('\n',''))
+        except TypeError:
+            F.write(str(mrpt).replace('\n','').strip())
         F.close()
         zf.write(tfn, arcname='4_metabolite_report.html')
 
@@ -2984,7 +3001,7 @@ class MetaDraftGUI(QWidget):
         fullname = oidString
         if len(oidString) > 100:
             oidString = 'metaproteome-{}'.format(time.strftime('%y%m%d%H%M'))
-            print('Truncating metaproteome name to: {}').format(oidString)
+            print('Truncating metaproteome name to: {}'.format(oidString))
 
         biotools.createMetaProteome(os.path.join(outDir, '({})_metaproteome.fasta'.format(oidString)),\
                                     linkDict, optimized=optimized_metaproteome, paranoid_style=True)
