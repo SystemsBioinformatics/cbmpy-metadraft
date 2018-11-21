@@ -20,17 +20,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-Author: Brett G. Olivier PhD
-Contact email: b.g.olivier@vu.nl
+Author: Brett G. Olivier
 
 """
 
 from __future__ import division, print_function
 from __future__ import absolute_import
-
-## http://qt-project.org/forums/viewthread/26126
-## http://stackoverflow.com/questions/2304199/how-to-sort-a-qtablewidget-with-my-own-code
-## http://qt-project.org/doc/qt-4.8/qtablewidgetitem.html
 
 import os, sys, random, json, itertools
 import base64, datetime, re, logging, webbrowser, copy
@@ -49,12 +44,6 @@ for name in API_NAMES:
     sip.setapi(name, API_VERSION)
 
 cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
-from . import biotools
-from . import wrap_orthfind1 as bionoid
-from . import report_templates
-
-
-import cbmpy
 
 try:
     import docx
@@ -63,7 +52,6 @@ except ImportError:
     HAVE_DOCX = False
 
 metadraft_version = '0.9.0'
-metadraft_db_version = '2018-1'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
@@ -105,7 +93,16 @@ if not HAVE_QT4 and not HAVE_QT5:
     print('Neither Qt4 nor Qt5 detected, please make sure PyQt is installed.')
     os.sys.exit(-1)
 
-#import cbmpy as cbm
+try:
+    from . import biotools
+    from . import wrap_orthfind1 as bionoid
+    from . import report_templates
+    import cbmpy
+except ImportError as ex:
+    print('\nERROR: cannot import CBMPy or MetaDraft support libraries.\n')
+    print(ex)
+    os.sys.exit(-1)
+
 
 class NumberTableWidgetItem(QTableWidgetItem):
     def __lt__(self, other):
@@ -128,6 +125,7 @@ class NumberTableWidgetItem(QTableWidgetItem):
 
         return super(NumberTableWidgetItem, self).__lt__(other)
 
+
 class NumberTableListLengthItem(QTableWidgetItem):
     def __lt__(self, other):
         if ( isinstance(other, QTableWidgetItem) ):
@@ -138,6 +136,7 @@ class NumberTableListLengthItem(QTableWidgetItem):
                 return my_value < other_value
         return super(NumberTableListLengthItem, self).__lt__(other)
 
+
 class MyPopup(QWidget):
     def __init__(self):
         QWidget.__init__(self)
@@ -147,6 +146,7 @@ class MyPopup(QWidget):
         dc.drawLine(0, 0, 100, 100)
         dc.drawLine(100, 0, 0, 100)
 
+
 class FileTreeView(QTreeView):
     def __init__(self, parent=None, rootpath=None):
         QTreeView.__init__(self)
@@ -155,9 +155,10 @@ class FileTreeView(QTreeView):
         self.setModel(model)
         self.setRootIndex(model.index(rootpath))
 
+
 class StreamToLogger(object):
     """
-    Fake file-like stream object that redirects writes to a logger instance.
+    Fake file-like stream object that redirects writes to a logger instance. Inspired by
     http://www.electricmonk.nl/log/2011/08/14/redirect-stdout-and-stderr-to-a-logger-in-python/
 
     """
@@ -170,17 +171,12 @@ class StreamToLogger(object):
         for line in buf.rstrip().splitlines():
             self.logger.log(self.log_level, line.rstrip())
 
+    def flush(self):
+        time.sleep(0.001)
 
-## 0: developer, 1: partner, 2: public
-RELEASE_STATUS = 0
-
-if RELEASE_STATUS > 0:
-    DEBUG_MODE = False
-    DEL_BLAST_TMP = True
-else:
-    DEBUG_MODE = True
-    # disable cleanup in developer mode (optional)
-    DEL_BLAST_TMP = True
+## Developer mode options
+DEBUG_MODE = False
+DEL_BLAST_TMP = True
 
 class MetaDraftGUI(QWidget):
     appwindow = None
@@ -253,10 +249,11 @@ class MetaDraftGUI(QWidget):
     blast_work_dir = os.path.join(cDir, 'data_blast')
     blast_tools = os.path.join(cDir, 'bin_base')
     result_files = os.path.join(cDir, 'blast_results')
-    modeldb_base = os.path.join(cDir, 'modeldb', metadraft_db_version)
-    seqplus_files = os.path.join(cDir, 'modeldb', metadraft_db_version, 'lib_model')
-    metaproteome_files = os.path.join(cDir, 'modeldb', metadraft_db_version, 'lib_metaproteome')
-    _dbx_dir_ = os.path.join(cDir, 'modeldb', metadraft_db_version, 'dbx')
+    metadraft_db_version = 'default'
+    modeldb_base = None
+    seqplus_files = None
+    metaproteome_files = None
+    _dbx_dir_ = None
     link_file = ''
     metaproteome_file = ''
     result_file = ''
@@ -297,8 +294,16 @@ class MetaDraftGUI(QWidget):
         super(MetaDraftGUI, self).__init__()
         #self.setAttribute(Qt.WA_DeleteOnClose)
 
+        # read configuration file and enable syslog
         self._readConfig()
-        ## debug
+        self.metadraft_db_version = self._CONFIG_['system']['metadraft_db_version']
+
+        # setup default paths based on dbversion from config file
+        self.modeldb_base = os.path.join(cDir, 'modeldb', self.metadraft_db_version)
+        self.seqplus_files = os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_model')
+        self.metaproteome_files = os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_metaproteome')
+        self._dbx_dir_ = os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'dbx')
+
         if not self.DEBUG_MODE and self._CONFIG_['system']['syslog']:
             self.__SYSLOG_ENABLED__ = True
             self.initSysLog()
@@ -321,11 +326,8 @@ class MetaDraftGUI(QWidget):
             if not os.path.exists(self.metaproteome_files):
                 os.makedirs(self.metaproteome_files)
 
-
         self._genedb_path_ = os.path.join(self._dbx_dir_, '_metadraft_genedb.sql')
         self._notesdb_path_ = os.path.join(self._dbx_dir_, '_metadraft_notesdb.sql')
-
-
 
         self.regex = {'GOterm' : re.compile('GO:\\d{7}')}
 
@@ -409,10 +411,7 @@ class MetaDraftGUI(QWidget):
         #self.widgetButtonPanel()
 
         # setup
-        if RELEASE_STATUS == 2:
-            self.appwindow.setWindowTitle('MetaDraft {} - created and developed by Brett G. Olivier PhD (b.g.olivier@vu.nl)'.format(metadraft_version))
-        else:
-            self.appwindow.setWindowTitle('MetaDraft {} - Brett G. Olivier (b.g.olivier@vu.nl)'.format(metadraft_version))
+        self.appwindow.setWindowTitle('MetaDraft {} - Brett G. Olivier (b.g.olivier@vu.nl)'.format(metadraft_version))
         self.initDBs()
         self._loading_ = False
 
@@ -624,7 +623,8 @@ class MetaDraftGUI(QWidget):
         menuFile.addAction(excelApp)
         menuFile.addAction(sbmlAppArch)
         menuFile.addSeparator()
-        menuFile.addAction(sbmlApp1)
+        # disabled for now unless requested
+        #menuFile.addAction(sbmlApp1)
         menuFile.addAction(sbmlApp0)
         menuFile.addSeparator()
         menuFile.addAction(tblxApp)
@@ -646,7 +646,7 @@ class MetaDraftGUI(QWidget):
 
         self.menuToolsM = menubar.addMenu('&Model options')
 
-        model_actions = ['Summary report', 'Gene report', 'Reaction report', 'Metabolite report', 'Export unmatched genes (FASTA)', 'Export unselected genes (FASTA)', 'Export model notes (CSV)']
+        model_actions = ['Summary report', 'Gene report', 'Reaction report', 'Metabolite report', 'Export unmatched genes (as FASTA)', 'Export unselected genes (as FASTA)', 'Export model notes (CSV)']
         for m in model_actions:
             self.menuToolsM.addAction(QAction(m, self))
         self.menuToolsM.triggered[QAction].connect(self.menu_modelTools)
@@ -720,18 +720,21 @@ class MetaDraftGUI(QWidget):
     @pyqtSlot()
     def menu_helpAbout(self):
 
-        title = "About MetaDraft"
-        msg = "This is the MetaDraft version {}-({}), https://systemsbioinformatics.github.io/cbmpy-metadraft/.\n"
-        msg += "MetaDraft makes use of CBMPy (http://cbmpy.sourceforge.net) technology and is part of the\n"
-        msg += "MetaToolkit project (https://systemsbioinformatics.github.io/metatoolkit/).\n\n".format(metadraft_version, cbmpy.__version__)
-        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2015-2018. All rights reserved\n"
-        msg += "\nFor support please use the GitHub issue tracker or contact the developers.\n\n\n"
-        msg += "MetaDraft is distributed with template models, some of which are derived from the UCSD BiGG2 model repository.\n"
+        title = "About MetaDraft."
+        msg = "This is MetaDraft version: {} ".format(metadraft_version)
+        msg += "available from\n https://systemsbioinformatics.github.io/cbmpy-metadraft/.\n\n"
+        msg += "MetaDraft makes use of CBMPy ({}) technology and is part of the".format(cbmpy.__version__)
+        msg += "MetaToolkit project. "
+        msg += "MetaDraft is distributed as Open Source Software, please see the included license.txt for details.\n\n"
+        msg += "For support please use the GitHub issue tracker or contact the developers.\n\n"
+        msg += "MetaDraft is distributed with template models, some of which are derived from the UCSD BiGG2 model repository.\n\n"
         if HAVE_QT4:
             qtv = 'Qt4'
         else:
             qtv = 'Qt5'
-        msg += "\nYou are using Py{}.\n".format(qtv)
+        msg += "You are using Py{} provided by:\n{}.\n\n".format(qtv, os.sys.version)
+        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2018."
+
         self.widgetMsgBox(QMessageBox.Information, title, msg)
 
     @pyqtSlot(QAction)
@@ -754,9 +757,9 @@ class MetaDraftGUI(QWidget):
             self.func_generateGeneReport()
             self.func_generateReactionReport()
             self.func_generateMetaboliteReport()
-        elif rpt == 'Export unmatched genes (FASTA)':
+        elif rpt == 'Export unmatched genes (as FASTA)':
             self.func_exportUnmatchedGenes()
-        elif rpt == 'Export unselected genes (FASTA)':
+        elif rpt == 'Export unselected genes (as FASTA)':
             self.func_exportUnselectedGenes()
         elif rpt == 'Export model notes (CSV)':
             self.func_exportNotesDB()
@@ -778,7 +781,7 @@ class MetaDraftGUI(QWidget):
             if LD['search_results'][g] is None:
                 unmatched.append(g[len(self.gene_prefix):])
         #print(unmatched)
-        fname = self.openFile('Load Input File', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
+        fname = self.openFile('Please load original User Proteome file', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
         seq = []
         seqout = {}
         if fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
@@ -832,7 +835,7 @@ class MetaDraftGUI(QWidget):
                 if g1 not in unmatched:
                     unselected.append(g1)
 
-        fname = self.openFile('Load Input File', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
+        fname = self.openFile('Please load original User Proteome file.', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
         seq = []
         seqout = {}
         if fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
@@ -2216,7 +2219,6 @@ class MetaDraftGUI(QWidget):
                 cbmpy.writeSBML3FBCV2(xmod, str(self.saveFile('Save converted file', self._history_save_dir_, '*.fbcv2.xml')))
             del xmod
 
-
         toFBC1 = QPushButton(self.widget_menu_sbmlConvertApp)
         toFBC1.setText('Save as SBML3 FBCv1')
         toFBC1.setEnabled(False)
@@ -2226,7 +2228,6 @@ class MetaDraftGUI(QWidget):
         toFBC2.setText('Save as SBML3 FBCv2')
         toFBC2.setEnabled(False)
         toFBC2.clicked.connect(toFBC2F)
-
 
         layout = QGridLayout(self.widget_menu_sbmlConvertApp)
         layout.setSpacing(10)
@@ -2724,7 +2725,6 @@ class MetaDraftGUI(QWidget):
         self._msg_box_ = QMessageBox(status, title, msg)
         self._msg_box_.show()
 
-
     def runOrthfind1(self, par):
         wdir = par[0]
         target = par[1]
@@ -3020,9 +3020,6 @@ class MetaDraftGUI(QWidget):
         json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
         Fj.close()
 
-
-
-
         #for n in range(len(biotools.IDMAP0)):
             #print(len(biotools.IDMAP0[n]), len(biotools.IDMAP1[n]))
 
@@ -3181,8 +3178,6 @@ class MetaDraftGUI(QWidget):
             layout.addWidget(applybut, 2, 0, 1, 2)
 
             self.widget_tablegene_selectApp.show()
-
-
 
         self.widget_tablegene_rclickmenu = QMenu()
         menu_item = self.widget_tablegene_rclickmenu.addAction("Filter selection")
@@ -4224,7 +4219,6 @@ class MetaDraftGUI(QWidget):
         ## set metab selection state
         #print('I HAVE SET THE SELECTION STATE')
 
-
     @pyqtSlot(int)
     def onTabRightChange(self, idx):
         self._last_tab_right_ = self._active_tab_right_
@@ -4269,8 +4263,6 @@ class InputValidators(object):
             return True
         else:
             return False
-
-
 
     def inpv_floatItemInRange(self, itm, rmin, rmax):
         try:
@@ -4905,3 +4897,10 @@ class MetaDraftApp(QMainWindow):
         self.setCentralWidget(self._gui_)
         self.setGeometry(200,200,1200,700)
         self.show()
+
+
+
+# Some code in this module has been reused from the following sources
+## http://qt-project.org/forums/viewthread/26126
+## http://stackoverflow.com/questions/2304199/how-to-sort-a-qtablewidget-with-my-own-code
+## http://qt-project.org/doc/qt-4.8/qtablewidgetitem.html
