@@ -867,7 +867,7 @@ def createSeqplusModelMetaIdx(fmod, oid, oclass, metadraft_lib_model):
      - *class* the model category e.g. 'vu'
      - *metadraft_lib_model* the target MetaDraft lib_model directory
 
-     'edb', 'vu', "d:\@virdrives\google\work\python\metadraft\lib_model"
+     'edb', 'vu', "<path>"
 
     """
 
@@ -920,7 +920,6 @@ def createCDSdb(list_of_files):
         output[gbkf] = []
         GBFile = open(gbkf, 'r')
         GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
-        cntr = 0
         for cds in GBcds:
             if cds.seq != None:
                 data = {'pid' : cds.id,

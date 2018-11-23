@@ -1907,15 +1907,6 @@ class MetaDraftGUI(QWidget):
             G.setNotes('These {} reactions were included from the {} model using MetaDraft (https://github.com/SystemsBioinformatics/metadraft) ver. {}'.format(len(new_groups[o]['grpd']), o, metadraft_version))
             G.addMember([self._DAT_MODELS[o].getReaction(r_) for r_ in new_groups[o]['grpd']])
 
-        IDIOT = False
-        #for r_ in self.model.getReactionIds():
-            #if self.model.getGPRforReaction(r_) is None:
-                #print('-->', r_)
-                #IDIOT = True
-        if IDIOT:
-            self.model.serializeToDisk('debug_model.dat')
-            print('SERELEEZIFIED MODEL ...')
-
         return self.model
 
     @pyqtSlot()
@@ -3700,7 +3691,7 @@ class MetaDraftGUI(QWidget):
                     assoc = assoc.replace(gene, '<strong>{}</strong>'.format(gene))
 
                 except AttributeError as why:
-                    o_.serializeToDisk(o_.getId())
+                    #o_.serializeToDisk(o_.getId())
                     print('ERROR: {} - {}'.format(gene, o_.getId()))
                     print(why)
                     assoc = '<span style="color: red;"><strong>{}</strong></span> '.format('UNKNOWN')
