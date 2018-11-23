@@ -411,7 +411,7 @@ class MetaDraftGUI(QWidget):
         #self.widgetButtonPanel()
 
         # setup
-        self.appwindow.setWindowTitle('MetaDraft {} - Brett G. Olivier (b.g.olivier@vu.nl)'.format(metadraft_version))
+        self.appwindow.setWindowTitle('CBMPy MetaDraft {}'.format(metadraft_version))
         self.initDBs()
         self._loading_ = False
 

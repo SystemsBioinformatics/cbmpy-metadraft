@@ -1,3 +1,29 @@
+"""
+MetaToolkit: MetaDraft
+======================
+
+MetaDraft: for the reconstruction of Genome Scale Models
+
+MetaToolkit: MetaDraft (https://github.com/SystemsBioinformatics/cbmpy-metadraft)
+Copyright (C) 2016-2018 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+Author: Brett G. Olivier
+
+"""
+
 import os, subprocess, platform
 
 cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
@@ -38,7 +64,7 @@ def test_perl_xml(output_msg):
         }
     """
     try:
-        PF = file('_test.pl', 'w')
+        PF = open('_test.pl', 'w')
         PF.write(p_script)
         PF.close()
         out = int(subprocess.call(['perl', '_test.pl']))
@@ -79,12 +105,43 @@ def test_blast(output_msg):
 
     return BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg
 
-def print_test_results(JAVA_OK, PERL_OK, PERL_XML_OK, BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg):
+def test_python_dependencies(output_msg):
+    PYTHON_DEP_OK = True
+    HAVE_QT4 = HAVE_QT5 = False
+    try:
+        import PyQt4
+        HAVE_QT4 = True
+    except ImportError:
+        pass
+        #output_msg.append('PyQt4 not found, see README.md for details.')
+    try:
+        import PyQt5
+        HAVE_QT5 = True
+    except ImportError:
+        pass
+        #output_msg.append('PyQt5 not found, see README.md for details.')
+    if not (HAVE_QT4 or HAVE_QT5):
+        output_msg.append('PyQt not found, please install before running MetaDraft, see README.md for details.')
+        PYTHON_DEP_OK = False
+
+    try:
+        import libsbml
+        import cbmpy
+        import Bio
+        import xlrd, xlwt
+    except ImportError:
+        output_msg.append('MetaDraft requires CBMPy, libSBML and BioPython to be installed. Please install before running MetaDraft, see README.md for details.')
+        PYTHON_DEP_OK = False
+
+    return PYTHON_DEP_OK, output_msg
+
+def print_test_results(JAVA_OK, PERL_OK, PERL_XML_OK, BLAST_OK, BLAST_HAVE_LOCAL, PYTHON_DEP_OK, pth, output_msg):
     print('\n\nSystem check results:\n=====================')
     print('Java test passed: {}'.format(JAVA_OK))
     print('Perl test passed: {}'.format(PERL_OK))
     print('Perl XML test passed: {}'.format(PERL_XML_OK))
     print('BLAST test passed: {}'.format(BLAST_OK))
+    print('Python dependency test passed: {}'.format(PYTHON_DEP_OK))
     if not BLAST_OK:
         print('BLAST can use built-in test passed: {}'.format(BLAST_HAVE_LOCAL))
 
@@ -102,10 +159,14 @@ if __name__ == '__main__':
     PERL_OK, output_msg = test_perl(output_msg)
     PERL_XML_OK, output_msg = test_perl_xml(output_msg)
     BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg = test_blast(output_msg)
-    print_test_results(JAVA_OK, PERL_OK, PERL_XML_OK, BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg)
-    if JAVA_OK and PERL_OK and PERL_XML_OK and ( BLAST_OK or BLAST_HAVE_LOCAL ):
+    PYTHON_DEP_OK, output_msg = test_python_dependencies(output_msg)
+
+    print_test_results(JAVA_OK, PERL_OK, PERL_XML_OK, BLAST_OK, BLAST_HAVE_LOCAL, PYTHON_DEP_OK, pth, output_msg)
+    if JAVA_OK and PERL_OK and PERL_XML_OK and ( BLAST_OK or BLAST_HAVE_LOCAL ) and PYTHON_DEP_OK:
+        print('\nCongratulations you are ready to run MetaDraft! (python metadraft.py)\n')
         os.sys.exit(0)
     else:
+        print('\nYou need to install a few more things before you are ready to run MetaDraft.\n')
         os.sys.exit(1)
 
 
