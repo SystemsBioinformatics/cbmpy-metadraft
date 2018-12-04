@@ -317,11 +317,16 @@ class MetaDraftGUI(QWidget):
         if not os.path.exists(self.modeldb_base):
             if not os.path.exists(self.seqplus_files):
                 self.seqplus_files = os.path.join(cDir, 'modeldb', 'default', 'lib_model')
+                if not os.path.exists(self.seqplus_files):
+                    os.makedirs(self.seqplus_files)
             if not os.path.exists(self.metaproteome_files):
                 self.metaproteome_files = os.path.join(cDir, 'modeldb', 'default', 'lib_metaproteome')
-                os.makedirs(self.metaproteome_files)
+                if not os.path.exists(self.metaproteome_files):
+                    os.makedirs(self.metaproteome_files)
             if not os.path.exists(self._dbx_dir_):
                 self._dbx_dir_ = os.path.join(cDir, 'modeldb', 'default', 'dbx')
+                if not os.path.exists(self._dbx_dir_):
+                    os.makedirs(self._dbx_dir_)
         else:
             if not os.path.exists(self.metaproteome_files):
                 os.makedirs(self.metaproteome_files)
