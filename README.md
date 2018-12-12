@@ -3,6 +3,8 @@ CBMPy Metadraft: a flexible and extensible, GUI-based genome-scale model reconst
 
 ## Installation and system dependencies
 
+NEW: The MetaDraft User Guide is now available online and for download from [https://systemsbioinformatics.github.io/cbmpy-metadraft/]
+
 ### System dependencies
 
 MetaDraft requires working versions of Python, Perl, Java and NCBI Blast2. Once you have downloaded MetaDraft and it's Python dependencies, please run the *system test* script to that can be found in the MetaDraft directory `python systemtest.py`.
@@ -22,6 +24,7 @@ Clone the cbmpy-metadraft git repository:
 MetaDraft ships with a single model template, to install the current template set, based on the BiGG2 repository, change into the MetaDraft directory and activate the template submodule:
 
 `cd cbmpy-metadraft`
+
 `git submodule update --init --remote -- modeldb/2018-1/`
 
 You have now downloaded the latest version of MetaDraft, next please run the system test script `python systemtest.py` to check your installation and then proceed to install the required Python dependencies. How you do this will depend on whether you use Conda or PIP.
