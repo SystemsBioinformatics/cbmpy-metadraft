@@ -11,7 +11,7 @@
   <meta content="" name="description">
   <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0" />
   
-  <link href="css/technical.css" media="screen" rel="stylesheet" type="text/css" /><!-- main CSS for structure and style-->
+  <link href="css/nature.css" media="screen" rel="stylesheet" type="text/css" /><!-- main CSS for structure and style-->
   <link href="css/prettyPhoto.css" media="screen" rel="stylesheet" type="text/css" charset="utf-8" />
   <script src="js/jquery-1.6.1.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
@@ -30,28 +30,21 @@
   <div id="wrapper">
   	<div id="header-row">
   		<div id="header-left">
-  			<div class="outer-flap">
-	  			<div class="cornered"></div>
-  				<div id="header-left-content">
-  					<div class="align-bottom"><h1 class="clarify-article-title">MetaDraft</h1></div>
-  				</div>
-  			</div>
+        <div id="header-left-content" class="align-middle"><h1 class="clarify-article-title">MetaDraft</h1></div>
   		</div>
   		<div id="header-right">
-  			<span class="align-middle"></span>
-  			  		</div>
+  			<span class="align-image-middle"></span>
+		  	  		</div>
   	</div>
     <div id="clarify-article-content">
-            <div class="clarify-steps-container">					<div id="clarify-step-2" class="clarify-step-container">						<h2 class="clarify-step-title">1. Welcome</h2>						<div class="clarify-step-instructions"><p>This is the MetaDraft user guide. MetaDraft is part of the CBMPy MetaToolkit project and is developed by the Systems Bioinformatics group at the VU University Amsterdam. For more information on MetaDraft please visit the MetaDraft pages at <a href="https://systemsbioinformatics.github.io/cbmpy-metadraft/#">https://systemsbioinformatics.github.io/cbmpy-metadraft/#.</a> MetaDraft is primarily written in <a href="https://www.python.org/" target="_blank" title="">Python</a> and uses Qt for its GUI and <a href="http://cbmpy.sourceforge.net/" target="_blank" title="">CBMPy</a> for its object model and <a href="http://sbml.org/Main_Page" target="_blank" title="">SBML</a> support.</p>
-<p>For information on installing MetaDraft and its dependencies please see the readme.md file included in your download or on <a href="https://github.com/SystemsBioinformatics/cbmpy-metadraft/blob/master/README.md" target="_blank" title="">GitHub,</a> you will also find information on the <code>systemtest.py</code> utility that will check whether your system us ready to run MetaDraft. &nbsp;</p></div>
+            <div class="clarify-steps-container">					<div id="clarify-step-2" class="clarify-step-container">						<h2 class="clarify-step-title">1. Welcome</h2>						<div class="clarify-step-instructions"><p>This is the MetaDraft user guide. MetaDraft is part of the CBMPy MetaToolkit project and is developed by the Systems Bioinformatics group at the VU University Amsterdam. For more information on MetaDraft please visit the MetaDraft pages at <a href="https://systemsbioinformatics.github.io/cbmpy-metadraft/#">https://systemsbioinformatics.github.io/cbmpy-metadraft/#.</a> MetaDraft is primarily written in <a href="https://www.python.org/" target="_blank" title="">Python</a> and uses Qt for its GUI, as well as <a href="http://cbmpy.sourceforge.net/" target="_blank" title="">CBMPy</a> for its object model and <a href="http://sbml.org/Main_Page" target="_blank" title="">SBML</a> support.</p>
+<p>For information on installing MetaDraft and its dependencies please see the <strong>readme.md</strong> file included in your <a href="https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases" target="_blank" title="">download</a> or on <a href="https://github.com/SystemsBioinformatics/cbmpy-metadraft/blob/master/README.md" target="_blank" title="">GitHub,</a> you will also find information on the <code>systemtest.py</code> utility that will check whether your system us ready to run MetaDraft. &nbsp;</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
 								<img src="./images/docs/metadraft-user/welcome.png" width="652" height="492" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-1" class="clarify-step-container">						<h2 class="clarify-step-title">2. Main reconstruction screen</h2>						<div class="clarify-step-instructions"><p>When MetaDraft starts up you will find yourself at the reconstruction screen. Here you are able to input the protein sequence file (either a protein FASTA or GenBank format file with CDS annotations), create a template database that you will BLAST your sequence against. Using trhe &quot;Build Option&quot; menu you can create your own, user-defined, template models and create custom sets of template models. You can also reload previously generated draft models in the &quot;Load result&quot; section.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-1" class="clarify-step-container">						<h2 class="clarify-step-title">2. Main reconstruction screen</h2>						<div class="clarify-step-instructions"><p>When MetaDraft starts up you will find yourself at the reconstruction screen. Here you are able to input the protein sequence file (either a protein FASTA or GenBank format file with CDS annotations), create a template database that you will BLAST your sequence against. Using trhe &quot;Build Option&quot; menu you can create your own, user-defined, template models and create custom sets of template models. You can also reload previously generated draft models in the &quot;Load result&quot; section.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
 								<img src="./images/docs/metadraft-user/main-reconstruction-screen.png" width="971" height="604" class="clarify-step-image" alt="" />
@@ -98,9 +91,7 @@
 								
 							</div>
 						</div>					</div>					<div class="clarify-clear"></div>					</div>
-					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-12" class="clarify-step-container">						<h2 class="clarify-step-title">3. BLAST search results</h2>						<div class="clarify-step-instructions"><p>When a BLAST search is complete or when MetaDraft is started up, the results of all previously run BLAST searches are shown in the results panel (1). By default these results are grouped by creation data with the results listed as (user proteome)-(metaproteome)-(optimization). To load a results, select the results (2) and press the &quot;Load button&quot; (3).</p></div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-12" class="clarify-step-container">						<h2 class="clarify-step-title">3. BLAST search results</h2>						<div class="clarify-step-instructions"><p>When a BLAST search is complete or when MetaDraft is started up, the results of all previously run BLAST searches are shown in the results panel (1). By default these results are grouped by creation data with the results listed as (user proteome)-(metaproteome)-(optimization). To load a results, select the results (2) and press the &quot;Load button&quot; (3).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
 								<img src="./images/docs/metadraft-user/blast-search-results.png" width="974" height="604" class="clarify-step-image" alt="" />
@@ -120,9 +111,7 @@
 								
 							</div>
 						</div>					</div>					<div class="clarify-clear"></div>					</div>
-					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-19" class="clarify-step-container">						<h2 class="clarify-step-title">4. Utility function: analyse and convert an SBML model</h2>						<div class="clarify-step-instructions"><p>MetaDraft template models must be encoded in the latest version of the open, community, standard SBML L3V1 FBCv2. However, many potential template models are encoded in older versions of SBML or SBML dialects, therefore, Metadraft contains functions that assist the modeller in the identification of model type and the creation of template models. To analyse, identify and optionally convert an SBML to the format used by the MetaDraft template generator select &quot;Identify/convert&quot; (1) from the &quot;File&quot; menu.</p></div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-19" class="clarify-step-container">						<h2 class="clarify-step-title">4. Utility function: analyse and convert an SBML model</h2>						<div class="clarify-step-instructions"><p>MetaDraft template models must be encoded in the latest version of the open, community, standard SBML L3V1 FBCv2. However, many potential template models are encoded in older versions of SBML or SBML dialects, therefore, Metadraft contains functions that assist the modeller in the identification of model type and the creation of template models. To analyse, identify and optionally convert an SBML to the format used by the MetaDraft template generator select &quot;Identify/convert&quot; (1) from the &quot;File&quot; menu.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
 								<img src="./images/docs/metadraft-user/utility-function--analyse-and-convert-an-sbml-model.png" width="973" height="605" class="clarify-step-image" alt="" />
@@ -136,105 +125,94 @@
 								
 							</div>
 						</div>					</div>					<div class="clarify-clear"></div>					</div>
-					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-17" class="clarify-step-container">						<h2 class="clarify-step-title">5. Utility function: create a user-defined, template model</h2>						<div class="clarify-step-instructions"><p>The creation of a new SeQPlus template model involves the merging of an SBML model which includes gene-protein-reaction associations and whose id's can be mapped to an associated GenBank file. A unique short alpha-numeric key is required.</p></div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-17" class="clarify-step-container">						<h2 class="clarify-step-title">5. Utility function: create a user-defined, template model</h2>						<div class="clarify-step-instructions"><p>MetaDraft's template database can be extended with the addition of customised SeqPlus templates. These templates are the result of the combination of a genome-scale model (encoded using SBML L3V1 FBCv2 with GPR information) and the associated genome (in GenBank format). Please note that currently, trhe source SBML and GenBank file needs to be located in the same directory. The &quot;Create template model&quot; function is available in the &quot;Build options&quot; menu. </p>
+<p>Once selected the template builder window allows you to input a unique model identifier (1), a genome-scale model in SBML format (2) and an associated genbank file that contains CDS annotations.for genes present in the model (3). Once all of the previous information has been entered the template can be created by pressing the &quot;Create Model&quot; button (4). The finals step may take a few minutes.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/utility-function--create-a-user-defined--template-model.png" width="973" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/utility-function--create-a-user-defined--template-model.png" width="975" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
 						</div>					<div class="clarify-sub-steps-container">
-					<div id="clarify-step-18" class="clarify-sub-step-container">						<h3 class="clarify-step-title">5.1 Utility function: create a user-defined, template model</h3>						<div class="clarify-step-instructions"><p>Custom defined models are labelled as &quot;usr-xxx&quot; models</p></div>
+					<div id="clarify-step-18" class="clarify-sub-step-container">						<h3 class="clarify-step-title">5.1 Utility function: create a user-defined, template model</h3>						<div class="clarify-step-instructions"><p>User defined templates are accessible as &quot;(usr-template_id)&quot; in the &quot;Target networks&quot; list.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/utility-function--create-a-user-defined--template-model-1.png" width="973" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/utility-function--create-a-user-defined--template-model-1.png" width="975" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
 						</div>					</div>					<div class="clarify-clear"></div>					</div>
-					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-25" class="clarify-step-container">						<h2 class="clarify-step-title">6. Results: genes</h2>						<div class="clarify-step-instructions"><p>The results are displayed on three interlinked tabs on the left. In all cases select components annotation is displayed on the right panel. Source genes are those in your input file, while matches from the metaproteome are displayed next. next, the &quot;score&quot; column provides the otrthology match score which ranges from 0 to 1. Finally, the selection column allows genes to be (un)selected as required (100% match is automatically selected) and source genes with multiple matches are grouped by colour for easy identification. On the right hand side the &quot;Information&quot; panel displays all known annotation about the matching gene and the reactions associated with it while the GPR association is colour coded such that green is matched and selected, red is matched and not selected while black is not matched. </p></div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-25" class="clarify-step-container">						<h2 class="clarify-step-title">6. Primary result editing screen: genes</h2>						<div class="clarify-step-instructions"><p>When the results of a BLAST search are loaded they are displayed in MetaDrafts result editing screen. The results are displayed on three interlinked tabs on the left hand side of the panel (1) while any selected components annotation is displayed on the right panel. </p>
+<p>Source genes (genes in your input proteome) are displayed in the first column (3), while, where relevant, matches from the metaproteome are displayed in the &quot;match column&quot; (4). The &quot;score&quot; column provides the match score which ranges from 0 to 1 (5) and the &quot;org&quot; column displays the matching template model (6). Finally, the selection column (7) allows genes to be includeded in the final reconstruction or not, for convenience those genes with a 100% match are automatically selected. </p>
+<p>Source genes with multiple matches are grouped by colour for easy identification while on the right hand side (2) displays all known annotation about the matching gene and the reactions associated with it. This also includes the GPR association which is colour encoded such that green is a gene that is present and selected, red is present but not selected and black has no match in the target metaproteome (8).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/results--genes.png" width="973" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/primary-result-editing-screen--genes.png" width="973" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-26" class="clarify-step-container">						<h2 class="clarify-step-title">7. Results: genes score filter</h2>						<div class="clarify-step-instructions"><p>Right clickingon on the &quot;gene&quot; table allows the selection of the &quot;Gene Filter&quot; tool where a user defined range can be set (between 0 and 1) and applied to quickly select multiple genes matching the selection criteria.</p></div>
+						</div>					<div class="clarify-sub-steps-container">
+					<div id="clarify-step-26" class="clarify-sub-step-container">						<h3 class="clarify-step-title">6.1 Gene match score filter</h3>						<div class="clarify-step-instructions"><p>Right clicking on on a row in the &quot;gene&quot; table (1) displays the &quot;Gene Filter&quot; tool where a user defined range matching can be set (between 0 and 1) and applied to quickly select all genes matching the selected score criteria (2).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/results--genes-score-filter.png" width="973" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/gene-match-score-filter.png" width="973" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-27" class="clarify-step-container">						<h2 class="clarify-step-title">8. Results: reactions</h2>						<div class="clarify-step-instructions"><p>The reactions displayed in the &quot;Reaction&quot; table are dynamically generated based on the gene selections made in the &quot;Gene&quot; panel. Information displayed in the table include id, name organism as well as associated source and match genes. Any annotation associated with the reaction is displayed on the right as well as the GPR association in terms of the source and match reactions (using the colour scheme discussed in the &quot;Genes&quot; table). Hovering over the gene displays the gene annotation as a tooltip. In addition to the gene selection you may now unselect specific reactions based on the annotation, GPR association resolution.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					</div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-27" class="clarify-step-container">						<h2 class="clarify-step-title">7. Reaction editing screen</h2>						<div class="clarify-step-instructions"><p>As genes are selected in the &quot;Genes table&quot; the corresponding reactions are dynamically displayed in the &quot;Reaction&quot; table (1). Information displayed in the &quot;Reactions&quot; table include the reactions identifier, name and its source model (2). In addition the source gene and its target matches are also provided (3). </p>
+<p>On the right hand side any annotation associated with the reaction is displayed including the GPR association given in terms of both the original and newly mapped association (3). Genes are colour encoded to quickly show those that are active, inactive or missing form the original GPR. Hovering over any of the genes in the association displays that genes annotation as a tooltip (4). The model can be further refined by excluding specific reactions form the final reconstruction.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/results--reactions.png" width="973" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/reaction-editing-screen.png" width="978" height="607" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-3" class="clarify-step-container">						<h2 class="clarify-step-title">9. Results: metabolites</h2>						<div class="clarify-step-instructions"><p>The metabolite panel is dynamically generated from the selected reactions on the &quot;Reaction&quot; panel. The lefthand panel contains metabolite id, name and source organism. On the right hand side metabolite properties and associated annotation (as defined in the model) is displayed, where possible URL's are made live and can be opened in a webbrowser.</p></div>
+						</div>					<div class="clarify-sub-steps-container">
+					<div id="clarify-step-3" class="clarify-sub-step-container">						<h3 class="clarify-step-title">7.1 Metabolite viewer</h3>						<div class="clarify-step-instructions"><p>The metabolite viewer is dynamically updated depending on the reactions selected from the &quot;Reaction&quot; panel (1). The lefthand panel contains metabolite id, name and source model or organism (2). On the right hand side of the viewer any selected metabolite's associated annotation (as defined in the model) is displayed (3). Where possible and if present in the source model, MIRIAM URL's are displayed as live links that can be opened in a webbrowser.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/results--metabolites.png" width="974" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/metabolite-viewer.png" width="975" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-9" class="clarify-step-container">						<h2 class="clarify-step-title">10. Sessions</h2>						<div class="clarify-step-instructions"><p>MetaDraft has muli-session support, opening the &quot;Sessions&quot; menu allows you to savel load or clear the current selection state of both the &quot;Gene&quot; and &quot;Reaction&quot; panels.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					</div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-9" class="clarify-step-container">						<h2 class="clarify-step-title">8. Multi-session support</h2>						<div class="clarify-step-instructions"><p>When a result is loaded MetaDraft loads a default selection set which includes the set of selected genes and reactions. Custom selection sets can be created and used in the &quot;Sessions&quot; menu (1). This menu allows you to load (2) and save (3) sessions or clear the list of saved selections (4).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/sessions.png" width="974" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/multi-session-support.png" width="974" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-10" class="clarify-step-container">						<h2 class="clarify-step-title">11. Model options: reports</h2>						<div class="clarify-step-instructions"><p>The current model options include the generation of reports on the various model components used in the draft reconstruction.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-10" class="clarify-step-container">						<h2 class="clarify-step-title">9. Model options and reconstruction reports</h2>						<div class="clarify-step-instructions"><p>Metadraft provides the modeller with an extensive set of reports that detail the contents and components of the draft genome-scale model. These reports are available from the &quot;Model options&quot; menu (1) and include gene, reaction and metabolite reports (2). In addition utility functions are provided that allows the modeller to export (as protein FASTA files) the sets of &quot;unmatched genes&quot; that is genes that do not have any match in the template models (3) as well as unselected genes (4).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/model-options--reports.png" width="974" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/model-options-and-reconstruction-reports.png" width="974" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-13" class="clarify-step-container">						<h2 class="clarify-step-title">12. Report: genes</h2>						<div class="clarify-step-instructions"><p>The &quot;Gene Report&quot; provides details of the input file, metaproteome composition. Source genes with no orthology to the metaproteome are provided together with a table of genes includes in draft reconstruction and their score. In addition the report can be viewd directly in your browser as well as saved as an HTML file.</p></div>
+						</div>					<div class="clarify-sub-steps-container">
+					<div id="clarify-step-6" class="clarify-sub-step-container">						<h3 class="clarify-step-title">9.1 Report: reconstruction summary</h3>						<div class="clarify-step-instructions"><p>This report shows the source and template models used (1) as well as the overall make up of the new reconstruction. This is provided as a fractional representation of the number of genes, reactions and metabolites, from different sources, that make up the model (2).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/report--genes.png" width="974" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/report--reconstruction-summary.png" width="975" height="601" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-16" class="clarify-step-container">						<h2 class="clarify-step-title">13. Report: genes 2</h2>						<div class="clarify-step-instructions"><p>Gene id's are hyperlinked to extended gene annotation which may provide links to additional annotation. Please note that hyperlinking is only active when viewd in a web-browser.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-13" class="clarify-sub-step-container">						<h3 class="clarify-step-title">9.2 Report: genes</h3>						<div class="clarify-step-instructions"><p>The &quot;Gene Report&quot; provides details of the input file, metaproteome composition. Source genes with no orthology to the metaproteome are provided together with a table of genes includes in draft reconstruction and their score. In addition the report can be viewd directly in your browser (1) as well as saved as an HTML file (2). The gene id's shown in the report are linked to the gene annotations, show here as they appear in a web browser (3).</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/report--genes-2.png" width="974" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/report--genes.png" width="976" height="1206" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-21" class="clarify-step-container">						<h2 class="clarify-step-title">14. Report: reactions</h2>						<div class="clarify-step-instructions"><p>The reaction report also contains details of the selected reactions and their annotation.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-21" class="clarify-sub-step-container">						<h3 class="clarify-step-title">9.3 Report: reactions</h3>						<div class="clarify-step-instructions"><p>The reaction report contains details of the model reconstruction as well as the selected reactions and their annotation.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
 								<img src="./images/docs/metadraft-user/report--reactions.png" width="974" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
-						</div>					</div>					<div class="clarify-clear"></div>		<div class="rule">
-			<img src="images/ui/rule.png" alt="rule" /> 
-		</div>					<div id="clarify-step-22" class="clarify-step-container">						<h2 class="clarify-step-title">15. Copyright</h2>						<div class="clarify-step-instructions"><p>(C) Brett G. Olivier, Systems Bioinformatics, Vrije Universiteit Amsterdam, Amsterdam 2016.</p></div>
+						</div>					</div>					<div class="clarify-clear"></div>					</div>
+					</div>					<div class="clarify-clear"></div>					<div id="clarify-step-22" class="clarify-step-container">						<h2 class="clarify-step-title">10. Afterword</h2>						<div class="clarify-step-instructions"><p>Many thanks to all the people that have contributed time in testing, using and providing valuable feedback on earlier versions of MetaDraft. </p>
+<p>(C) Systems Bioinformatics, Vrije Universiteit Amsterdam, Amsterdam, 2018.</p></div>
 												<div class="clarify-step-image-wrapper">
 							<div class="clarify-step-image-container">
-								<img src="./images/docs/metadraft-user/copyright.png" width="974" height="603" class="clarify-step-image" alt="" />
+								<img src="./images/docs/metadraft-user/afterword.png" width="974" height="603" class="clarify-step-image" alt="" />
 								
 							</div>
 						</div>					</div>					<div class="clarify-clear"></div>      </div>    </div>
     <div class="footer">
-      <div class="align-bottom">
+      <div>
   			<p></p>
   		</div>
 		</div>
