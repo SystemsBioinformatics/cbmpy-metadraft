@@ -1,9 +1,13 @@
 # cbmpy-metadraft
 CBMPy Metadraft: a flexible and extensible, GUI-based genome-scale model reconstruction tool that supports multiple Systems Biology standards.
 
+The MetaDraft software can be cited using the following DOI:
+
+[![DOI](https://zenodo.org/badge/132483758.svg)](https://zenodo.org/badge/latestdoi/132483758).
+
 ## Installation and system dependencies
 
-NEW: The MetaDraft User Guide is now available online and for download from [https://systemsbioinformatics.github.io/cbmpy-metadraft/]
+NEW: The MetaDraft User Guide is now available online and for download from the MetaDraft [website](https://systemsbioinformatics.github.io/cbmpy-metadraft/).
 
 ### System dependencies
 
