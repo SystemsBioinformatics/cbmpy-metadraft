@@ -21,15 +21,19 @@ Clone the cbmpy-metadraft git repository:
 
 `git clone https://github.com/SystemsBioinformatics/cbmpy-metadraft.git`
 
-MetaDraft ships with a single model template, to install the current template set, based on the BiGG2 repository, change into the MetaDraft directory and activate the template submodule:
+### Getting and installing the MetaDraft template library
+
+MetaDraft ships with a single model template, if you have cloned the repository you can activate the current template set, based on the BiGG2 repository, change into the MetaDraft directory and activate the template submodule:
 
 `cd cbmpy-metadraft`
 
 `git submodule update --init --remote -- modeldb/2018-1/`
 
-You have now downloaded the latest version of MetaDraft, next please run the system test script `python systemtest.py` to check your installation and then proceed to install the required Python dependencies. How you do this will depend on whether you use Conda or PIP.
+If you have downloaded master repository as a zip file or as a release, download the `template-models-2018-1.zip` template archive provided with the [latest release](https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases). Unzip this archive into the `metadraft/modeldb` directory.
 
 ## Creating a custom Anaconda Python environment
+
+You have now downloaded the latest version of MetaDraft, next please run the system test script `python systemtest.py` to check your installation and then proceed to install the required Python dependencies. How you do this will depend on whether you use Conda or PIP.
 
 The following commands will create custom virtual environments with all the Python dependencies needed to run MetaDraft. It is also possible to install the individual packages using "conda" or "pip" see the *requirements.txt* file for details of the required packages (see "pip" instructions below).
 
