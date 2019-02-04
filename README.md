@@ -31,6 +31,8 @@ MetaDraft ships with a single model template, if you have cloned the repository 
 
 If you have downloaded master repository as a zip file or as a release, download the `template-models-2018-1.zip` template archive provided with the [latest release](https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases). Unzip this archive into the `metadraft/modeldb` directory.
 
+MetaDraft is archived on Zenodo, please see CITATION.cff for more details [![DOI](https://zenodo.org/badge/132483758.svg)](https://zenodo.org/badge/latestdoi/132483758)
+
 ## Creating a custom Anaconda Python environment
 
 You have now downloaded the latest version of MetaDraft, next please run the system test script `python systemtest.py` to check your installation and then proceed to install the required Python dependencies. How you do this will depend on whether you use Conda or PIP.
@@ -75,15 +77,17 @@ or individually install the core packages (minimal):
 
 `pip install sip PyQt5 python-libsbml xlrd xlwt cbmpy biopython`
 
-MetaDraft is archived on Zenodo [![DOI](https://zenodo.org/badge/132483758.svg)](https://zenodo.org/badge/latestdoi/132483758). 
+## Software citation
 
-Please cite as:
+Please cite this software if you use it (the author(s) enthusiasm to carry on maintaining this project depend on it), see CITATION.cff for more details.
 
 ```text
  Brett G. Olivier. (2018, December 18). 
  SystemsBioinformatics/cbmpy-metadraft: Metadraft. 
  Zenodo. http://doi.org/10.5281/zenodo.2398336
 ```
+
+
 
 
 Brett G. Olivier (b.g.olivier@vu.nl)

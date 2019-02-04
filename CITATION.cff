@@ -8,7 +8,7 @@ authors:
     email: bgoli@users.sourceforge.net
     website: http://teusinkbruggemanlab.nl/brett-olivier/
 title: CBMPy MetaDraft
-version: 0.9
+version: 0.9rc1
 doi: 10.5281/zenodo.2398336
 date-released: 2018-12-18
 repository-code: https://github.com/SystemsBioinformatics/cbmpy-metadraft
@@ -17,6 +17,5 @@ keywords:
   - "constraint based modelling"
   - gui
   - python
-
 license: GNU GENERAL PUBLIC LICENSE v3.0
 url: https://systemsbioinformatics.github.io/cbmpy-metadraft/
