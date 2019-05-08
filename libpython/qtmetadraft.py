@@ -5,7 +5,7 @@ MetaToolkit: MetaDraft
 MetaDraft: for the reconstruction of Genome Scale Models
 
 MetaToolkit: MetaDraft (https://github.com/SystemsBioinformatics/cbmpy-metadraft)
-Copyright (C) 2016-2018 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
+Copyright (C) 2016-2019 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ try:
 except ImportError:
     HAVE_DOCX = False
 
-metadraft_version = '0.9.0'
+metadraft_version = '0.9.1'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
@@ -175,7 +175,7 @@ class StreamToLogger(object):
         time.sleep(0.001)
 
 ## Developer mode options
-DEBUG_MODE = False
+DEBUG_MODE = True
 DEL_BLAST_TMP = True
 
 class MetaDraftGUI(QWidget):
@@ -607,7 +607,7 @@ class MetaDraftGUI(QWidget):
             self.userMetaDefMenu.addAction(QAction(m, self))
         self.userMetaDefMenu.triggered[QAction].connect(self.menu_userMetaDefApp)
 
-        configMenuItem = QAction('Config Homolgy', self)
+        configMenuItem = QAction('BLAST config', self)
         configMenuItem.triggered.connect(self.menu_configMenuItem)
 
         if self.__SYSLOG_ENABLED__:
@@ -639,14 +639,14 @@ class MetaDraftGUI(QWidget):
         menuFile.addAction(quitApp)
 
         menuTools = menubar.addMenu('&Build options')
-        menuTools.addAction(enableBenchmarkApp)
         menuTools.addAction(addSeqPlusModelApp)
         #menuTools.addSeparator()
         menuTools.addAction(self.enableOptimizationApp)
-        menuTools.addSeparator()
-        menuTools.addMenu(self.userMetaDefMenu)
+        menuTools.addAction(enableBenchmarkApp)
         menuTools.addSeparator()
         menuTools.addAction(configMenuItem)
+        menuTools.addSeparator()
+        menuTools.addMenu(self.userMetaDefMenu)
 
 
         self.menuToolsM = menubar.addMenu('&Model options')
@@ -738,7 +738,7 @@ class MetaDraftGUI(QWidget):
         else:
             qtv = 'Qt5'
         msg += "You are using Py{} provided by:\n{}.\n\n".format(qtv, os.sys.version)
-        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2018."
+        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2019."
 
         self.widgetMsgBox(QMessageBox.Information, title, msg)
 
@@ -1231,13 +1231,16 @@ class MetaDraftGUI(QWidget):
     def menu_enableBenchmark(self):
         if not self.bp_btn_out.isEnabled():
             self.bp_text_out.setEnabled(True)
+            self.bp_text_out.setReadOnly(True)
             self.bp_label_out.setEnabled(True)
             self.bp_btn_out.setEnabled(True)
+            self.bp_label_out.setVisible(True)
             self.bp_targetOpen2()
         else:
             self.bp_text_out.setText('')
             self.bp_text_out.setDisabled(True)
             self.bp_label_out.setDisabled(True)
+            self.bp_label_out.setVisible(False)
             self.bp_btn_out.setDisabled(True)
 
     @pyqtSlot()
@@ -1642,6 +1645,14 @@ class MetaDraftGUI(QWidget):
         self.tblxApp.setDisabled(True)
         self.menuTools.setEnabled(True)
         self.menuToolsM.setDisabled(True)
+
+        self.bp_text_out.setText('')
+        self.bp_text_out.setReadOnly(True)
+        self.bp_label_out.setEnabled(False)
+        self.bp_btn_out.setEnabled(False)
+        self.bp_label_out.setVisible(False)
+
+
         self.widgetDisplayReact_update('Ready...')
         self.selected_metabolites = {}
         self.selected_reactions = {}
@@ -2462,12 +2473,15 @@ class MetaDraftGUI(QWidget):
         bp_label_out = QLabel(bp)
         bp_label_out.setText('Benchmark (FASTA)')
         bp_label_out.setDisabled(True)
+        bp_label_out.setVisible(False)
         bp_btn_out = QPushButton(bp)
         bp_btn_out.setText('Select')
         bp_btn_out.setDisabled(True)
         bp_btn_out.clicked.connect(self.bp_targetOpen2)
+        bp_btn_out.setVisible(False)
         bp_text_out = QLineEdit(bp)
         bp_text_out.setDisabled(True)
+
 
         bp_label_lib = QLabel(bp)
         bp_label_lib.setText('Select target network(s) ')
@@ -2732,6 +2746,7 @@ class MetaDraftGUI(QWidget):
             os.remove(end_flag)
 
         os.chdir(wdir)
+        # wperl???
         if out is None:
             os_call = ['perl', 'inparanoid.pl', target, dbase]
         else:
@@ -2742,7 +2757,8 @@ class MetaDraftGUI(QWidget):
         if True:
             TSTART = time.time()
             try:
-                out = subprocess.check_call(os_call, shell=False)
+                subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
+                out = subprocess.check_call(os_call, stderr=subprocess.STDOUT, shell=False)
             except subprocess.CalledProcessError as err:
                 out = err.returncode
                 if err.returncode == 2:

@@ -87,6 +87,10 @@ my $usage =" Usage: inparanoid.pl <FASTAFILE with sequences of species A> <FASTA
 # Set following variables:                                                    #
 ###############################################################################
 """
+#use Win32::GUI;
+#my $hw = Win32::GUI::GetPerlWindow();
+#Win32::GUI::Hide($hw);
+
 __DEBUG__ = False
 
 def buildUser(CONFIGKEYS, WINKEYS, LINUXKEYS):
@@ -364,7 +368,7 @@ if ($use_outgroup){
 	    $idC{$name} = int($id);
 	    $nameC[$id] = $name;
 	}
-    } 
+    }
     $C = $id;
     print "$C sequences in file $fasta_seq_fileC\\n";
     close C;

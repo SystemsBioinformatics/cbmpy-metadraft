@@ -5,7 +5,7 @@ MetaToolkit: MetaDraft
 MetaDraft: for the reconstruction of Genome Scale Models
 
 MetaToolkit: MetaDraft (https://github.com/SystemsBioinformatics/cbmpy-metadraft)
-Copyright (C) 2016-2018 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
+Copyright (C) 2016-2019 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -723,12 +723,18 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
             GBFile = open(fasta, 'r')
             GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
             for cds in GBcds:
-                if cds.seq != None:
-                    cds.id = cds.name
+                if cds.seq is not None:
+                    if cds.name != '<unknown name>':
+                        cds.id = cds.name
+                    else:
+                        cds.id = cds.id.replace('.','_').replace(':','_').replace('-','_')
                     cds.description = ''
                     if gene_prefix is not None:
                         cds.id = gene_prefix + cds.id
-                    proteins[cds.name] = cds
+                    if cds.name != '<unknown name>':
+                        proteins[cds.name] = cds
+                    else:
+                        proteins[cds.id] = cds
             GBFile.close()
         else:
             raise RuntimeError('ERROR: Unknown file: {}'.format(fasta))
