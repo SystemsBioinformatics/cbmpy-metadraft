@@ -51,7 +51,7 @@ try:
 except ImportError:
     HAVE_DOCX = False
 
-metadraft_version = '0.9.1'
+metadraft_version = '0.9.2'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
@@ -175,7 +175,7 @@ class StreamToLogger(object):
         time.sleep(0.001)
 
 ## Developer mode options
-DEBUG_MODE = True
+DEBUG_MODE = False
 DEL_BLAST_TMP = True
 
 class MetaDraftGUI(QWidget):
@@ -1151,14 +1151,15 @@ class MetaDraftGUI(QWidget):
                                           self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'], selg, nselg, annotM, cp)
 
     def widget_displayReport(self, html):
-        try:
-            html = html.encode('utf-8', 'ignore').strip()
-        except:
+        if os.sys.version_info < (3,0,0):
             try:
-                html = html.decode('utf-8', 'ignore')
-            except Exception as ex:
-                print('Could not encode report')
-                print(ex)
+                html = html.encode('utf-8', 'ignore').strip()
+            except:
+                try:
+                    html = html.decode('utf-8', 'ignore')
+                except Exception as ex:
+                    print('Could not encode report')
+                    print(ex)
 
         self.widget_reportViewApp = QWidget()
         self.widget_reportViewApp.setWindowTitle('MetaDraft Report')
@@ -2254,19 +2255,32 @@ class MetaDraftGUI(QWidget):
         if path is not None and len(path) > 0:
             if not str(path).endswith('.csv'):
                 path += '.csv'
-            with open(unicode(path), 'wb') as stream:
+            ftype = 'w'
+            if os.sys.version_info < (3,0,0):
+                path = unicode(path)
+                ftype = 'wb'
+            with open(path, ftype) as stream:
                 writer = csv.writer(stream)
                 for row in range(table.rowCount()):
                     rowdata = []
                     for column in range(table.columnCount()):
                         item = table.item(row, column)
                         if item.checkState() == Qt.Checked:
-                            rowdata.append(unicode('checked').encode('utf8'))
+                            if os.sys.version_info < (3,0,0):
+                                rowdata.append(unicode('checked').encode('utf8'))
+                            else:
+                                rowdata.append('checked')
                         # this can be removed when the gene prefix is killed
                         elif item is not None and column == 0 and self._tabpanel_idx_[self._active_tab_] == 'Genes':
-                            rowdata.append(unicode(item.text()).encode('utf8')[len(self.gene_prefix):])
+                            if os.sys.version_info < (3,0,0):
+                                rowdata.append(unicode(item.text()).encode('utf8')[len(self.gene_prefix):])
+                            else:
+                                rowdata.append(item.text()[len(self.gene_prefix):])
                         elif item is not None:
-                            rowdata.append(unicode(item.text()).encode('utf8'))
+                            if os.sys.version_info < (3,0,0):
+                                rowdata.append(unicode(item.text()).encode('utf8'))
+                            else:
+                                rowdata.append(item.text())
                         else:
                             rowdata.append('')
                     writer.writerow(rowdata)
@@ -3529,6 +3543,7 @@ class MetaDraftGUI(QWidget):
             notes = self._notesdb_.fetchAll(sql)
             if len(notes) > 0:
                 notes = [str(a[0]).strip() for a in notes][0]
+                print(notes)
             else:
                 notes = ''
         except ValueError:
