@@ -300,11 +300,11 @@ class MetaDraftGUI(QWidget):
 
         # check if database and library exists
         if not ( os.path.exists(os.path.join(cDir, 'modeldb', self.metadraft_db_version)) and\
-                os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_model') ):
+                os.path.exists(os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_model')) ):
             self.metadraft_db_version = 'default'
-            self.widgetMsgBox(QMessageBox.Warning, 'Database Load Error', "Could not load template database. Please ensure\
-            the template library submodule has been initialised (see readme.md) and correctly set in the _metadraft.cfg, for example:\
-            metadraft_db_version: 2019-1.")
+            self.widgetMsgBox(QMessageBox.Warning, 'Database Load Error', "Could not load template database. Please ensure \
+the template library submodule has been initialised (see readme.md) and correctly set in the _metadraft.cfg, for example: \
+'metadraft_db_version: 2019-1'.")
 
 
         # setup default paths based on dbversion from config file
