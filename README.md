@@ -27,7 +27,7 @@ MetaDraft ships with a single model template, if you have cloned the repository 
 
 `cd cbmpy-metadraft`
 
-`git submodule update --init --remote -- modeldb/2018-1/`
+`git submodule update --init --remote -- modeldb/2019-1/`
 
 If you have downloaded master repository as a zip file or as a release, download the `template-models-2018-1.zip` template archive provided with the [latest release](https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases). Unzip this archive into the `metadraft/modeldb` directory.
 
