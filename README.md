@@ -1,7 +1,7 @@
 # cbmpy-metadraft
 CBMPy Metadraft: a flexible and extensible, GUI-based genome-scale model reconstruction tool that supports multiple Systems Biology standards.
 
-## **Important** upgrading older versions of MetaDraft to version 0.9.2
+## New: upgrading to MetaDraft version 0.9.2
 
 MetaDraft version 0.9.2 now defaults to the *2019-1* template library, if you are working directly in a cloned repository please initialise the new template library:
 
