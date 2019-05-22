@@ -425,7 +425,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         #self.widgetButtonPanel()
 
         # setup
-        self.appwindow.setWindowTitle('CBMPy MetaDraft {}'.format(metadraft_version))
+        self.appwindow.setWindowTitle('CBMPy MetaDraft {} with database version: {}'.format(metadraft_version, self.metadraft_db_version))
         self.initDBs()
         self._loading_ = False
 
