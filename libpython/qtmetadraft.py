@@ -1689,6 +1689,30 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.menu_buildAll()
         self.model = cbmpy.CBModel.Model(self.model_name)
         user = self.func_getCurrentUser(realname=False)
+        self.model.addModelCreator(user, 'MetaDraft', organisation='https://systemsbioinformatics.github.io/cbmpy-metadraft/')
+        self.model.setCreatedDate()
+        self.model.setModifiedDate()
+
+        # scan objective functions
+        #print(self._DAT_MODELS)
+        objfuncs = []
+        cntr = 1
+        for m in self._DAT_MODELS:
+            stoic = self._DAT_MODELS[m].getActiveObjectiveStoichiometry()
+            objfuncs.append({'coefficient' : stoic[0][0],
+                             'rid' : stoic[0][1],
+                             #'reaction' : self._DAT_MODELS[m].getReaction(stoic[0][1]).clone(),
+                             'src' : self._DAT_MODELS[m],
+                             'oid' : 'obj{}'.format(cntr),
+                             'operation' : self._DAT_MODELS[m].getActiveObjective().getOperation()
+            })
+            if cntr == 1:
+                objfuncs[-1]['active'] = True
+            else:
+                objfuncs[-1]['active'] = False
+            cntr += 1
+        #pprint.pprint(objfuncs)
+
         tmp_compartments = [self.default_compartment]
         for s in self.selected_metabolites:
             S = self.selected_metabolites[s].clone()
@@ -1737,6 +1761,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         new_groups = {}
         OLD_GPR_MAP = {}
         orthogenes = {}
+        seqstore = {}
         for r_ in selected_reactions:
             # clone reaction object to work with and get a reference to the associated GPR
             reac = self.selected_reactions[r_]['obj']
@@ -1768,6 +1793,19 @@ the template library submodule has been initialised (see readme.md) and correctl
                 dup_re_db[ridnew] = dup_re_db[rid]
                 R.setId(ridnew)
                 print('Suspected duplicate reaction ID detected {} included as {}!'.format(rid, ridnew))
+
+            # remove sequences from reactions (store in seqstore for future use)
+            for a in list(R.annotation.keys()):
+                if a.startswith('gbank_seq_'):
+                    seqstore[a.replace('gbank_seq_', '')] = R.annotation.pop(a)
+            # add pretty looking equations, refactored from build combine
+            eqn = R.getEquation()
+            if eqn is not None:
+                R.setAnnotation('eq using_ids', eqn)
+            # TODO investigate this
+            #eqn = R.getEquation(use_names=True)
+            #if eqn is not None:
+                #R.setAnnotation('eq_using_names', eqn)
 
             self.model.addReaction(R, create_default_bounds=False)
             self.model.createReactionBounds(ridnew, self.selected_reactions[r_]['obj'].getLowerBound(), self.selected_reactions[r_]['obj'].getUpperBound())
@@ -1898,6 +1936,19 @@ the template library submodule has been initialised (see readme.md) and correctl
             else:
                 print('WARNING: no GPR for reaction {}'.format(rid))
 
+        # add objective functions
+        for of in objfuncs:
+            #self.model.addReaction(of['reaction'], create_default_bounds=True, silent=False)
+            if self.model.getReaction(of['rid']) is None:
+                cbmpy.CBMultiModel.copyReaction(of['src'], self.model, of['rid'])
+                new_obj_id = of['rid'] + '_' + time.strftime("%M%S")
+                obj = cbmpy.CBModel.Objective(new_obj_id, of['operation'])
+                FO = cbmpy.CBModel.FluxObjective('{}_{}_fluxobj'.format(new_obj_id, of['rid']), of['rid'], of['coefficient'])
+                self.model.addObjective(obj, active=of['active'])
+                obj.addFluxObjective(FO)
+                time.sleep(1)
+            #elif:
+                #self.model.createObjectiveFunction(of['rid'], of['coefficient'], of['operation'], of['active'])
 
         # generate new group information
         cntr = 1
@@ -1976,14 +2027,6 @@ the template library submodule has been initialised (see readme.md) and correctl
         model = self.buildSBMLModel()
         if not fname.endswith('.xml'):
             fname += '.xml'
-
-        for r_ in model.reactions:
-            eqn = r_.getEquation()
-            if eqn is not None:
-                r_.setAnnotation('equation_id', eqn)
-            eqn = r_.getEquation(use_names=True)
-            if eqn is not None:
-                r_.setAnnotation('equation_name', eqn)
 
         zfpath = os.path.join(out_dir, fname.replace('.xml', '.omex'))
         print(zfpath)
