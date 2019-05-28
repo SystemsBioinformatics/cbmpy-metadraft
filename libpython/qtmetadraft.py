@@ -1770,6 +1770,24 @@ the template library submodule has been initialised (see readme.md) and correctl
             del reac
 
             rid = R.getId()
+
+            if rid not in self.model.__global_id__:
+                ridnew = rid
+            else:
+                print('Duplicate reaction ID detected {} not included!'.format(rid))
+                continue
+                ## TODO look at the reaction ID filtering again as duplicate reactions are appearing in the reaction list
+                ## set3.xml
+                # disabling safe reaction duplication
+                #if rid in dup_re_db:
+                    #dup_re_db[rid] = dup_re_db[rid] + 1
+                #else:
+                    #dup_re_db[rid] = 1
+                #ridnew = '{}_copy_{}'.format(rid, dup_re_db[rid])
+                #dup_re_db[ridnew] = dup_re_db[rid]
+                #R.setId(ridnew)
+
+
             # store group information
             if R._organism_ not in new_groups:
                 new_groups[R._organism_] = {'grp_map' : self.func_getGroupMembership(self._DAT_MODELS[R._organism_]),
@@ -1777,22 +1795,14 @@ the template library submodule has been initialised (see readme.md) and correctl
             else:
                 new_groups[R._organism_]['grpd'].append(rid)
 
-            R.setCompartmentId(self.default_compartment)
+            # this is probably a bit much
+            # R.setCompartmentId(self.default_compartment)
             DUP_R = False
             notes = self.readNotesFromNotesDB(R._organism_, R.getId(), user, self._DAT_NOTESDB_KEY_)
             if notes != '':
                 R.setNotes('<p>{}</p>'.format(notes))
-            if R.getId() not in self.model.__global_id__:
-                ridnew = rid
-            else:
-                if rid in dup_re_db:
-                    dup_re_db[rid] = dup_re_db[rid] + 1
-                else:
-                    dup_re_db[rid] = 1
-                ridnew = '{}_copy_{}'.format(rid, dup_re_db[rid])
-                dup_re_db[ridnew] = dup_re_db[rid]
-                R.setId(ridnew)
-                print('Suspected duplicate reaction ID detected {} included as {}!'.format(rid, ridnew))
+
+
 
             # remove sequences from reactions (store in seqstore for future use)
             for a in list(R.annotation.keys()):
@@ -1866,24 +1876,44 @@ the template library submodule has been initialised (see readme.md) and correctl
                     gprd.pop(k)
                     gprd[new] = new
 
+        def pruneTree(D):
+            """
+            Recursively checks the tree for the correct number of children
+
+            """
+            for k in list(D):
+                if k.startswith('_AND_') and len(D[k]) == 1:
+                    D.update(D.pop(k))
+                    print('Pruning branch: {}'.format(D))
+                elif k.startswith('_OR_') and len(D[k]) == 1:
+                    D.update(D.pop(k))
+                    print('Pruning branch: {}'.format(D))
+                elif k.startswith('_AND_'):
+                    pruneTree(D[k])
+                elif k.startswith('_OR_'):
+                    pruneTree(D[k])
+            return D
+
+
         def deleteGeneFromTree(D, delid):
             """
             Recursively delete a gene Id from a gprTree.
 
             """
             for k in list(D):
-                if k == delid:
-                    D.pop(k)
-                elif len(k) == 0:
-                    D.pop(k)
-                elif len(D[k]) == 1:
-                    D.update(D.pop(k))
-                elif k.startswith('_AND_') or k.startswith('_OR_'):
+                if k.startswith('_AND_') or k.startswith('_OR_'):
                     D[k] = deleteGeneFromTree(D[k], delid)
                     if len(D[k]) == 0:
                         D.pop(k)
                     elif len(D[k]) == 1:
                         D.update(D.pop(k))
+                elif k == delid:
+                    D.pop(k)
+                elif len(k) == 0:
+                    D.pop(k)
+                elif len(D[k]) == 1:
+                    D.update(D.pop(k))
+
             return D
 
 
@@ -1894,7 +1924,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         # deal with orthogenes/GPR's here
 
         #print('target2source')
-        #cbmpy.CBTools.pprint.pprint(target2source)
+        cbmpy.CBTools.pprint.pprint(target2source)
         #cbmpy.CBTools.pprint.pprint(source2target)
 
         #dakeys = OLD_GPR_MAP.keys()[-2:]
@@ -1916,8 +1946,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                 if gprinf['id2lbl'][g] in target2source:
                     renameGeneIdRefsInGPRTree(gprinf['tree'], g, target2source[gprinf['id2lbl'][g]])
                 else:
-                    renameGeneIdRefsInGPRTree(gprinf['tree'], g, 'UNKNOWN')
-                    #gprinf['tree'] = deleteGeneFromTreegprinf['tree'], g)
+                    #renameGeneIdRefsInGPRTree(gprinf['tree'], g, 'UNKNOWN')
+                    gprinf['tree'] = deleteGeneFromTree(gprinf['tree'], g)
+
+            gprinf['tree'] = pruneTree(gprinf['tree'])
 
 
         #print('\nGPRmap')
