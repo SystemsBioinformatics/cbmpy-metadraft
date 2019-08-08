@@ -5,7 +5,7 @@ MetaToolkit: MetaDraft
 MetaDraft: for the reconstruction of Genome Scale Models
 
 MetaToolkit: MetaDraft (https://github.com/SystemsBioinformatics/cbmpy-metadraft)
-Copyright (C) 2016-2018 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
+Copyright (C) 2016-2019 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

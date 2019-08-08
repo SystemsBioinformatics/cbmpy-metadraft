@@ -4,7 +4,7 @@ channels:
   - bgoli
   - defaults
 dependencies:
-  - cbmpy=0.7.21=py36_0
+  - cbmpy=0.7.25=py36_0
   - backcall=0.1.0=py36_0
   - biopython=1.72=py36h830ac7b_0
   - blas=1.0=mkl

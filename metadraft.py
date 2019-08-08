@@ -5,7 +5,7 @@ MetaToolkit: MetaDraft
 MetaDraft: for the reconstruction of Genome Scale Models
 
 MetaToolkit: MetaDraft (https://github.com/SystemsBioinformatics/cbmpy-metadraft)
-Copyright (C) 2016-2018 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
+Copyright (C) 2016-2019 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ def run_metadraft():
     app = QApplication(sys.argv)
     widget_splash = QSplashScreen(QPixmap("images/metatoolkit1-03.jpg"))
     widget_splash.show()
-    widget_splash.showMessage("Ver {}-({})\nAuthor: Brett G. Olivier\n(c) Systems Bioinformatics, VU University Amsterdam, Amsterdam, 2017-2018.\nSee Help - About for more details.".format(metadraft_version, cbmpy.__version__), alignment=Qt.AlignBottom)
+    widget_splash.showMessage("Ver {}-({})\nAuthor: Brett G. Olivier\n(c) Systems Bioinformatics, VU University Amsterdam, Amsterdam, 2017-2019.\nSee Help - About for more details.".format(metadraft_version, cbmpy.__version__), alignment=Qt.AlignBottom)
     time.sleep(2)
     ex = MetaDraftApp()
     widget_splash.finish(ex)

@@ -94,7 +94,7 @@ or individually install the core packages (minimal):
 Please cite this software if you use it (the author(s) enthusiasm to carry on maintaining this project depend on it), see CITATION.cff for more details.
 
 ```text
- Brett G. Olivier. (2018, December 18). 
+ Brett G. Olivier. (2019, October 8). 
  SystemsBioinformatics/cbmpy-metadraft: Metadraft. 
  Zenodo. http://doi.org/10.5281/zenodo.2398336
 ```

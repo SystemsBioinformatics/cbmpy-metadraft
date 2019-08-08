@@ -10,7 +10,7 @@ authors:
 title: CBMPy MetaDraft
 version: 0.9.2
 doi: 10.5281/zenodo.2398336
-date-released: 2019-05-18
+date-released: 2019-08-08
 repository-code: https://github.com/SystemsBioinformatics/cbmpy-metadraft
 keywords:
   - "genome scale reconstruction"

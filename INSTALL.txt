@@ -12,4 +12,4 @@ look in the help-->syslog menu for error messages. Or in the log subdirectory.
 
 Please read and agree with the LICENCE.txt for usage and distribution.
 
-(c) Brett G. Olivier, Amsterdam, 2016-2017, all rights reserved.
+(c) Brett G. Olivier, Amsterdam, 2016-2019, all rights reserved.
