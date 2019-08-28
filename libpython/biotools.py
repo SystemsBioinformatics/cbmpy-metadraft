@@ -686,7 +686,7 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
 
     print('INFO: addGeneInformationToDB committed {} new records'.format(cntr))
 
-def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
+def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None, remove_pseudo=True):
     """
     Extracts sequence information from a FASTA (*.fasta) or GenBank file (*.gb, *.gbk *.gbff) and writes a
     simplified FASTA output.
@@ -694,15 +694,18 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
     - *gbkf* FASTA (*.fasta) or GenBank file (*.gb, *.gbk, *. gbff) containing CDS annotations
     - *ext_replace* [default='.in.fasta'] replace the extension (as above) with this
     - *gene_prefix* [default=None] prefix gene names with this in the fasta file
-
+    - *remove_pseudo* [default=True] Remove pseudo genes from output sequence if they are encoded in GenBank format [pseudo=true]
+    any pseudo genes removed will be written to <gbkf>.pseudo.txt
     """
 
     if type(gbkf) == str:
         gbkf = [gbkf]
 
     proteins = {}
+    pseudo_genes = {}
     cntr = 0
     for fasta in gbkf:
+        psugenes = []
         if fasta.endswith('.fasta') or fasta.endswith('.faa'):
             if cntr == 0:
                 if fasta.endswith('.fasta'):
@@ -711,10 +714,16 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
                     outF = fasta.replace('.faa', '.in.fasta')
                 cntr += 1
             for seq_record in SeqIO.parse(fasta, "fasta"):
+                # remove pseudo genes from output file. This is based on a GenBank FASTA file format.
+                if remove_pseudo and '[pseudo=true]' in seq_record.description:
+                    psugenes.append(seq_record.description)
+                    continue
                 seq_record.description = ''
                 if gene_prefix is not None:
                     seq_record.id = gene_prefix + seq_record.id
                 proteins[seq_record.id] = seq_record
+            #print(psugenes)
+            print('Pseudo genes:', len(psugenes))
 
         elif fasta.endswith('.gbk') or fasta.endswith('.gb') or fasta.endswith('.gbff'):
             if cntr == 0:
@@ -738,10 +747,26 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None):
             GBFile.close()
         else:
             raise RuntimeError('ERROR: Unknown file: {}'.format(fasta))
-
-    print('\nProteins: {}\n'.format(len(proteins)))
+        if remove_pseudo and len(psugenes) > 0:
+            pseudo_genes[fasta] = (psugenes)
 
     writeFASTA(outF, proteins)
+
+    pseudo_cntr = 0
+    # write pseudo_genes to file
+    if remove_pseudo and len(pseudo_genes) > 0:
+        #print(pseudo_genes)
+        with open(outF + '.pseudo.txt', 'w') as F:
+            for s in pseudo_genes:
+                F.write('#{}\n'.format(s))
+                for g in pseudo_genes[s]:
+                    F.write('{}\n'.format(g))
+                    pseudo_cntr += 1
+
+    print('\nPseudogenes: {}'.format(pseudo_cntr))
+    print('Proteins: {}\n'.format(len(proteins)))
+
+
     return outF
 
 def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_cobra_annot=False, useV2=True, compress_output=False):

@@ -175,7 +175,7 @@ class StreamToLogger(object):
         time.sleep(0.001)
 
 ## Developer mode options
-DEBUG_MODE = False
+DEBUG_MODE = True
 DEL_BLAST_TMP = True
 
 class MetaDraftGUI(QWidget):
@@ -2671,6 +2671,15 @@ the template library submodule has been initialised (see readme.md) and correctl
         if fname.endswith('.fasta') or fname.endswith('.faa') or fname.endswith('.fa') or fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
             fname1 = biotools.createBasicFASTAfromFile(fname, ext_replace='.in.fasta', gene_prefix=self.gene_prefix)
             self.widgetBusyUpdate(50)
+            if os.path.exists(fname1 + '.pseudo.txt'):
+                with open(fname1 + '.pseudo.txt', 'r') as F:
+                    pgenes = F.readlines()[1:]
+                    lpg = len(pgenes)
+                    pgenes = pgenes[:11]
+                    pgenes.append('\n{} more pseudogenes ... ignored.'.format(lpg-10))
+                    self.widgetMsgBox(QMessageBox.Information, '{} pseudogenes detected and ignored in input FASTA file'.format(lpg), ''.join(pgenes))
+                os.remove(fname1 + '.pseudo.txt')
+
             if not (fname.endswith('.fasta') or fname.endswith('.faa') or fname.endswith('.fa')):
                 biotools.addGeneInformationToDB(fname, self._genedb_, 'GENES', 'id')
             self.widgetBusyUpdate(80)
