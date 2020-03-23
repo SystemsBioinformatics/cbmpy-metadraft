@@ -2864,7 +2864,8 @@ the template library submodule has been initialised (see readme.md) and correctl
         if True:
             TSTART = time.time()
             try:
-                subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
+                if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+                    subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
                 out = subprocess.check_call(os_call, stderr=subprocess.STDOUT, shell=False)
             except subprocess.CalledProcessError as err:
                 out = err.returncode
