@@ -1,0 +1,25 @@
+name: metadraft
+channels:
+  - bgoli
+  - sbmlteam
+  - defaults
+dependencies:
+  - cbmpy
+  - sympy
+  - biopython
+  - xlsxwriter
+  - python
+  - python-libsbml
+  - xlwt
+  - pyqt
+  - xlrd
+  - nose
+  - parso
+  - tornado
+  - openssl
+  - prompt_toolkit
+  - decorator
+  - setuptools
+  - certifi
+  - pygments
+prefix: c:\Anaconda3\envs\metadraft

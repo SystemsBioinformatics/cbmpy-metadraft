@@ -1,8 +1,8 @@
 [submodule "2018-1"]
-	path = modeldb/2018-1
-	url = https://github.com/SystemsBioinformatics/cbmpy-metadraft-templates.git
-	branch = metadraft_template_data_2018-1
+    path = modeldb/2018-1
+    url = https://github.com/SystemsBioinformatics/cbmpy-metadraft-templates.git
+    branch = metadraft_template_data_2018-1
 [submodule "2019-1"]
-	path = modeldb/2019-1
-	url = https://github.com/SystemsBioinformatics/cbmpy-metadraft-templates.git
-	branch = metadraft_template_data_2019-1
+    path = modeldb/2019-1
+    url = https://github.com/SystemsBioinformatics/cbmpy-metadraft-templates.git
+    branch = metadraft_template_data_2019-1
