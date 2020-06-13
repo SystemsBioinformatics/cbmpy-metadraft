@@ -38,8 +38,10 @@ import Bio
 from Bio import SeqIO
 from Bio.Blast import NCBIWWW
 import cbmpy
+
 # backwards compatability
 cbm = cbmpy
+
 
 def web_NCBIblastq(seq, options=None):
     """
@@ -54,10 +56,7 @@ def web_NCBIblastq(seq, options=None):
       - *matrix* [default='BLOSUM62'] scoring matrix to use
 
     """
-    optionsx = {'method' : 'blastp',
-                'dbase' : 'nr',
-                'hit_num' : 10,
-                'matrix' : 'BLOSUM62'}
+    optionsx = {'method': 'blastp', 'dbase': 'nr', 'hit_num': 10, 'matrix': 'BLOSUM62'}
 
     if options is not None:
         for o in options:
@@ -65,10 +64,16 @@ def web_NCBIblastq(seq, options=None):
                 optionsx[o] = options[o]
 
     print('\nContacting NCBI ...')
-    bres = NCBIWWW.qblast(optionsx['method'], optionsx['dbase'], seq, hitlist_size=optionsx['hit_num'],\
-                          matrix_name=optionsx['matrix'])
+    bres = NCBIWWW.qblast(
+        optionsx['method'],
+        optionsx['dbase'],
+        seq,
+        hitlist_size=optionsx['hit_num'],
+        matrix_name=optionsx['matrix'],
+    )
     print('\ndone.')
     return bres
+
 
 def readGenBankFullFile(fname):
     """
@@ -86,22 +91,24 @@ def readGenBankFullFile(fname):
     MISC_features = {}
     for fe_ in SEQ.features:
         if fe_.type == 'CDS':
-            CDS_features[fe_.qualifiers['locus_tag'][0]] = {'ref_db' : fe_.ref_db,
-                                                             'id' : fe_.id,
-                                                             'qualifiers' : fe_.qualifiers,
-                                                             'strand' : fe_.strand,
-                                                             'ref' : fe_.ref,
-                                                             'sub_features' : fe_.sub_features
-                                                              }
+            CDS_features[fe_.qualifiers['locus_tag'][0]] = {
+                'ref_db': fe_.ref_db,
+                'id': fe_.id,
+                'qualifiers': fe_.qualifiers,
+                'strand': fe_.strand,
+                'ref': fe_.ref,
+                'sub_features': fe_.sub_features,
+            }
         elif fe_.type == 'gene':
-            GENE_features[fe_.qualifiers['locus_tag'][0]] = {'ref_db' : fe_.ref_db,
-                                                             'id' : fe_.id,
-                                                             'qualifiers' : fe_.qualifiers,
-                                                             'strand' : fe_.strand,
-                                                             'ref' : fe_.ref,
-                                                             'sub_features' : fe_.sub_features,
-                                                             'cds' : False
-                                                             }
+            GENE_features[fe_.qualifiers['locus_tag'][0]] = {
+                'ref_db': fe_.ref_db,
+                'id': fe_.id,
+                'qualifiers': fe_.qualifiers,
+                'strand': fe_.strand,
+                'ref': fe_.ref,
+                'sub_features': fe_.sub_features,
+                'cds': False,
+            }
         else:
             MISC_features[fe_.type] = fe_
 
@@ -127,39 +134,40 @@ def readFASTAFile(fname):
     MISC_features = {}
 
     for fasta in fasta_sequences:
-        CDS_features[fasta.id] = {'ref_db' : None,
-                                  'id' : fasta.id,
-                                  'qualifiers' : None,
-                                  'strand' : None,
-                                  'ref' : None,
-                                  'sub_features' : None
-                                  }
+        CDS_features[fasta.id] = {
+            'ref_db': None,
+            'id': fasta.id,
+            'qualifiers': None,
+            'strand': None,
+            'ref': None,
+            'sub_features': None,
+        }
 
     ##SEQ = SeqIO.read(fname, 'genbank')
     ##for fe_ in SEQ.features:
-        ##if fe_.type == 'CDS':
-            ##CDS_features[fe_.qualifiers['locus_tag'][0]] = {'ref_db' : fe_.ref_db,
-                                                             ##'id' : fe_.id,
-                                                             ##'qualifiers' : fe_.qualifiers,
-                                                             ##'strand' : fe_.strand,
-                                                             ##'ref' : fe_.ref,
-                                                             ##'sub_features' : fe_.sub_features
-                                                              ##}
-        ##elif fe_.type == 'gene':
-            ##GENE_features[fe_.qualifiers['locus_tag'][0]] = {'ref_db' : fe_.ref_db,
-                                                             ##'id' : fe_.id,
-                                                             ##'qualifiers' : fe_.qualifiers,
-                                                             ##'strand' : fe_.strand,
-                                                             ##'ref' : fe_.ref,
-                                                             ##'sub_features' : fe_.sub_features,
-                                                             ##'cds' : False
-                                                             ##}
-        ##else:
-            ##MISC_features[fe_.type] = fe_
+    ##if fe_.type == 'CDS':
+    ##CDS_features[fe_.qualifiers['locus_tag'][0]] = {'ref_db' : fe_.ref_db,
+    ##'id' : fe_.id,
+    ##'qualifiers' : fe_.qualifiers,
+    ##'strand' : fe_.strand,
+    ##'ref' : fe_.ref,
+    ##'sub_features' : fe_.sub_features
+    ##}
+    ##elif fe_.type == 'gene':
+    ##GENE_features[fe_.qualifiers['locus_tag'][0]] = {'ref_db' : fe_.ref_db,
+    ##'id' : fe_.id,
+    ##'qualifiers' : fe_.qualifiers,
+    ##'strand' : fe_.strand,
+    ##'ref' : fe_.ref,
+    ##'sub_features' : fe_.sub_features,
+    ##'cds' : False
+    ##}
+    ##else:
+    ##MISC_features[fe_.type] = fe_
 
     ##for g_ in GENE_features:
-        ##if g_ in CDS_features:
-            ##GENE_features[g_]['cds'] = True
+    ##if g_ in CDS_features:
+    ##GENE_features[g_]['cds'] = True
 
     return CDS_features, GENE_features, MISC_features
 
@@ -188,30 +196,31 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
     for G in genbank:
         print('CheckModelLocusTags is processing: {}'.format(G))
         for seq_record in SeqIO.parse(G, "genbank"):
-            #print(seq_record.id)
+            # print(seq_record.id)
             cntr += 1
         if cntr > 1:
             print("INFO: Multiple sequences encountered in file: {}".format(G))
-            #raise RuntimeError, "\nMutltiple sequences encountered in file: {}".format(G)
-        #print(repr(seq_record.seq))
-        #print(len(seq_record))
+            # raise RuntimeError, "\nMutltiple sequences encountered in file: {}".format(G)
+        # print(repr(seq_record.seq))
+        # print(len(seq_record))
 
-        #add all the annotations from the genbank record(s) into the model? Use first record
+        # add all the annotations from the genbank record(s) into the model? Use first record
         if fileNum == 0:
 
             gprMapAnnot[seq_record.id] = seq_record.annotations.copy()
             try:
                 for r_ in gprMapAnnot[seq_record.id]['references']:
                     if r_.pubmed_id != '':
-                        cmod.addMIRIAMannotation('isDescribedBy', 'PubMed', r_.pubmed_id)
+                        cmod.addMIRIAMannotation(
+                            'isDescribedBy', 'PubMed', r_.pubmed_id
+                        )
                     gprMapAnnot[seq_record.id].pop('references')
                     cmod.setAnnotation('genbank_id', seq_record.id)
                     cmod.setAnnotation('genbank_name', seq_record.name)
             except KeyError:
                 print('checkModelLocusTags: no references')
 
-
-            #global features
+            # global features
             features = [f.qualifiers for f in seq_record.features if f.type == 'source']
             if len(features) > 0:
                 features = features[0]
@@ -219,11 +228,15 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
                 if f_ == 'db_xref':
                     for ff_ in features[f_]:
                         if ff_.startswith('taxon:'):
-                            cmod.setAnnotation('genbank_taxon_id', ff_.replace('taxon:',''))
+                            cmod.setAnnotation(
+                                'genbank_taxon_id', ff_.replace('taxon:', '')
+                            )
                             break
                 cmod.setAnnotation('genbank_{}'.format(f_), features[f_])
             for r_ in gprMapAnnot[seq_record.id]:
-                cmod.setAnnotation('genbank_{}'.format(r_), gprMapAnnot[seq_record.id][r_])
+                cmod.setAnnotation(
+                    'genbank_{}'.format(r_), gprMapAnnot[seq_record.id][r_]
+                )
             fileNum += 1
 
         GBFile = open(G, 'r')
@@ -245,17 +258,25 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
         GBFile.close()
 
     oldLoTags = []
-    #for g_ in cmod.getGeneIds():
+    # for g_ in cmod.getGeneIds():
     for g_ in cmod.getGeneLabels():
         if g_ not in gprMap:
-            #print(g_)
+            # print(g_)
             if g_ != 'None':
                 oldLoTags.append(g_)
 
-    #cbmpy.CBTools.pprint.pprint(gprMap)
+    # cbmpy.CBTools.pprint.pprint(gprMap)
 
-    oldtags = [gprMap[a].annotations['old_locus_tag'].split(' ') + [a] for a in gprMap if 'old_locus_tag' in gprMap[a].annotations]
-    oldtags2 = [gnoprMap[a].annotations['old_locus_tag'].split(' ') + [a] for a in gnoprMap if 'old_locus_tag' in gnoprMap[a].annotations]
+    oldtags = [
+        gprMap[a].annotations['old_locus_tag'].split(' ') + [a]
+        for a in gprMap
+        if 'old_locus_tag' in gprMap[a].annotations
+    ]
+    oldtags2 = [
+        gnoprMap[a].annotations['old_locus_tag'].split(' ') + [a]
+        for a in gnoprMap
+        if 'old_locus_tag' in gnoprMap[a].annotations
+    ]
 
     old2new = {}
     old2new2 = {}
@@ -275,11 +296,11 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
     unknown = []
     noseq = []
     good = []
-    F = open(sbml.replace('.xml', '.seqcheck.csv'),'w')
-    #if cmod.__FBC_VERSION__ < 2:
-        #geneIDs = cmod.getGeneIds()
-    #else:
-        #geneIDs = cmod.getGeneLabels()
+    F = open(sbml.replace('.xml', '.seqcheck.csv'), 'w')
+    # if cmod.__FBC_VERSION__ < 2:
+    # geneIDs = cmod.getGeneIds()
+    # else:
+    # geneIDs = cmod.getGeneLabels()
     geneIDs = cmod.getGeneLabels()
     for g_ in geneIDs:
         if g_ not in gprMap:
@@ -299,12 +320,15 @@ def checkModelLocusTags(sbml, genbank, allow_gene_names=False):
             good.append(g_)
     F.close()
     if USING_GENE_NAME:
-        print('\nINFO: model contained {} genes without locus tags. For these genes \
-the /gene name was used instead. This gene name may not be unique, please check model!!'.\
-                                                    format(len(no_locus_tag)))
-        #print(no_locus_tag)
+        print(
+            '\nINFO: model contained {} genes without locus tags. For these genes \
+the /gene name was used instead. This gene name may not be unique, please check model!!'.format(
+                len(no_locus_tag)
+            )
+        )
+        # print(no_locus_tag)
 
-    #cbmpy.CBTools.storeObj(gprMap, sbml.replace('.xml', '.seqplus.dat'))
+    # cbmpy.CBTools.storeObj(gprMap, sbml.replace('.xml', '.seqplus.dat'))
 
     return good, updated, noseq, unknown, cmod, gprMap, gprMapAnnot, no_locus_tag
 
@@ -318,41 +342,69 @@ def addSeqAnnotation(emod, gpr, good, updated, update_tags=True, no_locus_tag=No
         no_locus_tag = []
 
     for gp in emod.gpr:
-        #if emod.__FBC_VERSION__ < 2:
-            #geneIDs = gp.getGeneIds()
-        #else:
+        # if emod.__FBC_VERSION__ < 2:
+        # geneIDs = gp.getGeneIds()
+        # else:
         geneIDs = gp.getGeneLabels()
         for g_ in geneIDs:
             if g_ in good:
                 if g_ in no_locus_tag:
-                    print('-> {}, {}, {}\n{}'.format(g_, gpr[g_].id, gpr[g_].name, gpr[g_]))
+                    print(
+                        '-> {}, {}, {}\n{}'.format(
+                            g_, gpr[g_].id, gpr[g_].name, gpr[g_]
+                        )
+                    )
 
-                emod.getReaction(gp.getProtein()).setAnnotation('gbank_seq_{}'.format(g_),'{}'.format(str(gpr[g_].seq)))
+                emod.getReaction(gp.getProtein()).setAnnotation(
+                    'gbank_seq_{}'.format(g_), '{}'.format(str(gpr[g_].seq))
+                )
                 gp.setAnnotation('gbank_seq', '{}'.format(str(gpr[g_].seq)))
                 gp.setAnnotation('gbank_id', '{}'.format(str(gpr[g_].id)))
                 gp.setAnnotation('gbank_name', '{}'.format(str(gpr[g_].name)))
-                gp.setAnnotation('gbank_description', '{}'.format(str(gpr[g_].description)))
+                gp.setAnnotation(
+                    'gbank_description', '{}'.format(str(gpr[g_].description))
+                )
                 if g_ not in geneAnnot:
                     geneAnnot[g_] = gp.getAnnotations()
             elif g_ in updated and update_tags:
                 print('Updating gene identifier: {} --> {}'.format(g_, updated[g_]))
-                emod.getReaction(gp.getProtein()).setAnnotation('gbank_seq_{}'.format(updated[g_]),'{}'.format(str(gpr[updated[g_]].seq)))
+                emod.getReaction(gp.getProtein()).setAnnotation(
+                    'gbank_seq_{}'.format(updated[g_]),
+                    '{}'.format(str(gpr[updated[g_]].seq)),
+                )
                 gp.setAnnotation('gbank_seq', '{}'.format(str(gpr[updated[g_]].seq)))
                 gp.setAnnotation('gbank_id', '{}'.format(str(gpr[updated[g_]].id)))
                 gp.setAnnotation('gbank_name', '{}'.format(str(gpr[updated[g_]].name)))
-                gp.setAnnotation('gbank_description', '{}'.format(str(gpr[updated[g_]].description)))
+                gp.setAnnotation(
+                    'gbank_description', '{}'.format(str(gpr[updated[g_]].description))
+                )
                 if updated[g_] not in geneAnnot:
                     geneAnnot[updated[g_]] = gp.getAnnotations()
 
-    #print(geneAnnot)
+    # print(geneAnnot)
     if update_tags and len(updated) > 0:
         if emod.__FBC_VERSION__ < 2:
-            #updateGeneIdsFBCv1(emod, updated, geneAnnot, annotation_key='GENE ASSOCIATION', replace_existing=True)
-            updateGeneIdsFBCv2(emod, updated, geneAnnot, replace_existing=True, no_locus_tag=no_locus_tag)
+            # updateGeneIdsFBCv1(emod, updated, geneAnnot, annotation_key='GENE ASSOCIATION', replace_existing=True)
+            updateGeneIdsFBCv2(
+                emod,
+                updated,
+                geneAnnot,
+                replace_existing=True,
+                no_locus_tag=no_locus_tag,
+            )
         else:
-            updateGeneIdsFBCv2(emod, updated, geneAnnot, replace_existing=True, no_locus_tag=no_locus_tag)
+            updateGeneIdsFBCv2(
+                emod,
+                updated,
+                geneAnnot,
+                replace_existing=True,
+                no_locus_tag=no_locus_tag,
+            )
 
-def updateGeneIdsFBCv2(emod, updated, gene_annotation, replace_existing=True, no_locus_tag=None):
+
+def updateGeneIdsFBCv2(
+    emod, updated, gene_annotation, replace_existing=True, no_locus_tag=None
+):
     """
     Update gene locus tags from updated dictionary. If this fails it tries some standard annotation
     keys: GENE ASSOCIATION, GENE_ASSOCIATION, gene_association, gene association.
@@ -369,7 +421,14 @@ def updateGeneIdsFBCv2(emod, updated, gene_annotation, replace_existing=True, no
         G = emod.getGeneByLabel(of_)
         G.setLabel(updated[of_])
 
-def updateGeneIdsFBCv1(emod, updated, gene_annotation, annotation_key='GENE ASSOCIATION', replace_existing=True):
+
+def updateGeneIdsFBCv1(
+    emod,
+    updated,
+    gene_annotation,
+    annotation_key='GENE ASSOCIATION',
+    replace_existing=True,
+):
     """
     Update gene locus tags from updated dictionary. If this fails it tries some standard annotation
     keys: GENE ASSOCIATION, GENE_ASSOCIATION, gene_association, gene association.
@@ -421,9 +480,13 @@ def updateGeneIdsFBCv1(emod, updated, gene_annotation, annotation_key='GENE ASSO
     emod.__updateGeneIdx__()
     for g_ in emod.genes:
         if g_.getLabel() in gene_annotation:
-            #print(g_)
+            # print(g_)
             g_.annotation = gene_annotation[g_.getLabel()]
-    print('INFO: Added {} new genes and {} associations to model'.format(len(emod.genes)- g0, len(emod.gpr)- gpr0))
+    print(
+        'INFO: Added {} new genes and {} associations to model'.format(
+            len(emod.genes) - g0, len(emod.gpr) - gpr0
+        )
+    )
 
 
 def createSequence(modrefseq, filtered_ids=None, description=None):
@@ -441,11 +504,17 @@ def createSequence(modrefseq, filtered_ids=None, description=None):
         if r_.getId() in filtered_ids:
             for a in r_.annotation:
                 if a.startswith('gbank_seq_'):
-                    newName = a.replace('gbank_seq_','')
+                    newName = a.replace('gbank_seq_', '')
                     if newName not in geneseq:
-                        geneseq[newName] = Bio.SeqRecord.SeqRecord(Bio.Seq.Seq(r_.getAnnotation(a), Bio.Alphabet.ProteinAlphabet()),\
-                                                                   id=newName, name=newName, description=secDescr)
-                        #print('Adding {}'.format(a))
+                        geneseq[newName] = Bio.SeqRecord.SeqRecord(
+                            Bio.Seq.Seq(
+                                r_.getAnnotation(a), Bio.Alphabet.ProteinAlphabet()
+                            ),
+                            id=newName,
+                            name=newName,
+                            description=secDescr,
+                        )
+                        # print('Adding {}'.format(a))
     print('{} genseqs added'.format(len(geneseq)))
     return geneseq
 
@@ -454,7 +523,7 @@ def writeFASTA(fname, sequences, paranoid_style=True):
 
     F = open(fname, 'w')
     cntr = 0
-    #print(len(sequences))
+    # print(len(sequences))
     for seq in sequences:
         if paranoid_style:
             sequences[seq].description = ''
@@ -499,6 +568,7 @@ def createMegaGenomeBasic(fname, fdir, input_files=None):
     Fout.close()
     print('MegaGenome file created as: {}'.format(fname))
 
+
 def createMetaProteome(fname, link, optimized=True, paranoid_style=True, K=0.13):
     """
     Creates a MetaProteome, optionally uses linkDict organisms filtered_ids::
@@ -511,28 +581,34 @@ def createMetaProteome(fname, link, optimized=True, paranoid_style=True, K=0.13)
      - *K* [default=0.13] Altschul coefficient used to calculate sequence search space size: K*n*m
 
     """
-    #debug
-    #global sequences
+    # debug
+    # global sequences
 
     metaprotdat = {}
 
     F = open(fname, 'w')
     outseq = []
     total_prot_length = 0
-    #protein_lengths = {}
+    # protein_lengths = {}
     for o_ in link:
-        #print(o_)
+        # print(o_)
         if not o_.startswith('__'):
             if 'filtered_id' in link[o_] and optimized:
                 print('createMetaProteome [{}] is using filtered ids'.format(o_))
-                sequences = createSequence(link[o_]['sbml_out'], filtered_ids=link[o_]['filtered_id'], description=None)
+                sequences = createSequence(
+                    link[o_]['sbml_out'],
+                    filtered_ids=link[o_]['filtered_id'],
+                    description=None,
+                )
             else:
                 print('createMetaProteome [{}] is using raw ids'.format(o_))
-                sequences = createSequence(link[o_]['sbml_out'], filtered_ids=None, description=None)
+                sequences = createSequence(
+                    link[o_]['sbml_out'], filtered_ids=None, description=None
+                )
 
             for seq in sequences:
                 total_prot_length += len(sequences[seq])
-                #protein_lengths[seq] = [len(sequences[seq])]
+                # protein_lengths[seq] = [len(sequences[seq])]
                 if paranoid_style:
                     sequences[seq].description = ''
                 F.write(sequences[seq].format('fasta'))
@@ -541,21 +617,20 @@ def createMetaProteome(fname, link, optimized=True, paranoid_style=True, K=0.13)
     F.close()
 
     # gone for now ... may be useful for debug purposes
-    #cbmpy.CBTools.storeObj(outseq, fname.replace('.fasta',''))
+    # cbmpy.CBTools.storeObj(outseq, fname.replace('.fasta',''))
 
-    #"""
-    #search space = n(seq_len)*m(db_len)*K(Altschul)
-    #"""
-    #Km = K*total_prot_length
-    #for p_ in protein_lengths:
-        #search_space = protein_lengths[p_][0]*Km
-        #protein_lengths[p_].append(search_space)
-        #protein_lengths[p_].append(math.log(search_space, 2))
+    # """
+    # search space = n(seq_len)*m(db_len)*K(Altschul)
+    # """
+    # Km = K*total_prot_length
+    # for p_ in protein_lengths:
+    # search_space = protein_lengths[p_][0]*Km
+    # protein_lengths[p_].append(search_space)
+    # protein_lengths[p_].append(math.log(search_space, 2))
 
-    metaprotdat = {'file_name' : fname,
-                   'total_length' : total_prot_length}
-                   #'protein_lengths' : protein_lengths,
-                   #'K' : K}
+    metaprotdat = {'file_name': fname, 'total_length': total_prot_length}
+    #'protein_lengths' : protein_lengths,
+    #'K' : K}
     if '__metaproteome__' in link:
         link['__metaproteome__'].update(metaprotdat)
     else:
@@ -574,12 +649,11 @@ def createMetaProteome(fname, link, optimized=True, paranoid_style=True, K=0.13)
     link['__metaproteome__']['reports']['metabolites']['unselected'] = []
     link['__metaproteome__']['notes'] = {}
 
-
     print('MegaGenome file created as: {}'.format(fname))
 
 
-#IDMAP0 = None
-#IDMAP1 = None
+# IDMAP0 = None
+# IDMAP1 = None
 def idFilter(link, oidList):
     """
     Updates the linkDict with ID's filtered in oidList order or "phylogenetic ordering":
@@ -604,6 +678,7 @@ def idFilter(link, oidList):
     for o_ in range(len(oidList)):
         link[oidList[o_]]['filtered_id'] = list(idmap[o_])
 
+
 def connectSQLDB(fname):
     """
     Opens a SQLite DB as a CBMPy-DB instance. Returns the instance or None
@@ -617,6 +692,7 @@ def connectSQLDB(fname):
     print('INITDB: connecting geneDB')
     db.connectSQLiteDB(fname)
     return db
+
 
 def addGeneInformationToDB(gbkf, gendb, table, idxc):
     """
@@ -633,32 +709,33 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
     Example call for MetaDraft GeneDB: addGeneInformationToDB(gb_file, gene_db, 'GENES', 'id')
 
     """
-    #print(gbkf)
-    assert(os.path.exists(gbkf))
+    # print(gbkf)
+    assert os.path.exists(gbkf)
     GBFile = open(gbkf, 'r')
     GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
     cntr = 0
-    #ltags = []
+    # ltags = []
     for cds in GBcds:
         if cds.seq != None and not gendb.checkEntryInColumn(table, idxc, cds.name):
-            #ltags.append(cds.name)
+            # ltags.append(cds.name)
             ADD2DB = True
-            data = {'id' : cds.name,
-                    'pid' : cds.id,
-                    'annotation' : json.dumps(cds.annotations),
-                    #'seq' : str(cds.seq),
-                    'seq' : '',
-                    'type' : 'cds',
-                    'db_xref' : gendb.URLEncode(str(cds.dbxrefs))
+            data = {
+                'id': cds.name,
+                'pid': cds.id,
+                'annotation': json.dumps(cds.annotations),
+                #'seq' : str(cds.seq),
+                'seq': '',
+                'type': 'cds',
+                'db_xref': gendb.URLEncode(str(cds.dbxrefs)),
             }
 
             if data['id'] == '<unknown name>':
                 ADD2DB = False
                 # adding dodgy non-LT genes is not feasible as no 1:1 mapping is possible
-                #if 'gene' in cds.annotations:
-                    #data['id'] = cds.annotations['gene']
-                #else:
-                    #ADD2DB = False
+                # if 'gene' in cds.annotations:
+                # data['id'] = cds.annotations['gene']
+                # else:
+                # ADD2DB = False
             else:
                 ADD2DB = True
                 try:
@@ -670,23 +747,26 @@ def addGeneInformationToDB(gbkf, gendb, table, idxc):
     gendb.db_cursor.connection.commit()
     GBFile.close()
     ## turns out this is not needed as db_xrefs can be obtained from cds annotations, left here just in case
-    #try:
-        #genome = Bio.SeqIO.read(gbkf, 'genbank')
-        #for f in genome.features:
-            #if 'locus_tag' in f.qualifiers and f.qualifiers['locus_tag'][0] in ltags and f.type == 'gene' and not \
-                            #gendb.checkEntryInColumn(table, 'db_xref', f.qualifiers['locus_tag'][0]):
-                #if 'db_xref' in f.qualifiers:
-                    #db_xref = ','.join(f.qualifiers['db_xref'])
-                    #gendb.updateData(table, idxc, f.qualifiers['locus_tag'][0], {'db_xref' : '\"{}\"'.format(db_xref)}, commit=False)
-        #gendb.db_cursor.connection.commit()
-    #except ValueError:
-        #print('INFO: could not add extra gene annotations for file: {}'.format(gbkf))
+    # try:
+    # genome = Bio.SeqIO.read(gbkf, 'genbank')
+    # for f in genome.features:
+    # if 'locus_tag' in f.qualifiers and f.qualifiers['locus_tag'][0] in ltags and f.type == 'gene' and not \
+    # gendb.checkEntryInColumn(table, 'db_xref', f.qualifiers['locus_tag'][0]):
+    # if 'db_xref' in f.qualifiers:
+    # db_xref = ','.join(f.qualifiers['db_xref'])
+    # gendb.updateData(table, idxc, f.qualifiers['locus_tag'][0], {'db_xref' : '\"{}\"'.format(db_xref)}, commit=False)
+    # gendb.db_cursor.connection.commit()
+    # except ValueError:
+    # print('INFO: could not add extra gene annotations for file: {}'.format(gbkf))
 
-    #gendb.dumpTableToTxt(table, 'sqldump.txt')
+    # gendb.dumpTableToTxt(table, 'sqldump.txt')
 
     print('INFO: addGeneInformationToDB committed {} new records'.format(cntr))
 
-def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None, remove_pseudo=True):
+
+def createBasicFASTAfromFile(
+    gbkf, ext_replace='.in.fasta', gene_prefix=None, remove_pseudo=True
+):
     """
     Extracts sequence information from a FASTA (*.fasta) or GenBank file (*.gb, *.gbk *.gbff) and writes a
     simplified FASTA output.
@@ -722,12 +802,16 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None, re
                 if gene_prefix is not None:
                     seq_record.id = gene_prefix + seq_record.id
                 proteins[seq_record.id] = seq_record
-            #print(psugenes)
+            # print(psugenes)
             print('Pseudo genes:', len(psugenes))
 
         elif fasta.endswith('.gbk') or fasta.endswith('.gb') or fasta.endswith('.gbff'):
             if cntr == 0:
-                outF = fasta.replace('.gbk', '.in.fasta').replace('.gbff', '.in.fasta').replace('.gb', '.in.fasta')
+                outF = (
+                    fasta.replace('.gbk', '.in.fasta')
+                    .replace('.gbff', '.in.fasta')
+                    .replace('.gb', '.in.fasta')
+                )
                 cntr += 1
             GBFile = open(fasta, 'r')
             GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
@@ -736,7 +820,9 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None, re
                     if cds.name != '<unknown name>':
                         cds.id = cds.name
                     else:
-                        cds.id = cds.id.replace('.','_').replace(':','_').replace('-','_')
+                        cds.id = (
+                            cds.id.replace('.', '_').replace(':', '_').replace('-', '_')
+                        )
                     cds.description = ''
                     if gene_prefix is not None:
                         cds.id = gene_prefix + cds.id
@@ -748,14 +834,14 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None, re
         else:
             raise RuntimeError('ERROR: Unknown file: {}'.format(fasta))
         if remove_pseudo and len(psugenes) > 0:
-            pseudo_genes[fasta] = (psugenes)
+            pseudo_genes[fasta] = psugenes
 
     writeFASTA(outF, proteins)
 
     pseudo_cntr = 0
     # write pseudo_genes to file
     if remove_pseudo and len(pseudo_genes) > 0:
-        #print(pseudo_genes)
+        # print(pseudo_genes)
         with open(outF + '.pseudo.txt', 'w') as F:
             for s in pseudo_genes:
                 F.write('#{}\n'.format(s))
@@ -766,10 +852,19 @@ def createBasicFASTAfromFile(gbkf, ext_replace='.in.fasta', gene_prefix=None, re
     print('\nPseudogenes: {}'.format(pseudo_cntr))
     print('Proteins: {}\n'.format(len(proteins)))
 
-
     return outF
 
-def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_cobra_annot=False, useV2=True, compress_output=False):
+
+def createSeqplusModel(
+    modlist,
+    data_dir,
+    model_dir,
+    lib_set,
+    gene_db=None,
+    add_cobra_annot=False,
+    useV2=True,
+    compress_output=False,
+):
     """
     This function takes pairs of models and genbank files, updates the locus tags in the model (if necessary),
     merges GenBank annotation, including AA sequences, into the SBML model::
@@ -806,10 +901,14 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
     for oid, fgb, fmod in modlist:
         print('Processing:', oid, fgb, fmod)
         if '-' in oid and '-' in lib_set:
-            print('\nERROR: \"-\" not allowed in library name ({}) or organism shortcut ({})!'.format(lib_set, oid))
+            print(
+                '\nERROR: \"-\" not allowed in library name ({}) or organism shortcut ({})!'.format(
+                    lib_set, oid
+                )
+            )
             continue
-        lib_set = lib_set.replace('-','')
-        oid = oid.replace('-','')
+        lib_set = lib_set.replace('-', '')
+        oid = oid.replace('-', '')
         oid = '{}-{}'.format(lib_set, oid)
         oidList.append(oid)
         linkDict = {}
@@ -835,14 +934,29 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
             del DB, f_
 
         # First we see if we can map the gene association "genes" to the genbank locus tags
-        good, updated, noseq, unknown, emod, gpr, gprannot, no_locus_tag = checkModelLocusTags(fmod, fgb)
-        print('\ngood: {}\nupdated: {}\nnoseq: {}\nunknown: {}\n'.format(len(good), updated, noseq, unknown))
+        (
+            good,
+            updated,
+            noseq,
+            unknown,
+            emod,
+            gpr,
+            gprannot,
+            no_locus_tag,
+        ) = checkModelLocusTags(fmod, fgb)
+        print(
+            '\ngood: {}\nupdated: {}\nnoseq: {}\nunknown: {}\n'.format(
+                len(good), updated, noseq, unknown
+            )
+        )
         # Now we annotate the model with the genbank sequences
-        addSeqAnnotation(emod, gpr, good, updated, update_tags=True, no_locus_tag=no_locus_tag)
-        #if emod.__FBC_VERSION__ < 2:
-            #LD['gene2reaction'] = emod.getAllProteinGeneAssociations()
-            #LD['reaction2gene'] = emod.getAllGeneProteinAssociations()
-        #else:
+        addSeqAnnotation(
+            emod, gpr, good, updated, update_tags=True, no_locus_tag=no_locus_tag
+        )
+        # if emod.__FBC_VERSION__ < 2:
+        # LD['gene2reaction'] = emod.getAllProteinGeneAssociations()
+        # LD['reaction2gene'] = emod.getAllGeneProteinAssociations()
+        # else:
         LD['gene2reaction'] = emod.getAllProteinGeneAssociations(use_labels=True)
         LD['reaction2gene'] = emod.getAllGeneProteinAssociations(use_labels=True)
 
@@ -850,7 +964,7 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
             linkDict['__idx__'][g_] = oid
 
         print(len(emod.gpr))
-        #return LD, emod
+        # return LD, emod
 
         # ... and taxon data.
         # TODO update to add MIRIAM hasTaxon identifier
@@ -863,28 +977,52 @@ def createSeqplusModel(modlist, data_dir, model_dir, lib_set, gene_db=None, add_
         # this is almost "certain" never to happen but just in case .... check for reactions without genes
         for k_ in list(LD['reaction2gene'].keys()):
             if len(LD['reaction2gene'][k_]) == 0:
-                print('INFO: Reaction has no genes associated:', k_, LD['reaction2gene'][k_])
+                print(
+                    'INFO: Reaction has no genes associated:',
+                    k_,
+                    LD['reaction2gene'][k_],
+                )
                 LD['reaction2gene'].pop(k_)
-                #time.sleep(1)
+                # time.sleep(1)
 
         if not compress_output:
-            sbmlfname = os.path.split(fmod)[-1].replace('.xml','.seqplus.xml')
+            sbmlfname = os.path.split(fmod)[-1].replace('.xml', '.seqplus.xml')
         else:
-            sbmlfname = os.path.split(fmod)[-1].replace('.xml','.seqplus.gz.xml')
-        sbmloutalt = os.path.join(model_dir, '({})-({}'.format(oid, sbmlfname.replace('.seqplus.',').seqplus.')))
-        #sbmloutalt = '({})-({})-({}'.format(lib_set, oid, sbmlfname.replace('.seqplus.',').seqplus.'))
+            sbmlfname = os.path.split(fmod)[-1].replace('.xml', '.seqplus.gz.xml')
+        sbmloutalt = os.path.join(
+            model_dir,
+            '({})-({}'.format(oid, sbmlfname.replace('.seqplus.', ').seqplus.')),
+        )
+        # sbmloutalt = '({})-({})-({}'.format(lib_set, oid, sbmlfname.replace('.seqplus.',').seqplus.'))
         if not useV2:
-            cbmpy.writeSBML3FBC(emod, sbmloutalt, directory=model_dir, add_cobra_annot=add_cobra_annot, xoptions={'zip_model' : compress_output})
+            cbmpy.writeSBML3FBC(
+                emod,
+                sbmloutalt,
+                directory=model_dir,
+                add_cobra_annot=add_cobra_annot,
+                xoptions={'zip_model': compress_output},
+            )
         else:
-            cbmpy.writeSBML3FBCV2(emod, sbmloutalt, directory=model_dir, add_cobra_annot=add_cobra_annot, zip_model=compress_output)
+            cbmpy.writeSBML3FBCV2(
+                emod,
+                sbmloutalt,
+                directory=model_dir,
+                add_cobra_annot=add_cobra_annot,
+                zip_model=compress_output,
+            )
         LD['sbml_out'] = sbmloutalt
         LD['sbml_out_generic'] = sbmloutalt
 
-        Fj = open(os.path.join(model_dir, sbmloutalt.replace('.seqplus.xml', '.seqplus.json')), 'w')
+        Fj = open(
+            os.path.join(
+                model_dir, sbmloutalt.replace('.seqplus.xml', '.seqplus.json')
+            ),
+            'w',
+        )
         json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
         Fj.close()
-        #print(sbmloutalt)
-        #print(os.path.join(model_dir, sbmloutalt.replace('.seqplus.xml', '.seqplus.json')))
+        # print(sbmloutalt)
+        # print(os.path.join(model_dir, sbmloutalt.replace('.seqplus.xml', '.seqplus.json')))
 
     return oidList
 
@@ -903,12 +1041,13 @@ def createSeqplusModelMetaIdx(fmod, oid, oclass, metadraft_lib_model):
     """
 
     import cbmpy
+
     dmod = cbmpy.readSBML3FBC(fmod)
     fgb = os.path.abspath(fmod)
     input_path, fmod = os.path.split(fgb)
-    #dmod.createGeneAssociationsFromAnnotations()
-    oclass = oclass.replace('-','')
-    oid = oid.replace('-','')
+    # dmod.createGeneAssociationsFromAnnotations()
+    oclass = oclass.replace('-', '')
+    oid = oid.replace('-', '')
     oid = '{}-{}'.format(oclass, oid)
     if fmod.endswith('.xml'):
         fmod = fmod[:-4]
@@ -935,8 +1074,14 @@ def createSeqplusModelMetaIdx(fmod, oid, oclass, metadraft_lib_model):
     json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
     Fj.close()
 
-    cbmpy.writeSBML3FBC(dmod, os.path.join(input_path, fmod+'.xml'),\
-                        add_cbmpy_annot=True, add_cobra_annot=False, add_groups=False)
+    cbmpy.writeSBML3FBC(
+        dmod,
+        os.path.join(input_path, fmod + '.xml'),
+        add_cbmpy_annot=True,
+        add_cobra_annot=False,
+        add_groups=False,
+    )
+
 
 def createCDSdb(list_of_files):
     """
@@ -953,9 +1098,10 @@ def createCDSdb(list_of_files):
         GBcds = Bio.SeqIO.InsdcIO.GenBankCdsFeatureIterator(GBFile)
         for cds in GBcds:
             if cds.seq != None:
-                data = {'pid' : cds.id,
-                        'product' : cds.annotations['product'],
-                        'seq' : str(cds.seq),
+                data = {
+                    'pid': cds.id,
+                    'product': cds.annotations['product'],
+                    'seq': str(cds.seq),
                 }
             output[gbkf].append(data)
         GBFile.close()
@@ -970,6 +1116,3 @@ def createCDSdb(list_of_files):
 
     wb.save('{}.xls'.format('cds_db'))
     print('\nCDS database file saved as: cds_db.xls\n')
-
-
-

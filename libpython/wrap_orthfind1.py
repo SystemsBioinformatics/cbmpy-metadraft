@@ -7,42 +7,46 @@ def writeInparanoidBase(fname, head, user, body):
     F.close()
     return True
 
-CONFIGKEYS = {'PY_use_bootstrap' : '1',
-              'PY_use_outgroup' : '0',
-              'PY_matrix' : 'BLOSUM45',
-              'PY_score_cutoff' : '40',    # In bits. Any match below this is ignored             #
-              'PY_outgroup_cutoff' : '50', # In bits. Outgroup sequence hit must be this many bits#
-              # stronger to reject best-best hit between A and B     #
-              'PY_conf_cutoff' : '0.05',   # Include in-paralogs with this confidence or better   #
-              'PY_group_overlap_cutoff' : '0.5', # Merge groups if ortholog in one group has more #
-              # than this confidence in other group            #
-              'PY_grey_zone' : '0',  # This many bits signifies the difference between 2 scores   #
-              'PY_seq_overlap_cutoff' : '0.5', # Match area should cover at least this much of longer sequence. Match area is defined as area from start of
-              # first segment to end of last segment, i.e segments 1-10 and 90-100 gives a match length of 100.
-              'PY_segment_coverage_cutoff' : '0.25'
-              }
+
+CONFIGKEYS = {
+    'PY_use_bootstrap': '1',
+    'PY_use_outgroup': '0',
+    'PY_matrix': 'BLOSUM45',
+    'PY_score_cutoff': '40',  # In bits. Any match below this is ignored             #
+    'PY_outgroup_cutoff': '50',  # In bits. Outgroup sequence hit must be this many bits#
+    # stronger to reject best-best hit between A and B     #
+    'PY_conf_cutoff': '0.05',  # Include in-paralogs with this confidence or better   #
+    'PY_group_overlap_cutoff': '0.5',  # Merge groups if ortholog in one group has more #
+    # than this confidence in other group            #
+    'PY_grey_zone': '0',  # This many bits signifies the difference between 2 scores   #
+    'PY_seq_overlap_cutoff': '0.5',  # Match area should cover at least this much of longer sequence. Match area is defined as area from start of
+    # first segment to end of last segment, i.e segments 1-10 and 90-100 gives a match length of 100.
+    'PY_segment_coverage_cutoff': '0.25',
+}
 
 
-WINKEYS = {'PY_blastall' : "blastall.exe",
-           'PY_formatdb' : "formatdb.exe",
-           'PY_seqstat' : "seqstat.jar",
-           'PY_blastParser' : "perl.exe blast_parser.pl"
-#           'PY_date' : 'DATE /T',
-           }
+WINKEYS = {
+    'PY_blastall': "blastall.exe",
+    'PY_formatdb': "formatdb.exe",
+    'PY_seqstat': "seqstat.jar",
+    'PY_blastParser': "perl.exe blast_parser.pl"
+    #           'PY_date' : 'DATE /T',
+}
 
-LINUXKEYS = {'PY_blastall' : "blastall",
-             'PY_formatdb' : "formatdb",
-             'PY_seqstat' : "seqstat.jar",
-             'PY_blastParser' : "blast_parser.pl",
-             }
+LINUXKEYS = {
+    'PY_blastall': "blastall",
+    'PY_formatdb': "formatdb",
+    'PY_seqstat': "seqstat.jar",
+    'PY_blastParser': "blast_parser.pl",
+}
 
 WINCONFIG = WINKEYS.copy()
 WINCONFIG.update(CONFIGKEYS)
-#print(WINCONFIG)
+# print(WINCONFIG)
 
 LINUXCONFIG = LINUXKEYS.copy()
 LINUXCONFIG.update(CONFIGKEYS)
-#print(LINUXCONFIG)
+# print(LINUXCONFIG)
 
 
 HEAD = """#! /usr/bin/perl
@@ -87,22 +91,25 @@ my $usage =" Usage: inparanoid.pl <FASTAFILE with sequences of species A> <FASTA
 # Set following variables:                                                    #
 ###############################################################################
 """
-#use Win32::GUI;
-#my $hw = Win32::GUI::GetPerlWindow();
-#Win32::GUI::Hide($hw);
+# use Win32::GUI;
+# my $hw = Win32::GUI::GetPerlWindow();
+# Win32::GUI::Hide($hw);
 
 __DEBUG__ = False
 
+
 def buildUser(CONFIGKEYS, WINKEYS, LINUXKEYS):
-    #print(CONFIGKEYS)
-    #print(WINKEYS)
+    # print(CONFIGKEYS)
+    # print(WINKEYS)
     WINCONFIG = WINKEYS.copy()
     WINCONFIG.update(CONFIGKEYS)
-    if __DEBUG__: print(WINCONFIG)
+    if __DEBUG__:
+        print(WINCONFIG)
 
     LINUXCONFIG = LINUXKEYS.copy()
     LINUXCONFIG.update(CONFIGKEYS)
-    if __DEBUG__: print(LINUXCONFIG)
+    if __DEBUG__:
+        print(LINUXCONFIG)
     USERWIN = """
 # What do you want the program to do?                                         #
 $run_blast = 1;  # Set to 1 if you don't have the 4 BLAST output files        #
@@ -161,8 +168,10 @@ my $seq_overlap_cutoff = {PY_seq_overlap_cutoff}; 		# Match area should cover at
 my $segment_coverage_cutoff = {PY_segment_coverage_cutoff}; 	# Actually matching segments must cover this much of longer sequence.
 					# For example, segments 1-10 and 90-100 gives a total length of 20.
 
-""".format(**WINCONFIG)
-    #print(USERWIN)
+""".format(
+        **WINCONFIG
+    )
+    # print(USERWIN)
 
     USERLINUX = """
 # What do you want the program to do?                                         #
@@ -221,10 +230,13 @@ my $seq_overlap_cutoff = {PY_seq_overlap_cutoff}; 		# Match area should cover at
 my $segment_coverage_cutoff = {PY_segment_coverage_cutoff}; 	# Actually matching segments must cover this much of longer sequence.
 					# For example, segments 1-10 and 90-100 gives a total length of 20.
 
-""".format(**LINUXCONFIG)
+""".format(
+        **LINUXCONFIG
+    )
     return USERWIN, USERLINUX
 
-BODYWIN="""###############################################################################
+
+BODYWIN = """###############################################################################
 # No changes should be required below this line                               #
 ###############################################################################
 $ENV{CLASSPATH} = "./$seqstat" if ($use_bootstrap);
@@ -1978,7 +1990,7 @@ sub do_blast_2pass {
 # 2009-10-09 [4.1]  - Fixed bug that caused failure if Fasta header lines had more than one word.
 """
 
-BODYLINUX="""###############################################################################
+BODYLINUX = """###############################################################################
 # No changes should be required below this line                               #
 ###############################################################################
 $ENV{CLASSPATH} = "./$seqstat" if ($use_bootstrap);

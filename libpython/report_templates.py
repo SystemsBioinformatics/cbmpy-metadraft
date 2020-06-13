@@ -27,6 +27,7 @@ Contact email: b.g.olivier@vu.nl
 
 import time
 
+
 def gene_report_template(ver, ngene, ifile, db, nmg, selg, nselg, annotG, cp):
     return """
 <html>
@@ -61,7 +62,10 @@ def gene_report_template(ver, ngene, ifile, db, nmg, selg, nselg, annotG, cp):
  <p>&nbsp;</p>
  {}
 </body>
-</html>""".format(ifile, db, time.strftime('%y-%m-%d'), ver, ngene, nmg, selg, nselg, annotG, cp)
+</html>""".format(
+        ifile, db, time.strftime('%y-%m-%d'), ver, ngene, nmg, selg, nselg, annotG, cp
+    )
+
 
 def reaction_report_template(ver, nreact, ifile, db, selr, nselr, annot, cp):
     return """
@@ -95,7 +99,10 @@ def reaction_report_template(ver, nreact, ifile, db, selr, nselr, annot, cp):
  <p>&nbsp;</p>
  {}
 </body>
-</html>""".format(ifile, db, time.strftime('%y-%m-%d'), ver, nreact, selr, nselr, annot, cp)
+</html>""".format(
+        ifile, db, time.strftime('%y-%m-%d'), ver, nreact, selr, nselr, annot, cp
+    )
+
 
 def metabolite_report_template(ver, nmetab, ifile, db, selm, nselm, annot, cp):
     return """
@@ -125,7 +132,10 @@ def metabolite_report_template(ver, nmetab, ifile, db, selm, nselm, annot, cp):
  <p>&nbsp;</p>
  {}
 </body>
-</html>""".format(ifile, db, time.strftime('%y-%m-%d'), ver, nmetab, selm, annot, cp)
+</html>""".format(
+        ifile, db, time.strftime('%y-%m-%d'), ver, nmetab, selm, annot, cp
+    )
+
 
 def combine_index_template(sbmlf, xlf):
     return """
@@ -149,24 +159,36 @@ def combine_index_template(sbmlf, xlf):
   </ul>
  </body>
 </html>
-""".format(sbmlf, xlf)
+""".format(
+        sbmlf, xlf
+    )
+
 
 def combine_manifest_file(sbmlf, xlf):
     MFstr = ''
     MFstr += '<omexManifest xmlns="http://identifiers.org/combine.specifications/omex-manifest">\n'
     MFstr += ' <content location="." format="http://identifiers.org/combine.specifications/omex"/>\n'
     MFstr += ' <content location="./metadata.rdf" format="http://identifiers.org/combine.specifications/omex-metadata"/>\n'
-    MFstr += ' <content location="./{}" format="http://identifiers.org/combine.specifications/sbml.level-3.version-1"/>\n'.format(sbmlf)
-    MFstr += ' <content location="./{}" format="http://mediatypes.appspot.com/application/vnd.ms-excel"/>\n'.format(xlf)
+    MFstr += ' <content location="./{}" format="http://identifiers.org/combine.specifications/sbml.level-3.version-1"/>\n'.format(
+        sbmlf
+    )
+    MFstr += ' <content location="./{}" format="http://mediatypes.appspot.com/application/vnd.ms-excel"/>\n'.format(
+        xlf
+    )
     MFstr += ' <content location="./index.html" format="text/html"/>\n'
     MFstr += ' <content location="./1_summary_report.html" format="text/html"/>\n'
     MFstr += ' <content location="./2_gene_report.html" format="text/html"/>\n'
     MFstr += ' <content location="./3_reaction_report.html" format="text/html"/>\n'
     MFstr += ' <content location="./4_metabolite_report.html" format="text/html"/>\n'
-    MFstr = '<?xml version="1.0" encoding="utf-8"?>\n{}\n</omexManifest>\n'.format(MFstr)
+    MFstr = '<?xml version="1.0" encoding="utf-8"?>\n{}\n</omexManifest>\n'.format(
+        MFstr
+    )
     return MFstr
 
-def combine_metadata_file(vc_given='MetaDraft', vc_family='Software', vc_email='', vc_org='', scTime=None):
+
+def combine_metadata_file(
+    vc_given='MetaDraft', vc_family='Software', vc_email='', vc_org='', scTime=None
+):
     if scTime is None:
         scTime = time.strftime('%y-%m-%d %H:%M')
     MDstr = '<?xml version="1.0" encoding="UTF-8"?>\n'
