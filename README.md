@@ -31,15 +31,18 @@ To install the latest version of MetaDraft, download from GitHub ([https://githu
 
 Clone the cbmpy-metadraft git repository:
 
-`git clone https://github.com/SystemsBioinformatics/cbmpy-metadraft.git`
+```shell
+git clone https://github.com/SystemsBioinformatics/cbmpy-metadraft.git
+```
 
 ### Getting and installing the MetaDraft template library
 
 MetaDraft ships with a single model template, if you have cloned the repository you can activate the current template set, based on the BiGG2 repository, change into the MetaDraft directory and activate the template submodule:
 
-`cd cbmpy-metadraft`
-
-`git submodule update --init --remote -- modeldb/2019-1/`
+```shell
+cd cbmpy-metadraft
+git submodule update --init --remote -- modeldb/2019-1/
+```
 
 If you have downloaded master repository as a zip file or as a release, download the `template-models-2018-1.zip` template archive provided with the [latest release](https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases). Unzip this archive into the `metadraft/modeldb` directory.
 
@@ -50,11 +53,6 @@ MetaDraft is archived on Zenodo, please see CITATION.cff for more details [![DOI
 You have now downloaded the latest version of MetaDraft, next please run the system test script `python systemtest.py` to check your installation and then proceed to install the required Python dependencies. How you do this will depend on whether you use Conda or PIP.
 
 The following commands will create custom virtual environments with all the Python dependencies needed to run MetaDraft. It is also possible to install the individual packages using "conda" or "pip" see the *requirements.txt* file for details of the required packages (see "pip" instructions below).
-
-Adding the the core packages (minimal) to an existing CONDA environment:
-
-`conda install -c bgoli -c sbmlteam sip pyqt python-libsbml xlrd xlwt cbmpy biopython`
-
 
 ### Setting up a Python 3 CONDA environment (recommended)
 
@@ -77,11 +75,18 @@ One Linux run the system test (optional) and start MetaDraft:
 sh ./run.sh
 ```
 
+### Adding the the core packages (minimal) to an existing CONDA environment:
+
+```shell
+conda install -c bgoli -c sbmlteam sip pyqt python-libsbml xlrd xlwt cbmpy biopython
+```
+
+
 ## Using PyPI to install Python dependencies
 
 ### For Python 3
 
-Using PyPI it is only possible to use Python 3. You can either install the packages useing the requirements.txt file (recommended):
+Using PyPI it is only possible to use Python 3. You can install the packages useing the requirements.txt file (recommended):
 
 ```shell
 pip install -r requirements.txt
@@ -97,5 +102,5 @@ Please cite this software if you use it (the author(s) enthusiasm to carry on ma
  Zenodo. http://doi.org/10.5281/zenodo.2398336
 ```
 
-Brett G. Olivier (b.g.olivier@vu.nl)
+(C) Brett G. Olivier (b.g.olivier@vu.nl), Vrije Universiteit Amsterdam, Amsterdam, July 2020. Licence CC-BY 4.0
 
