@@ -1,9 +1,10 @@
-name: metadraft
+name: metadraft3
 channels:
   - bgoli
   - sbmlteam
   - defaults
 dependencies:
+  - python=3.7
   - cbmpy
   - sympy
   - biopython
@@ -22,4 +23,4 @@ dependencies:
   - setuptools
   - certifi
   - pygments
-prefix: c:\Anaconda3\envs\metadraft
+

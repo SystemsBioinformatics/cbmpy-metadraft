@@ -55,27 +55,27 @@ Adding the the core packages (minimal) to an existing CONDA environment:
 
 `conda install -c bgoli -c sbmlteam sip pyqt python-libsbml xlrd xlwt cbmpy biopython`
 
-### New Python 2 CONDA environment (recommended)
 
-Ubuntu (Linux-64)
+### Setting up a Python 3 CONDA environment (recommended)
 
-`conda env create -f conda_env_build_ubuntu.yml
-conda activate metadraft2
-./run.sh`
+Creating the environment, this should work on all operating systems. Open a terminal and type:
 
-Windows 10 (Win-64)
+```shell
+conda env create -f environment.yml
+conda activate metadraft3
+```
 
-`conda env create -f conda_env_build_win.yml
-conda activate metadraft2
-./runwin.bat`
+One Windows run the system test (optional) and start MetaDraft:
 
-### New Python 3 CONDA environment
+```shell
+runwin.bat
+```
 
-Windows 10 (Win-64)
+One Linux run the system test (optional) and start MetaDraft:
 
-`conda env create -f conda_env_build_win_py3.yml
-conda activate metadraft2
-./runwin.bat`
+```shell
+sh ./run.sh
+```
 
 ## Using PyPI to install Python dependencies
 
@@ -83,11 +83,9 @@ conda activate metadraft2
 
 Using PyPI it is only possible to use Python 3. You can either install the packages useing the requirements.txt file (recommended):
 
-`pip install -r requirements.txt`
-
-or individually install the core packages (minimal):
-
-`pip install sip PyQt5 python-libsbml xlrd xlwt cbmpy biopython`
+```shell
+pip install -r requirements.txt
+```
 
 ## Software citation
 
@@ -98,9 +96,6 @@ Please cite this software if you use it (the author(s) enthusiasm to carry on ma
  SystemsBioinformatics/cbmpy-metadraft: Metadraft. 
  Zenodo. http://doi.org/10.5281/zenodo.2398336
 ```
-
-
-
 
 Brett G. Olivier (b.g.olivier@vu.nl)
 
