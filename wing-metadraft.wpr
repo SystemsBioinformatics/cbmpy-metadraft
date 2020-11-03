@@ -14,3 +14,4 @@ proj.directory-list = [{'dirloc': loc('.'),
 proj.file-list = [loc('wing-metadraft.wpr'),
                   loc('wing-metadraft.wpu')]
 proj.file-type = 'shared'
+proj.main-file = loc('metadraft.py')

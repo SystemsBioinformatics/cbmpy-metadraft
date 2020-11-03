@@ -38,7 +38,16 @@ except NameError:
     from functools import reduce
 
 import sip
-API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
+
+API_NAMES = [
+    "QDate",
+    "QDateTime",
+    "QString",
+    "QTextStream",
+    "QTime",
+    "QUrl",
+    "QVariant",
+]
 API_VERSION = 2
 for name in API_NAMES:
     sip.setapi(name, API_VERSION)
@@ -47,26 +56,58 @@ cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
 
 try:
     import docx
+
     HAVE_DOCX = True
 except ImportError:
     HAVE_DOCX = False
 
-metadraft_version = '0.9.3'
+metadraft_version = '0.9.4'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
 try:
     import PyQt4
-    from PyQt4 import (QtCore, QtGui, QtSvg)
-    from PyQt4.QtCore import (Qt, QCoreApplication)
-    from PyQt4.QtGui import (QMainWindow, QApplication, QPushButton, QWidget, QAction, QSplashScreen, QMdiArea)
-    from PyQt4.QtGui import (QTabWidget, QVBoxLayout, QMdiSubWindow, QTableWidgetItem, QTextBrowser, QDockWidget)
-    from PyQt4.QtGui import (QLabel, QTableWidget, QLineEdit, QComboBox, QGridLayout, QHBoxLayout, QButtonGroup)
-    from PyQt4.QtGui import (QRadioButton, QFileDialog, QAbstractItemView, QMessageBox, QMenu, QSizePolicy)
-    from PyQt4.QtGui import (QTextEdit, QListWidget, qApp, QStatusBar, QInputDialog)
-    from PyQt4.QtGui import (QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog)
-    from PyQt4.QtGui import (QCursor, QBrush, QColor, QPalette, QPixmap, QFont)
-    from PyQt4.QtCore import (pyqtSignal, pyqtSlot)
+    from PyQt4 import QtCore, QtGui, QtSvg
+    from PyQt4.QtCore import Qt, QCoreApplication
+    from PyQt4.QtGui import (
+        QMainWindow,
+        QApplication,
+        QPushButton,
+        QWidget,
+        QAction,
+        QSplashScreen,
+        QMdiArea,
+    )
+    from PyQt4.QtGui import (
+        QTabWidget,
+        QVBoxLayout,
+        QMdiSubWindow,
+        QTableWidgetItem,
+        QTextBrowser,
+        QDockWidget,
+    )
+    from PyQt4.QtGui import (
+        QLabel,
+        QTableWidget,
+        QLineEdit,
+        QComboBox,
+        QGridLayout,
+        QHBoxLayout,
+        QButtonGroup,
+    )
+    from PyQt4.QtGui import (
+        QRadioButton,
+        QFileDialog,
+        QAbstractItemView,
+        QMessageBox,
+        QMenu,
+        QSizePolicy,
+    )
+    from PyQt4.QtGui import QTextEdit, QListWidget, qApp, QStatusBar, QInputDialog
+    from PyQt4.QtGui import QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog
+    from PyQt4.QtGui import QCursor, QBrush, QColor, QPalette, QPixmap, QFont
+    from PyQt4.QtCore import pyqtSignal, pyqtSlot
+
     HAVE_QT4 = True
     print('Using Qt4 - MetaMod is now also Qt5 compatible')
 except ImportError as ex:
@@ -74,16 +115,47 @@ except ImportError as ex:
 
 try:
     import PyQt5
-    from PyQt5 import (QtCore, QtGui, QtSvg, QtWidgets)
-    from PyQt5.QtCore import (Qt, QCoreApplication)
-    from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton, QWidget, QAction, QSplashScreen, QMdiArea)
-    from PyQt5.QtWidgets import (QTabWidget, QVBoxLayout, QMdiSubWindow, QTableWidgetItem, QTextBrowser, QDockWidget)
-    from PyQt5.QtWidgets import (QLabel, QTableWidget, QLineEdit, QComboBox, QGridLayout, QHBoxLayout, QButtonGroup)
-    from PyQt5.QtWidgets import (QRadioButton, QFileDialog, QAbstractItemView, QMessageBox, QMenu, QSizePolicy)
-    from PyQt5.QtWidgets import (QTextEdit, QListWidget, qApp, QStatusBar, QInputDialog)
-    from PyQt5.QtWidgets import (QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog)
-    from PyQt5.QtGui import (QCursor, QBrush, QColor, QPalette, QPixmap, QFont)
-    from PyQt5.QtCore import (pyqtSignal, pyqtSlot)
+    from PyQt5 import QtCore, QtGui, QtSvg, QtWidgets
+    from PyQt5.QtCore import Qt, QCoreApplication
+    from PyQt5.QtWidgets import (
+        QMainWindow,
+        QApplication,
+        QPushButton,
+        QWidget,
+        QAction,
+        QSplashScreen,
+        QMdiArea,
+    )
+    from PyQt5.QtWidgets import (
+        QTabWidget,
+        QVBoxLayout,
+        QMdiSubWindow,
+        QTableWidgetItem,
+        QTextBrowser,
+        QDockWidget,
+    )
+    from PyQt5.QtWidgets import (
+        QLabel,
+        QTableWidget,
+        QLineEdit,
+        QComboBox,
+        QGridLayout,
+        QHBoxLayout,
+        QButtonGroup,
+    )
+    from PyQt5.QtWidgets import (
+        QRadioButton,
+        QFileDialog,
+        QAbstractItemView,
+        QMessageBox,
+        QMenu,
+        QSizePolicy,
+    )
+    from PyQt5.QtWidgets import QTextEdit, QListWidget, qApp, QStatusBar, QInputDialog
+    from PyQt5.QtWidgets import QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog
+    from PyQt5.QtGui import QCursor, QBrush, QColor, QPalette, QPixmap, QFont
+    from PyQt5.QtCore import pyqtSignal, pyqtSlot
+
     HAVE_QT5 = True
     print('Using Qt5 - the next generation')
 except ImportError as ex:
@@ -106,7 +178,7 @@ except ImportError as ex:
 
 class NumberTableWidgetItem(QTableWidgetItem):
     def __lt__(self, other):
-        if ( isinstance(other, QTableWidgetItem) ):
+        if isinstance(other, QTableWidgetItem):
             my_value = self.data(Qt.EditRole)
             other_value = other.data(Qt.EditRole)
             try:
@@ -120,7 +192,7 @@ class NumberTableWidgetItem(QTableWidgetItem):
             except ValueError:
                 other_ok = False
 
-            if ( my_ok and other_ok ):
+            if my_ok and other_ok:
                 return my_value < other_value
 
         return super(NumberTableWidgetItem, self).__lt__(other)
@@ -128,11 +200,11 @@ class NumberTableWidgetItem(QTableWidgetItem):
 
 class NumberTableListLengthItem(QTableWidgetItem):
     def __lt__(self, other):
-        if ( isinstance(other, QTableWidgetItem) ):
+        if isinstance(other, QTableWidgetItem):
             my_value = len(self.data(Qt.EditRole).split(','))
             other_value = len(other.data(Qt.EditRole).split(','))
-            #print(my_value, other_value)
-            if ( my_value and my_value ):
+            # print(my_value, other_value)
+            if my_value and my_value:
                 return my_value < other_value
         return super(NumberTableListLengthItem, self).__lt__(other)
 
@@ -162,6 +234,7 @@ class StreamToLogger(object):
     http://www.electricmonk.nl/log/2011/08/14/redirect-stdout-and-stderr-to-a-logger-in-python/
 
     """
+
     def __init__(self, logger, log_level=logging.INFO):
         self.logger = logger
         self.log_level = log_level
@@ -174,15 +247,17 @@ class StreamToLogger(object):
     def flush(self):
         time.sleep(0.001)
 
+
 ## Developer mode options
 DEBUG_MODE = True
 DEL_BLAST_TMP = True
 
+
 class MetaDraftGUI(QWidget):
     appwindow = None
     stderr_logger = None
-    stdout_logger= None
-    log_files = os.path.join(cDir,'log')
+    stdout_logger = None
+    log_files = os.path.join(cDir, 'log')
     log_syslog = None
     cDir = cDir
     _tmpDir_ = os.path.join(cDir, 'tmp')
@@ -206,8 +281,18 @@ class MetaDraftGUI(QWidget):
     grid = None
     status_bar = None
     _colourCycler_ = None
-    _colours_ = ((255, 255, 204), (204, 255, 204), (204, 255, 255), (204, 204, 255), (255, 204, 204),\
-                 (204, 255, 153), (153, 255, 204), (102, 204, 255), (204, 153, 255), (255, 153, 204))
+    _colours_ = (
+        (255, 255, 204),
+        (204, 255, 204),
+        (204, 255, 255),
+        (204, 204, 255),
+        (255, 204, 204),
+        (204, 255, 153),
+        (153, 255, 204),
+        (102, 204, 255),
+        (204, 153, 255),
+        (255, 153, 204),
+    )
     _loading_ = None
     _active_tab_ = 0
     _last_tab_ = 0
@@ -268,7 +353,7 @@ class MetaDraftGUI(QWidget):
     config_file = '_metadraft.cfg'
     regex = None
     id_sep = '@'
-    #gene_prefix = 'in_'
+    # gene_prefix = 'in_'
     gene_prefix = 'in_'
     reaction_table_loading = False
     gene_table_loading = False
@@ -285,32 +370,45 @@ class MetaDraftGUI(QWidget):
 
     GENE_SELECTION_STATE_CHANGE = False
     REACTION_SELECTION_STATE_CHANGE = False
-    metadraft_rpt_footer = '<p><small>Generated by MetaDraft {} &copy; <a href="https://systemsbioinformatics.github.io/metatoolkit/">MetaToolkit</a>.</small></p>'.format(metadraft_version)
+    metadraft_rpt_footer = '<p><small>Generated by MetaDraft {} &copy; <a href="https://systemsbioinformatics.github.io/metatoolkit/">MetaToolkit</a>.</small></p>'.format(
+        metadraft_version
+    )
 
     def __init__(self, appwindow):
         self.appwindow = appwindow
         self._loading_ = True
 
         super(MetaDraftGUI, self).__init__()
-        #self.setAttribute(Qt.WA_DeleteOnClose)
+        # self.setAttribute(Qt.WA_DeleteOnClose)
 
         # read configuration file and enable syslog
         self._readConfig()
         self.metadraft_db_version = self._CONFIG_['system']['metadraft_db_version']
 
         # check if database and library exists
-        if not ( os.path.exists(os.path.join(cDir, 'modeldb', self.metadraft_db_version)) and\
-                os.path.exists(os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_model')) ):
+        if not (
+            os.path.exists(os.path.join(cDir, 'modeldb', self.metadraft_db_version))
+            and os.path.exists(
+                os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_model')
+            )
+        ):
             self.metadraft_db_version = 'default'
-            self.widgetMsgBox(QMessageBox.Warning, 'Database Load Error', "Could not load template database. Please ensure \
+            self.widgetMsgBox(
+                QMessageBox.Warning,
+                'Database Load Error',
+                "Could not load template database. Please ensure \
 the template library submodule has been initialised (see readme.md) and correctly set in the _metadraft.cfg, for example: \
-'metadraft_db_version: 2019-1'.")
-
+'metadraft_db_version: 2019-1'.",
+            )
 
         # setup default paths based on dbversion from config file
         self.modeldb_base = os.path.join(cDir, 'modeldb', self.metadraft_db_version)
-        self.seqplus_files = os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_model')
-        self.metaproteome_files = os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'lib_metaproteome')
+        self.seqplus_files = os.path.join(
+            cDir, 'modeldb', self.metadraft_db_version, 'lib_model'
+        )
+        self.metaproteome_files = os.path.join(
+            cDir, 'modeldb', self.metadraft_db_version, 'lib_metaproteome'
+        )
         self._dbx_dir_ = os.path.join(cDir, 'modeldb', self.metadraft_db_version, 'dbx')
 
         if not self.DEBUG_MODE and self._CONFIG_['system']['syslog']:
@@ -318,18 +416,27 @@ the template library submodule has been initialised (see readme.md) and correctl
             self.initSysLog()
 
         # create subdirectories for various things (they should exist)
-        for f_ in [self.result_files, self.blast_work_dir, self.blast_tools, self._tmpDir_]:
+        for f_ in [
+            self.result_files,
+            self.blast_work_dir,
+            self.blast_tools,
+            self._tmpDir_,
+        ]:
             if not os.path.exists(f_):
                 os.makedirs(f_)
 
         # check that there are the necessary model templates and database otherwise use minimal default
         if not os.path.exists(self.modeldb_base):
             if not os.path.exists(self.seqplus_files):
-                self.seqplus_files = os.path.join(cDir, 'modeldb', 'default', 'lib_model')
+                self.seqplus_files = os.path.join(
+                    cDir, 'modeldb', 'default', 'lib_model'
+                )
                 if not os.path.exists(self.seqplus_files):
                     os.makedirs(self.seqplus_files)
             if not os.path.exists(self.metaproteome_files):
-                self.metaproteome_files = os.path.join(cDir, 'modeldb', 'default', 'lib_metaproteome')
+                self.metaproteome_files = os.path.join(
+                    cDir, 'modeldb', 'default', 'lib_metaproteome'
+                )
                 if not os.path.exists(self.metaproteome_files):
                     os.makedirs(self.metaproteome_files)
             if not os.path.exists(self._dbx_dir_):
@@ -343,19 +450,38 @@ the template library submodule has been initialised (see readme.md) and correctl
         self._genedb_path_ = os.path.join(self._dbx_dir_, '_metadraft_genedb.sql')
         self._notesdb_path_ = os.path.join(self._dbx_dir_, '_metadraft_notesdb.sql')
 
-        self.regex = {'GOterm' : re.compile('GO:\\d{7}')}
+        self.regex = {'GOterm': re.compile('GO:\\d{7}')}
 
         # initialise the gene DB
         self._dummy_gene_obj_ = cbmpy.CBModel.Gene('dummy_gene')
         self._dummy_gene_obj_.setName('dummy_gene')
         self._dummy_gene_obj_.__setObjRef__(self._dummy_gene_obj_)
         self._dummy_gene_obj_.__global_id__ = {}
+
         def f(a, b, c):
             pass
+
         self._dummy_gene_obj_.__changeGlobalId__ = f
         # sync with metamod
-        self._genedb_sqlcols_ = ['id TEXT PRIMARY KEY', 'pid TEXT', 'type TEXT', 'annotation TEXT', 'db_xref TEXT', 'notes TEXT', 'rdf TEXT', 'sbo TEXT', 'seq TEXT']
-        self._notesdb_sqlcols_ = ['unixtime REAL PRIMARY KEY', 'user TEXT', 'model TEXT', 'id TEXT', 'notes TEXT', 'other TEXT']
+        self._genedb_sqlcols_ = [
+            'id TEXT PRIMARY KEY',
+            'pid TEXT',
+            'type TEXT',
+            'annotation TEXT',
+            'db_xref TEXT',
+            'notes TEXT',
+            'rdf TEXT',
+            'sbo TEXT',
+            'seq TEXT',
+        ]
+        self._notesdb_sqlcols_ = [
+            'unixtime REAL PRIMARY KEY',
+            'user TEXT',
+            'model TEXT',
+            'id TEXT',
+            'notes TEXT',
+            'other TEXT',
+        ]
 
         self._gene_score_limits_ = [1.0, 1.0]
         self._gene_selected_ids_ = []
@@ -379,53 +505,58 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widgetBusy()
 
         # not needed with new applayout
-        #spacer = QLabel(' ')
-        #spacer.setMaximumHeight(20)
-        #self.grid.addWidget(spacer, 0, 0, 1, 4)
-        #self.grid.addWidget(spacer, 0, 4, 1, 3)
+        # spacer = QLabel(' ')
+        # spacer.setMaximumHeight(20)
+        # self.grid.addWidget(spacer, 0, 0, 1, 4)
+        # self.grid.addWidget(spacer, 0, 4, 1, 3)
 
         # add tabs in order
-        self._tabpanel_idx_ = {0 : 'Build',
-                               1 : 'Genes',
-                               2 : 'Reactions',
-                               3 : 'Metabolites',
-                               4 : 'Objective',
-                               5 : 'Other'
-                               }
+        self._tabpanel_idx_ = {
+            0: 'Build',
+            1: 'Genes',
+            2: 'Reactions',
+            3: 'Metabolites',
+            4: 'Objective',
+            5: 'Other',
+        }
 
         self.widgetTabPanel_add(self.build_panel, 'Build', setcurrent=True)
-        self.grid.addWidget(self.widget_tabpanel,  1-1, 0, 4, 4)
+        self.grid.addWidget(self.widget_tabpanel, 1 - 1, 0, 4, 4)
 
         # add tabs in order
-        self._tabpanel_right_idx_ = {0 : 'Information',
-                                     1 : 'BuildReaction'
-                                     }
+        self._tabpanel_right_idx_ = {0: 'Information', 1: 'BuildReaction'}
         tab0R = self.widgetTabPanelRight_createtab(self.reactDisplay)
         self.widgetTabPanelRight_add(tab0R, 'Information', setcurrent=True)
-        #tab1R = self.widgetTabPanelRight_createtab(QWidget())
-        #self.widgetTabPanelRight_add(tab1R, 'BuildReaction', setcurrent=False)
+        # tab1R = self.widgetTabPanelRight_createtab(QWidget())
+        # self.widgetTabPanelRight_add(tab1R, 'BuildReaction', setcurrent=False)
 
         self.widget_tabpanel_right.setTabEnabled(1, False)
-        #self.grid.addWidget(self.widget_tabpanel_right,  1-1, 4, 4, 3)
-        self.grid.addWidget(self.widget_tabpanel_right,  1-1, 4, 3, 3)
+        # self.grid.addWidget(self.widget_tabpanel_right,  1-1, 4, 4, 3)
+        self.grid.addWidget(self.widget_tabpanel_right, 1 - 1, 4, 3, 3)
 
         # Notes panel
         self._wnotes_ = QTextEdit()
         self._wnotes_.setMaximumHeight(60)
         self._wnotes_.setDisabled(True)
-        self.grid.addWidget(self._wnotes_, 4-1, 4, 1, 3)
+        self.grid.addWidget(self._wnotes_, 4 - 1, 4, 1, 3)
 
         self.setLayout(self.grid)
 
         self.status_bar = QStatusBar()
-        self.status_bar.showMessage("Welcome to MetaDraft {}-{}".format(metadraft_version, cbmpy.__version__))
+        self.status_bar.showMessage(
+            "Welcome to MetaDraft {}-{}".format(metadraft_version, cbmpy.__version__)
+        )
         self.appwindow.setStatusBar(self.status_bar)
 
         # todo
-        #self.widgetButtonPanel()
+        # self.widgetButtonPanel()
 
         # setup
-        self.appwindow.setWindowTitle('CBMPy MetaDraft {} with database version: {}'.format(metadraft_version, self.metadraft_db_version))
+        self.appwindow.setWindowTitle(
+            'CBMPy MetaDraft {} with database version: {}'.format(
+                metadraft_version, self.metadraft_db_version
+            )
+        )
         self.initDBs()
         self._loading_ = False
 
@@ -445,12 +576,14 @@ the template library submodule has been initialised (see readme.md) and correctl
     def initSysLog(self):
         if not os.path.exists(self.log_files):
             os.makedirs(self.log_files)
-        self.log_syslog = os.path.join(self.log_files, 'syslog-{}'.format(time.strftime("%y-%m-%d")))
+        self.log_syslog = os.path.join(
+            self.log_files, 'syslog-{}'.format(time.strftime("%y-%m-%d"))
+        )
         logging.basicConfig(
-            level = logging.DEBUG,
-            format = '%(levelname)s:%(name)s:%(message)s',
-            filename = self.log_syslog,
-            filemode = 'a'
+            level=logging.DEBUG,
+            format='%(levelname)s:%(name)s:%(message)s',
+            filename=self.log_syslog,
+            filemode='a',
         )
 
         self.stdout_logger = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
@@ -463,16 +596,20 @@ the template library submodule has been initialised (see readme.md) and correctl
         # GENEDB
         self._genedb_ = cbmpy.CBNetDB.DBTools()
         if not os.path.exists(os.path.join(self.cDir, self._genedb_path_)):
-            if os.path.exists(os.path.join(self.cDir, self._genedb_path_+'.zip')):
-                print('INITDB: extracting geneDB archive: {}'.format(self._genedb_path_+'.zip'))
-                zip_ref = zipfile.ZipFile(self._genedb_path_+'.zip', 'r')
+            if os.path.exists(os.path.join(self.cDir, self._genedb_path_ + '.zip')):
+                print(
+                    'INITDB: extracting geneDB archive: {}'.format(
+                        self._genedb_path_ + '.zip'
+                    )
+                )
+                zip_ref = zipfile.ZipFile(self._genedb_path_ + '.zip', 'r')
                 zip_ref.extractall(self._dbx_dir_)
                 zip_ref.close()
                 self._genedb_.connectSQLiteDB(self._genedb_path_)
             else:
                 print('INITDB: initialising geneDB')
                 self._genedb_.connectSQLiteDB(self._genedb_path_)
-                self._genedb_.createDBTable('GENES',  self._genedb_sqlcols_)
+                self._genedb_.createDBTable('GENES', self._genedb_sqlcols_)
         else:
             print('INITDB: connecting geneDB')
             self._genedb_.connectSQLiteDB(self._genedb_path_)
@@ -481,7 +618,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         if not os.path.exists(os.path.join(self.cDir, self._notesdb_path_)):
             print('INITDB: initialising notesDB')
             self._notesdb_.connectSQLiteDB(self._notesdb_path_)
-            self._notesdb_.createDBTable('NOTES',  self._notesdb_sqlcols_)
+            self._notesdb_.createDBTable('NOTES', self._notesdb_sqlcols_)
         else:
             print('INITDB: connecting notesDB')
             self._notesdb_.connectSQLiteDB(self._notesdb_path_)
@@ -501,33 +638,42 @@ the template library submodule has been initialised (see readme.md) and correctl
         sres = dat['__metaproteome__']['search_results']
         g2react = {}
         for t in sres:
-            #print(t, sres[t])
+            # print(t, sres[t])
             if sres[t] is not None:
                 for g in sres[t]:
                     if g in dat['__idx__']:
                         rids = dat[dat['__idx__'][g]]['gene2reaction'][g]
-                        #print(rids)
+                        # print(rids)
                         if g in g2react:
                             print('WARNING: {} in G2REACT'.format(g))
                         else:
                             a = [mods[dat['__idx__'][g]].getReaction(r) for r in rids]
-                            #print(a)
+                            # print(a)
                             g2react[g] = a
                     else:
-                        print('WARNING: {} not in _IDX_: gene defined that does not exist in a GPR association').format(g)
-            #print('')
+                        print(
+                            'WARNING: {} not in _IDX_: gene defined that does not exist in a GPR association'
+                        ).format(g)
+            # print('')
 
         self._DAT_MODELS = mods
         self._DAT_SEARCH_RES = sres
         self._DAT_G2REACT = g2react
         self._DAT_LINK_DICT_ = dat
         if '__notesdb_key__' in self._DAT_LINK_DICT_['__metaproteome__']:
-            print('Using notesdb_key', self._DAT_LINK_DICT_['__metaproteome__']['__notesdb_key__'])
+            print(
+                'Using notesdb_key',
+                self._DAT_LINK_DICT_['__metaproteome__']['__notesdb_key__'],
+            )
         else:
-            self._DAT_LINK_DICT_['__metaproteome__']['__notesdb_key__'] = str(time.time())
+            self._DAT_LINK_DICT_['__metaproteome__']['__notesdb_key__'] = str(
+                time.time()
+            )
             print('Updating results with notesdb_key')
             self.func_saveResultsFile()
-        self._DAT_NOTESDB_KEY_ = self._DAT_LINK_DICT_['__metaproteome__']['__notesdb_key__']
+        self._DAT_NOTESDB_KEY_ = self._DAT_LINK_DICT_['__metaproteome__'][
+            '__notesdb_key__'
+        ]
 
     def copyFunc(self):
         return
@@ -537,8 +683,8 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     def createMenus(self):
         menubar = self.appwindow.menuBar()
-        #menubar.setMinimumWidth(300)
-        #menubar.setNativeMenuBar(False)
+        # menubar.setMinimumWidth(300)
+        # menubar.setNativeMenuBar(False)
 
         # menu actions
         # quit
@@ -582,8 +728,8 @@ the template library submodule has been initialised (see readme.md) and correctl
         sconApp.setDisabled(False)
 
         resetApp = QAction('New analysis (reset)', self)
-        #resetApp.setShortcut('Ctrl+L')
-        #resetApp.isEnabled(False)
+        # resetApp.setShortcut('Ctrl+L')
+        # resetApp.isEnabled(False)
         resetApp.triggered.connect(self.menu_resetGUI)
         resetApp.setDisabled(True)
 
@@ -591,14 +737,16 @@ the template library submodule has been initialised (see readme.md) and correctl
         aboutApp.triggered.connect(self.menu_helpAbout)
 
         enableBenchmarkApp = QAction('Use benchmark sequence', self)
-        #enableBenchmarkApp.setShortcut('Ctrl+B')
+        # enableBenchmarkApp.setShortcut('Ctrl+B')
         enableBenchmarkApp.triggered.connect(self.menu_enableBenchmark)
 
         addSeqPlusModelApp = QAction('Create template model', self)
-        #addSeqPlusModelApp.setShortcut('Ctrl+B')
+        # addSeqPlusModelApp.setShortcut('Ctrl+B')
         addSeqPlusModelApp.triggered.connect(self.menu_addSeqPlusModel)
 
-        self.enableOptimizationApp = QAction('Use ID optimization', self, checkable=True)
+        self.enableOptimizationApp = QAction(
+            'Use ID optimization', self, checkable=True
+        )
         self.enableOptimizationApp.setChecked(True)
 
         self.userMetaDefMenu = QMenu('MetaProteomes', self)
@@ -624,10 +772,10 @@ the template library submodule has been initialised (see readme.md) and correctl
             viewSyslogApp.triggered.connect(self.menu_viewSyslogApp)
 
         self.savedSessionMenu = QMenu('Saved sessions', self)
-        saveSessionApp  = QAction('Save current session', self)
+        saveSessionApp = QAction('Save current session', self)
         saveSessionApp.triggered.connect(self.menu_saveSession)
 
-        clearSessionsApp  = QAction('Clear all sessions', self)
+        clearSessionsApp = QAction('Clear all sessions', self)
         clearSessionsApp.triggered.connect(self.menu_clearSessions)
 
         menuFile = menubar.addMenu('&File')
@@ -638,7 +786,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         menuFile.addAction(sbmlAppArch)
         menuFile.addSeparator()
         # disabled for now unless requested
-        #menuFile.addAction(sbmlApp1)
+        # menuFile.addAction(sbmlApp1)
         menuFile.addAction(sbmlApp0)
         menuFile.addSeparator()
         menuFile.addAction(tblxApp)
@@ -649,7 +797,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         menuTools = menubar.addMenu('&Build options')
         menuTools.addAction(addSeqPlusModelApp)
-        #menuTools.addSeparator()
+        # menuTools.addSeparator()
         menuTools.addAction(self.enableOptimizationApp)
         menuTools.addAction(enableBenchmarkApp)
         menuTools.addSeparator()
@@ -657,10 +805,17 @@ the template library submodule has been initialised (see readme.md) and correctl
         menuTools.addSeparator()
         menuTools.addMenu(self.userMetaDefMenu)
 
-
         self.menuToolsM = menubar.addMenu('&Model options')
 
-        model_actions = ['Summary report', 'Gene report', 'Reaction report', 'Metabolite report', 'Export unmatched genes (as FASTA)', 'Export unselected genes (as FASTA)', 'Export model notes (CSV)']
+        model_actions = [
+            'Summary report',
+            'Gene report',
+            'Reaction report',
+            'Metabolite report',
+            'Export unmatched genes (as FASTA)',
+            'Export unselected genes (as FASTA)',
+            'Export model notes (CSV)',
+        ]
         for m in model_actions:
             self.menuToolsM.addAction(QAction(m, self))
         self.menuToolsM.triggered[QAction].connect(self.menu_modelTools)
@@ -698,7 +853,9 @@ the template library submodule has been initialised (see readme.md) and correctl
         self._session_actions_ = []
         for k in range(len(cstate_keys)):
             self._session_actions_.append(QAction(cstate_keys[k], self))
-            self.sessionSignalMapper.setMapping(self._session_actions_[k], cstate_keys[k])
+            self.sessionSignalMapper.setMapping(
+                self._session_actions_[k], cstate_keys[k]
+            )
             self._session_actions_[k].triggered.connect(self.sessionSignalMapper.map)
             self.savedSessionMenu.addAction(self._session_actions_[k])
         self.sessionSignalMapper.mapped[str].connect(self.menu_loadSession)
@@ -707,7 +864,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot(str)
     def menu_loadSession(self, state):
-        #print(state)
+        # print(state)
         self.func_loadSelectionState(state)
         self.func_setSelectionState()
 
@@ -737,7 +894,9 @@ the template library submodule has been initialised (see readme.md) and correctl
         title = "About MetaDraft."
         msg = "This is MetaDraft version: {} ".format(metadraft_version)
         msg += "available from\n https://systemsbioinformatics.github.io/cbmpy-metadraft/.\n\n"
-        msg += "MetaDraft makes use of CBMPy ({}) technology and is part of the".format(cbmpy.__version__)
+        msg += "MetaDraft makes use of CBMPy ({}) technology and is part of the".format(
+            cbmpy.__version__
+        )
         msg += "MetaToolkit project. "
         msg += "MetaDraft is distributed as Open Source Software, please see the included license.txt for details.\n\n"
         msg += "For support please use the GitHub issue tracker or contact the developers.\n\n"
@@ -747,7 +906,9 @@ the template library submodule has been initialised (see readme.md) and correctl
         else:
             qtv = 'Qt5'
         msg += "You are using Py{} provided by:\n{}.\n\n".format(qtv, os.sys.version)
-        msg += "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2019."
+        msg += (
+            "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2019."
+        )
 
         self.widgetMsgBox(QMessageBox.Information, title, msg)
 
@@ -781,9 +942,11 @@ the template library submodule has been initialised (see readme.md) and correctl
             print('NOTHING TO REPORT SIRE!')
 
     def func_exportNotesDB(self):
-        filename = str(self.saveFile('Export notes database', self._history_save_dir_, '*.csv'))
+        filename = str(
+            self.saveFile('Export notes database', self._history_save_dir_, '*.csv')
+        )
         try:
-            #self._notesdb_.dumpTableToTxt('NOTES', filename)
+            # self._notesdb_.dumpTableToTxt('NOTES', filename)
             self._notesdb_.dumpTableToCSV('NOTES', filename)
         except IOError:
             print('exportNotesDB, no filename')
@@ -793,9 +956,13 @@ the template library submodule has been initialised (see readme.md) and correctl
         unmatched = []
         for g in LD['search_results']:
             if LD['search_results'][g] is None:
-                unmatched.append(g[len(self.gene_prefix):])
-        #print(unmatched)
-        fname = self.openFile('Please load original User Proteome file', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
+                unmatched.append(g[len(self.gene_prefix) :])
+        # print(unmatched)
+        fname = self.openFile(
+            'Please load original User Proteome file',
+            self._history_open_dir_,
+            'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)',
+        )
         seq = []
         seqout = {}
         if fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
@@ -804,22 +971,22 @@ the template library submodule has been initialised (see readme.md) and correctl
             for cds in GBcds:
                 if cds.seq != None:
                     cds.id = cds.name
-                    #cds.description = ''
-                    #if gene_prefix is not None:
-                        #cds.id = gene_prefix + cds.id
+                    # cds.description = ''
+                    # if gene_prefix is not None:
+                    # cds.id = gene_prefix + cds.id
                     seqout[cds.name] = cds
             GBFile.close()
-            #seq = biotools.SeqIO.read(fname, 'genbank')
+            # seq = biotools.SeqIO.read(fname, 'genbank')
 
-            #for fe_ in seq.features:
-                #if fe_.type == 'CDS':
-                    #if fe_.qualifiers['locus_tag'][0] in unmatched:
-                        #prt = fe_.qualifiers['translation'][0]
-                        #gid = fe_.qualifiers['locus_tag'][0]
-                        #prt = biotools.Bio.SeqRecord.SeqRecord(biotools.Bio.Seq.Seq(prt,\
-                                                                                    #biotools.Bio.Alphabet.ProteinAlphabet()),\
-                                                               #id=gid, name=gid, description='')
-                        #seqout[gid] = prt
+            # for fe_ in seq.features:
+            # if fe_.type == 'CDS':
+            # if fe_.qualifiers['locus_tag'][0] in unmatched:
+            # prt = fe_.qualifiers['translation'][0]
+            # gid = fe_.qualifiers['locus_tag'][0]
+            # prt = biotools.Bio.SeqRecord.SeqRecord(biotools.Bio.Seq.Seq(prt,\
+            # biotools.Bio.Alphabet.ProteinAlphabet()),\
+            # id=gid, name=gid, description='')
+            # seqout[gid] = prt
         else:
             try:
                 seq = biotools.SeqIO.parse(fname, 'fasta')
@@ -828,10 +995,12 @@ the template library submodule has been initialised (see readme.md) and correctl
                         seqout[s.id] = s
             except:
                 print('FASTA file read error')
-                self.status_bar.showMessage('Invalid file type: \"{}\" ignored.'.format(str(fname)))
-        #print(seqout)
-        #print(len(seqout))
-        biotools.writeFASTA(fname+'.unmatched.fasta', seqout, paranoid_style=False)
+                self.status_bar.showMessage(
+                    'Invalid file type: \"{}\" ignored.'.format(str(fname))
+                )
+        # print(seqout)
+        # print(len(seqout))
+        biotools.writeFASTA(fname + '.unmatched.fasta', seqout, paranoid_style=False)
 
     def func_exportUnselectedGenes(self):
         LD = self._DAT_LINK_DICT_['__metaproteome__']
@@ -840,16 +1009,20 @@ the template library submodule has been initialised (see readme.md) and correctl
         unmatched = []
         for g in LD['search_results']:
             if LD['search_results'][g] is None:
-                unmatched.append(str(g[len(self.gene_prefix):]))
+                unmatched.append(str(g[len(self.gene_prefix) :]))
 
         unselected = []
         for g in self._gene_selected_map_:
             if not self._gene_selected_map_[g]:
-                g1 = g.split(self.id_sep)[0][len(self.gene_prefix):]
+                g1 = g.split(self.id_sep)[0][len(self.gene_prefix) :]
                 if g1 not in unmatched:
                     unselected.append(g1)
 
-        fname = self.openFile('Please load original User Proteome file.', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
+        fname = self.openFile(
+            'Please load original User Proteome file.',
+            self._history_open_dir_,
+            'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)',
+        )
         seq = []
         seqout = {}
         if fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
@@ -868,8 +1041,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                         seqout[s.id] = s
             except:
                 print('FASTA file read error')
-                self.status_bar.showMessage('Invalid file type: \"{}\" ignored.'.format(str(fname)))
-        biotools.writeFASTA(fname+'.unselected.fasta', seqout, paranoid_style=False)
+                self.status_bar.showMessage(
+                    'Invalid file type: \"{}\" ignored.'.format(str(fname))
+                )
+        biotools.writeFASTA(fname + '.unselected.fasta', seqout, paranoid_style=False)
 
     def func_generateSummaryReport(self):
         self.func_generateGeneReport()
@@ -884,9 +1059,11 @@ the template library submodule has been initialised (see readme.md) and correctl
         LD['reports']['genes']['unselected'] = []
         for g in LD['search_results']:
             if LD['search_results'][g] is None:
-                LD['reports']['genes']['unmatched'].append(g[len(self.gene_prefix):])
+                LD['reports']['genes']['unmatched'].append(g[len(self.gene_prefix) :])
         for gidx in range(self.table_gene.rowCount()):
-            igene = str(self.table_gene.item(gidx, 0).text()).strip()[len(self.gene_prefix):]
+            igene = str(self.table_gene.item(gidx, 0).text()).strip()[
+                len(self.gene_prefix) :
+            ]
             mgene = str(self.table_gene.item(gidx, 1).text()).strip()
             score = str(self.table_gene.item(gidx, 2).text()).strip()
             org = str(self.table_gene.item(gidx, 4).text()).strip()
@@ -898,8 +1075,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                     LD['reports']['genes']['unselected'].append(gdat)
         QApplication.restoreOverrideCursor()
 
-
-    def func_generateReactionReport(self): #r, n, o, s
+    def func_generateReactionReport(self):  # r, n, o, s
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']
         LD['reports']['reactions']['selected'] = []
@@ -919,7 +1095,6 @@ the template library submodule has been initialised (see readme.md) and correctl
                 LD['reports']['reactions']['unselected'].append(rdat)
         QApplication.restoreOverrideCursor()
 
-
     def func_generateMetaboliteReport(self):
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']
@@ -934,18 +1109,16 @@ the template library submodule has been initialised (see readme.md) and correctl
             org = str(self.table_metab.item(midx, 2).text()).strip()
             mdat = (metab, name, org)
             LD['reports']['metabolites']['selected'].append(mdat)
-            #if self.table_metab.item(midx, 3).checkState():
-                #LD['reports']['metabolites']['selected'].append(mdat)
-            #else:
-                #LD['reports']['metabolites']['unselected'].append(mdat)
+            # if self.table_metab.item(midx, 3).checkState():
+            # LD['reports']['metabolites']['selected'].append(mdat)
+            # else:
+            # LD['reports']['metabolites']['unselected'].append(mdat)
         QApplication.restoreOverrideCursor()
 
     def func_formatSummaryReport(self):
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
-        gene_stats = {'org' : {},
-                      'score' : {}
-                     }
+        gene_stats = {'org': {}, 'score': {}}
         # summarize gene info
         total_sel = 0
         for g, m, s, o in LD['genes']['selected']:
@@ -957,7 +1130,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 gene_stats['org'][o] += 1
                 gene_stats['score'][o] += float(s)
 
-        #print(gene_stats)
+        # print(gene_stats)
 
         gene_tbl = []
         for o in gene_stats['org']:
@@ -967,7 +1140,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         # summarize reaction info
         total_sel_react = 0
-        react_stats = {'org' : {}}
+        react_stats = {'org': {}}
         for r, n, o, s in LD['reactions']['selected']:
             total_sel_react += 1
             if o not in react_stats['org']:
@@ -975,7 +1148,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             else:
                 react_stats['org'][o] += 1
 
-        #print(react_stats)
+        # print(react_stats)
 
         react_tbl = []
         for o in react_stats['org']:
@@ -985,7 +1158,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         # summarize metabolite info
         total_sel_metab = 0
-        metab_stats = {'org' : {}}
+        metab_stats = {'org': {}}
         for m, n, o in LD['metabolites']['selected']:
             total_sel_metab += 1
             if o not in metab_stats['org']:
@@ -993,7 +1166,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             else:
                 metab_stats['org'][o] += 1
 
-        #print(metab_stats)
+        # print(metab_stats)
 
         metab_tbl = []
         for o in metab_stats['org']:
@@ -1013,15 +1186,29 @@ the template library submodule has been initialised (see readme.md) and correctl
             <h3>Gene statistics</h3>
             <table width="80%" border="0" cellspacing="1" cellpadding="1">
                 <tbody>
-        """.format(os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[-1].replace('.in.','.'),\
-                                          self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'],\
-                                          self.result_file, time.strftime('%Y-%m-%d %H:%M'), metadraft_version)
+        """.format(
+            os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[
+                -1
+            ].replace('.in.', '.'),
+            self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'],
+            self.result_file,
+            time.strftime('%Y-%m-%d %H:%M'),
+            metadraft_version,
+        )
 
-        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format('Model', 'Percentage', 'Genes', 'Avg. score')
+        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format(
+            'Model', 'Percentage', 'Genes', 'Avg. score'
+        )
         for o in gene_tbl:
-            html += '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o[1], round(float(o[0])/total_sel*100.0, 2), o[0],\
-                                                                        round(float(gene_stats['score'][o[1]])/gene_stats['org'][o[1]], 3))
-        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format('Total', '', total_sel , '')
+            html += '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o[1],
+                round(float(o[0]) / total_sel * 100.0, 2),
+                o[0],
+                round(float(gene_stats['score'][o[1]]) / gene_stats['org'][o[1]], 3),
+            )
+        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format(
+            'Total', '', total_sel, ''
+        )
         html += """
             </tbody>
         </table>"""
@@ -1031,10 +1218,16 @@ the template library submodule has been initialised (see readme.md) and correctl
                 <tbody>
         """
 
-        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format('Model', 'Percentage', 'Reactions', '')
+        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format(
+            'Model', 'Percentage', 'Reactions', ''
+        )
         for o in react_tbl:
-            html += '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o[1], round(float(o[0])/float(total_sel_react)*100.0, 2), o[0], '')
-        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format('Total', '', total_sel_react , '')
+            html += '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o[1], round(float(o[0]) / float(total_sel_react) * 100.0, 2), o[0], ''
+            )
+        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format(
+            'Total', '', total_sel_react, ''
+        )
 
         html += """
             </tbody>
@@ -1045,10 +1238,16 @@ the template library submodule has been initialised (see readme.md) and correctl
                 <tbody>
         """
 
-        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format('Model', 'Percentage', 'Metabolites', '')
+        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format(
+            'Model', 'Percentage', 'Metabolites', ''
+        )
         for o in metab_tbl:
-            html += '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o[1], round(float(o[0])/float(total_sel_metab)*100.0, 2), o[0], '')
-        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format('Total', '', total_sel_metab , '')
+            html += '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o[1], round(float(o[0]) / float(total_sel_metab) * 100.0, 2), o[0], ''
+            )
+        html += '<tr><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td><td><strong>{}</strong></td></tr>'.format(
+            'Total', '', total_sel_metab, ''
+        )
 
         html += """
             </tbody>
@@ -1059,7 +1258,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         </body>
         </html>
         """
-        html = html.replace('\n','')
+        html = html.replace('\n', '')
         cp = self.metadraft_rpt_footer
         QApplication.restoreOverrideCursor()
         return html.format(cp)
@@ -1068,44 +1267,75 @@ the template library submodule has been initialised (see readme.md) and correctl
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
         nmg = ', '.join(LD['genes']['unmatched'])
-        selg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Source', 'Target', 'Score', 'Model')
+        selg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+            'Source', 'Target', 'Score', 'Model'
+        )
+
         def buildAnnotation(m, g, o):
             annot = self.buildHtmlStringsGene(m, g)
-            annot = annot.replace('<table cellpadding=', '<br/><table id="{}_{}_{}" width="80%" cellpadding='.format(o, g, m))
-            annot = annot.replace('</caption>',' (<a href="#page-top">top</a>)</caption>')
-            annot = annot.replace('</table>','</table>\n')
+            annot = annot.replace(
+                '<table cellpadding=',
+                '<br/><table id="{}_{}_{}" width="80%" cellpadding='.format(o, g, m),
+            )
+            annot = annot.replace(
+                '</caption>', ' (<a href="#page-top">top</a>)</caption>'
+            )
+            annot = annot.replace('</table>', '</table>\n')
             return annot
+
         mgene = []
         annotG = ''
         for g, m, s, o in LD['genes']['selected']:
             if g not in mgene:
                 mgene.append(g)
-            selg += '<tr><td><a href="#{}_{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o, g, m, g, m, s, o)
+            selg += '<tr><td><a href="#{}_{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o, g, m, g, m, s, o
+            )
             annotG += buildAnnotation(m, g, o)
-        nselg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Source', 'Target', 'Score', 'Model')
+        nselg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+            'Source', 'Target', 'Score', 'Model'
+        )
         tgene = []
         for g, m, s, o in LD['genes']['unselected']:
             if g not in tgene and g not in mgene:
                 tgene.append(g)
-            nselg += '<tr><td><a href="#{}_{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o, g, m, g, m, s, o)
+            nselg += '<tr><td><a href="#{}_{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o, g, m, g, m, s, o
+            )
             annotG += buildAnnotation(m, g, o)
-        #print(mgene, len(mgene))
+        # print(mgene, len(mgene))
         cp = self.metadraft_rpt_footer
         QApplication.restoreOverrideCursor()
-        return report_templates.gene_report_template(metadraft_version, '{}:{}'.format(len(mgene), len(tgene+mgene)), os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[-1].replace('.in.','.'),\
-                                          self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'], nmg, selg, nselg, annotG, cp)
-
+        return report_templates.gene_report_template(
+            metadraft_version,
+            '{}:{}'.format(len(mgene), len(tgene + mgene)),
+            os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[
+                -1
+            ].replace('.in.', '.'),
+            self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'],
+            nmg,
+            selg,
+            nselg,
+            annotG,
+            cp,
+        )
 
     def func_formatReactionReport(self):
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
         annotR = ''
+
         def buildAnnotation(r, o):
             R = self._DAT_MODELS[o].getReaction(r)
             annot = self.buildHtmlStringsReaction(R)
-            annot = annot.replace('<table>','<hr/><table id="{}_{}"><caption>{} (<a href="#page-top">top</a>)</caption>'.format(o, r, r))
-            annot = annot.replace('<html><head></head><body>','')
-            annot = annot.replace('</body></html>','\n')
+            annot = annot.replace(
+                '<table>',
+                '<hr/><table id="{}_{}"><caption>{} (<a href="#page-top">top</a>)</caption>'.format(
+                    o, r, r
+                ),
+            )
+            annot = annot.replace('<html><head></head><body>', '')
+            annot = annot.replace('</body></html>', '\n')
             miriam = R.getMIRIAMannotations()
             r_html = ''
             if miriam != None:
@@ -1113,54 +1343,95 @@ the template library submodule has been initialised (see readme.md) and correctl
                 for m in miriam:
                     if len(miriam[m]) > 0:
                         for u in range(len(miriam[m])):
-                            r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(m, miriam[m][u], miriam[m][u])
+                            r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(
+                                m, miriam[m][u], miriam[m][u]
+                            )
             annot = annot.replace('</table>', '\n{}\n</table>'.format(r_html))
             return annot
 
-        selg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Reaction', 'Name', 'Model', 'Source')
+        selg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+            'Reaction', 'Name', 'Model', 'Source'
+        )
         nreact = 0
         for r, n, o, s in LD['reactions']['selected']:
             nreact += 1
-            selg += '<tr><td><a href="#{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o, r, r, n, o, s)
+            selg += '<tr><td><a href="#{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o, r, r, n, o, s
+            )
             annotR += buildAnnotation(r, o)
-        nselg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Reaction', 'Name', 'Model', 'Source')
+        nselg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+            'Reaction', 'Name', 'Model', 'Source'
+        )
         for r, n, o, s in LD['reactions']['unselected']:
-            nselg += '<tr><td><a href="#{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(o, r, r, n, o, s)
+            nselg += '<tr><td><a href="#{}_{}">{}</a></td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+                o, r, r, n, o, s
+            )
             annotR += buildAnnotation(r, o)
         cp = self.metadraft_rpt_footer
         QApplication.restoreOverrideCursor()
-        return report_templates.reaction_report_template(metadraft_version, nreact, os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[-1].replace('.in.','.'),\
-                                          self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'], selg, nselg, annotR, cp)
-
+        return report_templates.reaction_report_template(
+            metadraft_version,
+            nreact,
+            os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[
+                -1
+            ].replace('.in.', '.'),
+            self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'],
+            selg,
+            nselg,
+            annotR,
+            cp,
+        )
 
     def func_formatMetaboliteReport(self):
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
-        selg = '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Metabolite', 'Name', 'Model')
+        selg = '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
+            'Metabolite', 'Name', 'Model'
+        )
+
         def buildAnnotation(m, o):
             annot = self.buildHtmlStringsMetab(m)
-            annot = annot.replace('<table cellpadding="5"','<hr/><table cellpadding="5" width="80%" id="{}_{}"'.format(o, m))
-            annot = annot.replace('<caption></caption>','<caption>{} (<a href="#page-top">top</a>)</caption>'.format(m))
-            annot = annot.replace('<html><body>','')
-            annot = annot.replace('</body></html>','\n')
+            annot = annot.replace(
+                '<table cellpadding="5"',
+                '<hr/><table cellpadding="5" width="80%" id="{}_{}"'.format(o, m),
+            )
+            annot = annot.replace(
+                '<caption></caption>',
+                '<caption>{} (<a href="#page-top">top</a>)</caption>'.format(m),
+            )
+            annot = annot.replace('<html><body>', '')
+            annot = annot.replace('</body></html>', '\n')
             return annot
+
         annotM = ''
         nmetab = 0
         for m, n, o in LD['metabolites']['selected']:
             nmetab += 1
-            selg += '<tr><td><a href="#{}_{}">{}</a></td><td>{}</td><td>{}</td></tr>'.format(o, m, m, n, o)
+            selg += '<tr><td><a href="#{}_{}">{}</a></td><td>{}</td><td>{}</td></tr>'.format(
+                o, m, m, n, o
+            )
             annotM += buildAnnotation(m, o)
         nselg = '<br/>'
-        #nselg = '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Metabolite', 'Name', 'Model')
-        #for m, n, o in LD['metabolites']['unselected']:
-            #nselg += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(m, n, o)
+        # nselg = '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format('Metabolite', 'Name', 'Model')
+        # for m, n, o in LD['metabolites']['unselected']:
+        # nselg += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(m, n, o)
         cp = self.metadraft_rpt_footer
         QApplication.restoreOverrideCursor()
-        return report_templates.metabolite_report_template(metadraft_version, nmetab, os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[-1].replace('.in.','.'),\
-                                          self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'], selg, nselg, annotM, cp)
+        return report_templates.metabolite_report_template(
+            metadraft_version,
+            nmetab,
+            os.path.split(self._DAT_LINK_DICT_['__metaproteome__']['input_fasta'])[
+                -1
+            ].replace('.in.', '.'),
+            self._DAT_LINK_DICT_['__metaproteome__']['__fullname__'],
+            selg,
+            nselg,
+            annotM,
+            cp,
+        )
 
     def widget_displayReport(self, html):
-        if os.sys.version_info < (3,0,0):
+        if os.sys.version_info < (3, 0, 0):
             try:
                 html = html.encode('utf-8', 'ignore').strip()
             except:
@@ -1186,15 +1457,17 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         @pyqtSlot()
         def exportHTML():
-            #html = textWindow.toHtml()
-            #html = html.encode('utf-8', 'ignore').strip()
-            filename = str(self.saveFile('Save report', self._history_save_dir_, '*.html'))
+            # html = textWindow.toHtml()
+            # html = html.encode('utf-8', 'ignore').strip()
+            filename = str(
+                self.saveFile('Save report', self._history_save_dir_, '*.html')
+            )
             try:
                 F = open(filename, 'w')
                 try:
-                    F.write(html.replace('\n','').strip())
+                    F.write(html.replace('\n', '').strip())
                 except TypeError:
-                    F.write(str(html).replace('\n','').strip())
+                    F.write(str(html).replace('\n', '').strip())
                 F.close()
             except IOError:
                 print('exportHTML, no filename')
@@ -1206,9 +1479,9 @@ the template library submodule has been initialised (see readme.md) and correctl
             url = 'file://' + path
             with open(path, 'w') as f:
                 try:
-                    f.write(html.replace('\n','').strip())
+                    f.write(html.replace('\n', '').strip())
                 except TypeError:
-                    f.write(str(html).replace('\n','').strip())
+                    f.write(str(html).replace('\n', '').strip())
             webbrowser.open_new_tab(url)
             self.widget_reportViewApp.close()
 
@@ -1220,14 +1493,14 @@ the template library submodule has been initialised (see readme.md) and correctl
         browsebut.setText('View in browser')
         browsebut.clicked.connect(openBrowser)
 
-        #def addNotes():
-            #<!--<h3>Notes</h3>
-            #<p></p>-->
-            #<h3>Genes</h3>
-            #pass
-        #addnotes = QPushButton(self.widget_reportViewApp)
-        #addnotes.setText('Add notes')
-        #addnotes.clicked.connect(addNotes)
+        # def addNotes():
+        # <!--<h3>Notes</h3>
+        # <p></p>-->
+        # <h3>Genes</h3>
+        # pass
+        # addnotes = QPushButton(self.widget_reportViewApp)
+        # addnotes.setText('Add notes')
+        # addnotes.clicked.connect(addNotes)
 
         layout = QGridLayout(self.widget_reportViewApp)
         layout.setSpacing(10)
@@ -1259,7 +1532,6 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_config = ConfigPanelWidgetINP(bionoid, 'CONFIGKEYS')
         print(bionoid.CONFIGKEYS)
 
-
     @pyqtSlot(QAction)
     def menu_userMetaDefApp(self, q):
         mset = str(q.text())
@@ -1270,10 +1542,14 @@ the template library submodule has been initialised (see readme.md) and correctl
         elif mset == 'Export':
             self.menu_userMetaDefApp_export()
         else:
-            metap = self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'][mset]
+            metap = self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'][
+                mset
+            ]
             selected = metap.split('&nbsp;')
 
-            all_items = [str(self.bp_lview.item(i).text()) for i in range(self.bp_lview.count())]
+            all_items = [
+                str(self.bp_lview.item(i).text()) for i in range(self.bp_lview.count())
+            ]
             selected = [i for i in selected if i in all_items]
             print(selected)
 
@@ -1296,17 +1572,20 @@ the template library submodule has been initialised (see readme.md) and correctl
         if len(s_items) > 0:
             s_items = [str(a.text()) for a in s_items]
             s_items = '&nbsp;'.join(s_items)
-            mset, ok = QInputDialog.getText(self, 'Input Dialog',
-                                                  'Enter MetaProteome name:')
+            mset, ok = QInputDialog.getText(
+                self, 'Input Dialog', 'Enter MetaProteome name:'
+            )
             if ok:
-                self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'][str(mset)] = s_items
+                self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'][
+                    str(mset)
+                ] = s_items
                 self.userMetaDefMenu.addAction(QAction(str(mset), self))
                 self._writeConfig()
 
     def func_getNewPopupWindowCoords(self):
         ppos = self.mapToGlobal(self.pos())
         size = self.size()
-        w, h = int(size.width()/2 - 200), int(size.height()/2 - 100)
+        w, h = int(size.width() / 2 - 200), int(size.height() / 2 - 100)
         x, y, = int(ppos.x()) + w, int(ppos.y()) + h
         return x, y
 
@@ -1315,10 +1594,12 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_userMetaDefApp_del = QWidget()
         self.widget_userMetaDefApp_del.setWindowTitle('Delete user defined list(s)')
         ppos = self.func_getNewPopupWindowCoords()
-        self.widget_userMetaDefApp_del.setGeometry(QtCore.QRect(ppos[0], ppos[1], 400, 200))
+        self.widget_userMetaDefApp_del.setGeometry(
+            QtCore.QRect(ppos[0], ppos[1], 400, 200)
+        )
 
         list_widge = QListWidget(parent=self.widget_userMetaDefApp_del)
-        #list_widge.setDragDropMode(QAbstractItemView.InternalMove)
+        # list_widge.setDragDropMode(QAbstractItemView.InternalMove)
         list_widge.setSelectionMode(QAbstractItemView.ExtendedSelection)
         litems = {}
         for action in self.userMetaDefMenu.actions():
@@ -1338,7 +1619,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                 for i in delist:
                     i = str(i.text())
                     self.userMetaDefMenu.removeAction(litems[i])
-                    self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'].pop(i)
+                    self._CONFIG_['users'][self.func_getCurrentUser()][
+                        'metaproteomes'
+                    ].pop(i)
                 self._writeConfig()
             self.widget_userMetaDefApp_del.close()
 
@@ -1359,27 +1642,33 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_userMetaDefApp_del.setWindowModality(Qt.ApplicationModal)
         self.widget_userMetaDefApp_del.show()
 
-
     @pyqtSlot(QtCore.QPoint)
     def bp_lviewRightClicked(self, QPos):
-
         def deleteModel():
             print(item)
             path = os.path.join(self.seqplus_files, '{}.seqplus.xml'.format(item[0]))
             print(path)
             if os.path.exists(path):
-                reply = QMessageBox.question(self, 'Message',\
-                                                   "Are you sure you want to delete:\n{}?".format(item[0]),\
-                                                   QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                reply = QMessageBox.question(
+                    self,
+                    'Message',
+                    "Are you sure you want to delete:\n{}?".format(item[0]),
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No,
+                )
                 if reply == QMessageBox.Yes:
                     os.remove(path)
-                    os.remove(path.replace('.xml','.json'))
-                    print('Deleted files: \"{}\", \"{}\"'.format(path, path.replace('.xml','.json')))
+                    os.remove(path.replace('.xml', '.json'))
+                    print(
+                        'Deleted files: \"{}\", \"{}\"'.format(
+                            path, path.replace('.xml', '.json')
+                        )
+                    )
                     self.bp_lview.clear()
                     datF = []
                     for f in os.listdir(self.seqplus_files):
                         if f.endswith('.seqplus.xml'):
-                            datF.append(f.replace('.seqplus.xml',''))
+                            datF.append(f.replace('.seqplus.xml', ''))
                     datF.sort()
                     self.bp_lview.addItems(datF)
 
@@ -1402,9 +1691,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                         cbmpy.CBMultiModel.copyReaction(cmod, exm, rid)
                     else:
                         idGlob[rid] = idGlob[rid] + 1
-                        altrid='{}_{}'.format(rid, idGlob[rid])
+                        altrid = '{}_{}'.format(rid, idGlob[rid])
                         idGlob[altrid] = idGlob[rid]
-                        #print(modelF, rid, altrid)
+                        # print(modelF, rid, altrid)
                         cbmpy.CBMultiModel.copyReaction(cmod, exm, rid, altrid)
             notes += '</p>'
             print(len(reactions))
@@ -1413,14 +1702,16 @@ the template library submodule has been initialised (see readme.md) and correctl
                 s.unsetBoundary()
                 s.setCompartmentId('cell')
             QApplication.restoreOverrideCursor()
-            filename = str(self.saveFile('Export NonGPR SBML', self.sbml_save_dir, '*.xml'))
+            filename = str(
+                self.saveFile('Export NonGPR SBML', self.sbml_save_dir, '*.xml')
+            )
             cbmpy.writeSBML3FBCV2(exm, filename)
 
         item = self.bp_lview.selectedItems()
         self.widget_lview_rclickmenu = QMenu()
         if len(item) > 1:
             item = [str(i.text()) for i in item]
-            #self.widgetMsgBox(QMessageBox.Information, 'Template model menu', 'Please select only one item to enable right click menu.')
+            # self.widgetMsgBox(QMessageBox.Information, 'Template model menu', 'Please select only one item to enable right click menu.')
             menu_item2 = self.widget_lview_rclickmenu.addAction("Export non-gpr reac.")
             menu_item2.triggered.connect(exportNonGPR)
         else:
@@ -1445,28 +1736,33 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         self.optimized_metaproteome = self.enableOptimizationApp.isChecked()
         print('Optimization:', self.optimized_metaproteome)
-        self.buildMetaProteomeFromSeqplus(items2, self.seqplus_files,
-                                          self.optimized_metaproteome)
+        self.buildMetaProteomeFromSeqplus(
+            items2, self.seqplus_files, self.optimized_metaproteome
+        )
 
         out_file = self.metaproteome_file
         print(out_file)
-        #self.metaproteome_file = None
-        filename = str(self.saveFile('Export Metaproteome to:', self._history_save_dir_, 'All files (*)'))
+        # self.metaproteome_file = None
+        filename = str(
+            self.saveFile(
+                'Export Metaproteome to:', self._history_save_dir_, 'All files (*)'
+            )
+        )
         filename = os.path.abspath(filename)
         shutil.move(out_file, filename)
-        os.remove(out_file.replace('_metaproteome.fasta','_metalink.json'))
+        os.remove(out_file.replace('_metaproteome.fasta', '_metalink.json'))
         print(filename)
 
-        #s_items = self.bp_lview.selectedItems()
-        #if len(s_items) > 0:
-            #s_items = [str(a.text()) for a in s_items]
-            #s_items = '&nbsp;'.join(s_items)
-            #mset, ok = QInputDialog.getText(self, 'Input Dialog',
-                                                  #'Enter MetaProteome name:')
-            #if ok:
-                #self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'][str(mset)] = s_items
-                #self.userMetaDefMenu.addAction(QAction(str(mset), self))
-                #self._writeConfig()
+        # s_items = self.bp_lview.selectedItems()
+        # if len(s_items) > 0:
+        # s_items = [str(a.text()) for a in s_items]
+        # s_items = '&nbsp;'.join(s_items)
+        # mset, ok = QInputDialog.getText(self, 'Input Dialog',
+        #'Enter MetaProteome name:')
+        # if ok:
+        # self._CONFIG_['users'][self.func_getCurrentUser()]['metaproteomes'][str(mset)] = s_items
+        # self.userMetaDefMenu.addAction(QAction(str(mset), self))
+        # self._writeConfig()
 
     @pyqtSlot()
     def menu_viewSyslogApp(self):
@@ -1540,11 +1836,19 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot()
     def bp_createSeqPlusLoadFileSBML(self):
-        fname = str(self.openFile('Load file', self._history_open_dir_, filterex='Supported (*.xml *.sbml);;SBML (*.xml *.sbml)'))
+        fname = str(
+            self.openFile(
+                'Load file',
+                self._history_open_dir_,
+                filterex='Supported (*.xml *.sbml);;SBML (*.xml *.sbml)',
+            )
+        )
         if fname.endswith('.xml'):
             self.widget_seqplus_sbml.setText(str(fname))
         else:
-            self.status_bar.showMessage('Invalid file type: \"{}\" ignored.'.format(str(fname)))
+            self.status_bar.showMessage(
+                'Invalid file type: \"{}\" ignored.'.format(str(fname))
+            )
             self.widgetAddSeQPlus.activateWindow()
             return
         self.widget_seqplus_sbml.update()
@@ -1552,14 +1856,20 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot()
     def bp_createSeqPlusLoadFilesGB(self):
-        fnames = self.openFiles('Load file', self._history_open_dir_, filterex='Supported (*.gbk *.gbff *.gb);;GenBank (*.gbk *.gbff *.gb)')
+        fnames = self.openFiles(
+            'Load file',
+            self._history_open_dir_,
+            filterex='Supported (*.gbk *.gbff *.gb);;GenBank (*.gbk *.gbff *.gb)',
+        )
         outlist = []
         for f in fnames:
             if f.endswith('.gbk') or f.endswith('.gb') or f.endswith('.gbff'):
                 outlist.append(f)
         if len(outlist) == 0:
             self.widget_seqplus_gbank.setText('')
-            self.status_bar.showMessage('Invalid file type: \"{}\" ignored.'.format(str(fnames)))
+            self.status_bar.showMessage(
+                'Invalid file type: \"{}\" ignored.'.format(str(fnames))
+            )
             self.widgetAddSeQPlus.activateWindow()
             return
         if len(outlist) == 1:
@@ -1568,7 +1878,6 @@ the template library submodule has been initialised (see readme.md) and correctl
             self.widget_seqplus_gbank.setText(','.join(outlist))
         self.widget_seqplus_gbank.update()
         self.widgetAddSeQPlus.activateWindow()
-
 
     @pyqtSlot()
     def bp_createSeqPlusProcess(self):
@@ -1608,11 +1917,16 @@ the template library submodule has been initialised (see readme.md) and correctl
                 return
             else:
                 try:
-                    ret = biotools.createSeqplusModel(modlist, sbml_dir, self.seqplus_files, 'usr',\
-                                                      gene_db=self._genedb_path_,\
-                                                      add_cobra_annot=False,
-                                                      useV2=self.CREATE_TEMPLATE_V2,
-                                                      compress_output=self.CREATE_TEMPLATE_ZIP)
+                    ret = biotools.createSeqplusModel(
+                        modlist,
+                        sbml_dir,
+                        self.seqplus_files,
+                        'usr',
+                        gene_db=self._genedb_path_,
+                        add_cobra_annot=False,
+                        useV2=self.CREATE_TEMPLATE_V2,
+                        compress_output=self.CREATE_TEMPLATE_ZIP,
+                    )
                 except AssertionError:
                     QApplication.restoreOverrideCursor()
                     title = 'Create SeQPlus Template Model: error'
@@ -1623,7 +1937,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 datF = []
                 for f in os.listdir(self.seqplus_files):
                     if f.endswith('.seqplus.xml'):
-                        datF.append(f.replace('.seqplus.xml',''))
+                        datF.append(f.replace('.seqplus.xml', ''))
                 datF.sort()
                 self.bp_lview.addItems(datF)
                 self.bp_lview.update()
@@ -1640,12 +1954,12 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_tabpanel.setTabEnabled(0, True)
         self.widget_tabpanel.setCurrentIndex(0)
         try:
-            for t in [3,2,1]:
+            for t in [3, 2, 1]:
                 self.widget_tabpanel.removeTab(t)
         except Exception as e:
             print(e)
         self.menuSessions.setDisabled(True)
-        #self.appwindow.setWindowTitle('MetaDraft')
+        # self.appwindow.setWindowTitle('MetaDraft')
         self.sbmlApp0.setDisabled(True)
         self.sbmlApp1.setDisabled(True)
         self.sbmlApp2.setDisabled(True)
@@ -1662,12 +1976,11 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.bp_btn_out.setEnabled(False)
         self.bp_label_out.setVisible(False)
 
-
         self.widgetDisplayReact_update('Ready...')
         self.selected_metabolites = {}
         self.selected_reactions = {}
         self._gene_score_limits_ = [1.0, 1.0]
-        #self.menuConfig.setEnabled(True)
+        # self.menuConfig.setEnabled(True)
         self._wnotes_.setDisabled(True)
 
     def func_getGroupMembership(self, mod):
@@ -1689,39 +2002,50 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.menu_buildAll()
         self.model = cbmpy.CBModel.Model(self.model_name)
         user = self.func_getCurrentUser(realname=False)
-        self.model.addModelCreator(user, 'MetaDraft', organisation='https://systemsbioinformatics.github.io/cbmpy-metadraft/')
+        self.model.addModelCreator(
+            user,
+            'MetaDraft',
+            organisation='https://systemsbioinformatics.github.io/cbmpy-metadraft/',
+        )
         self.model.setCreatedDate()
         self.model.setModifiedDate()
 
         # scan objective functions
-        #print(self._DAT_MODELS)
+        # print(self._DAT_MODELS)
         objfuncs = []
         cntr = 1
         for m in self._DAT_MODELS:
             stoic = self._DAT_MODELS[m].getActiveObjectiveStoichiometry()
-            objfuncs.append({'coefficient' : stoic[0][0],
-                             'rid' : stoic[0][1],
-                             #'reaction' : self._DAT_MODELS[m].getReaction(stoic[0][1]).clone(),
-                             'src' : self._DAT_MODELS[m],
-                             'oid' : 'obj{}'.format(cntr),
-                             'operation' : self._DAT_MODELS[m].getActiveObjective().getOperation()
-            })
+            objfuncs.append(
+                {
+                    'coefficient': stoic[0][0],
+                    'rid': stoic[0][1],
+                    #'reaction' : self._DAT_MODELS[m].getReaction(stoic[0][1]).clone(),
+                    'src': self._DAT_MODELS[m],
+                    'oid': 'obj{}'.format(cntr),
+                    'operation': self._DAT_MODELS[m]
+                    .getActiveObjective()
+                    .getOperation(),
+                }
+            )
             if cntr == 1:
                 objfuncs[-1]['active'] = True
             else:
                 objfuncs[-1]['active'] = False
             cntr += 1
-        #pprint.pprint(objfuncs)
+        # pprint.pprint(objfuncs)
 
         tmp_compartments = [self.default_compartment]
         for s in self.selected_metabolites:
             S = self.selected_metabolites[s].clone()
-            #S.setAnnotation('metadraft_template', S._organism_)
+            # S.setAnnotation('metadraft_template', S._organism_)
             if S.getCompartmentId() not in tmp_compartments:
                 tmp_compartments.append(S.getCompartmentId())
-            #S.setCompartmentId(self.default_compartment)
-            #S.unsetBoundary()
-            notes = self.readNotesFromNotesDB(S._organism_, S.getId(), user, self._DAT_NOTESDB_KEY_)
+            # S.setCompartmentId(self.default_compartment)
+            # S.unsetBoundary()
+            notes = self.readNotesFromNotesDB(
+                S._organism_, S.getId(), user, self._DAT_NOTESDB_KEY_
+            )
             if notes != '':
                 S.setNotes('<p>{}</p>'.format(notes))
             self.model.addSpecies(S)
@@ -1729,9 +2053,15 @@ the template library submodule has been initialised (see readme.md) and correctl
         for c_ in tmp_compartments:
             self.model.createCompartment(c_)
 
-        selected_reactions = ['{}{}{}'.format(str(self.table_reaction.item(ridx, 0).text()).strip(), self.id_sep,\
-                                              str(self.table_reaction.item(ridx, 3).text()).strip())\
-                              for ridx in range(self.table_reaction.rowCount()) if self.table_reaction.item(ridx, 2).checkState()]
+        selected_reactions = [
+            '{}{}{}'.format(
+                str(self.table_reaction.item(ridx, 0).text()).strip(),
+                self.id_sep,
+                str(self.table_reaction.item(ridx, 3).text()).strip(),
+            )
+            for ridx in range(self.table_reaction.rowCount())
+            if self.table_reaction.item(ridx, 2).checkState()
+        ]
 
         print('NSR', len(selected_reactions))
         print('OSR', len(self._reaction_selected_ids_))
@@ -1742,21 +2072,33 @@ the template library submodule has been initialised (see readme.md) and correctl
         slx = []
         tlx = []
         target2source = {}
-        #source2target = {}
+        # source2target = {}
 
         for x0 in gk:
             x = x0.split(self.id_sep)
-            slx.append(x[0][len(self.gene_prefix):])
+            slx.append(x[0][len(self.gene_prefix) :])
             tlx.append(x[1])
             if tlx[-1] not in target2source:
-                target2source.update({tlx[-1] : slx[-1]})
-                #source2target.update({x0[len(self.gene_prefix):].replace(self.id_sep, '_') : tlx[-1]})
+                target2source.update({tlx[-1]: slx[-1]})
+                # source2target.update({x0[len(self.gene_prefix):].replace(self.id_sep, '_') : tlx[-1]})
             else:
                 print(slx[-1], tlx[-1])
-                print('\n\nWARNING GENE ID LABEL ISSUE: src={},  target={}\n\n'.format(slx[-1], tlx[-1]))
-        #print(target2source.keys())
-        #print(self._gene_selected_map_)
-        print('\ngsm={}, gk={}, slx={}, tlx={}, t2s={}'.format(len(self._gene_selected_map_), len(gk), len(slx), len(tlx), len(target2source)))
+                print(
+                    '\n\nWARNING GENE ID LABEL ISSUE: src={},  target={}\n\n'.format(
+                        slx[-1], tlx[-1]
+                    )
+                )
+        # print(target2source.keys())
+        # print(self._gene_selected_map_)
+        print(
+            '\ngsm={}, gk={}, slx={}, tlx={}, t2s={}'.format(
+                len(self._gene_selected_map_),
+                len(gk),
+                len(slx),
+                len(tlx),
+                len(target2source),
+            )
+        )
 
         new_groups = {}
         OLD_GPR_MAP = {}
@@ -1779,30 +2121,33 @@ the template library submodule has been initialised (see readme.md) and correctl
                 ## TODO look at the reaction ID filtering again as duplicate reactions are appearing in the reaction list
                 ## set3.xml
                 # disabling safe reaction duplication
-                #if rid in dup_re_db:
-                    #dup_re_db[rid] = dup_re_db[rid] + 1
-                #else:
-                    #dup_re_db[rid] = 1
-                #ridnew = '{}_copy_{}'.format(rid, dup_re_db[rid])
-                #dup_re_db[ridnew] = dup_re_db[rid]
-                #R.setId(ridnew)
-
+                # if rid in dup_re_db:
+                # dup_re_db[rid] = dup_re_db[rid] + 1
+                # else:
+                # dup_re_db[rid] = 1
+                # ridnew = '{}_copy_{}'.format(rid, dup_re_db[rid])
+                # dup_re_db[ridnew] = dup_re_db[rid]
+                # R.setId(ridnew)
 
             # store group information
             if R._organism_ not in new_groups:
-                new_groups[R._organism_] = {'grp_map' : self.func_getGroupMembership(self._DAT_MODELS[R._organism_]),
-                                            'grpd' : [rid]}
+                new_groups[R._organism_] = {
+                    'grp_map': self.func_getGroupMembership(
+                        self._DAT_MODELS[R._organism_]
+                    ),
+                    'grpd': [rid],
+                }
             else:
                 new_groups[R._organism_]['grpd'].append(rid)
 
             # this is probably a bit much
             # R.setCompartmentId(self.default_compartment)
             DUP_R = False
-            notes = self.readNotesFromNotesDB(R._organism_, R.getId(), user, self._DAT_NOTESDB_KEY_)
+            notes = self.readNotesFromNotesDB(
+                R._organism_, R.getId(), user, self._DAT_NOTESDB_KEY_
+            )
             if notes != '':
                 R.setNotes('<p>{}</p>'.format(notes))
-
-
 
             # remove sequences from reactions (store in seqstore for future use)
             for a in list(R.annotation.keys()):
@@ -1813,40 +2158,44 @@ the template library submodule has been initialised (see readme.md) and correctl
             if eqn is not None:
                 R.setAnnotation('eq using_ids', eqn)
             # TODO investigate this
-            #eqn = R.getEquation(use_names=True)
-            #if eqn is not None:
-                #R.setAnnotation('eq_using_names', eqn)
+            # eqn = R.getEquation(use_names=True)
+            # if eqn is not None:
+            # R.setAnnotation('eq_using_names', eqn)
 
             self.model.addReaction(R, create_default_bounds=False)
-            self.model.createReactionBounds(ridnew, self.selected_reactions[r_]['obj'].getLowerBound(), self.selected_reactions[r_]['obj'].getUpperBound())
+            self.model.createReactionBounds(
+                ridnew,
+                self.selected_reactions[r_]['obj'].getLowerBound(),
+                self.selected_reactions[r_]['obj'].getUpperBound(),
+            )
 
-            OLD_GPR_MAP[R.getId()] = {'tree' : oldGPR.getTreeCopy(),
-                                      'id2lbl' : {g.getId() : g.getLabel() for g in oldGPR.getGenes()},
-                                      'lbl2id' : {g.getLabel() : g.getId() for g in oldGPR.getGenes()},
-                                      'genes' : [g.clone() for g in oldGPR.getGenes()]
-                                     }
+            OLD_GPR_MAP[R.getId()] = {
+                'tree': oldGPR.getTreeCopy(),
+                'id2lbl': {g.getId(): g.getLabel() for g in oldGPR.getGenes()},
+                'lbl2id': {g.getLabel(): g.getId() for g in oldGPR.getGenes()},
+                'genes': [g.clone() for g in oldGPR.getGenes()],
+            }
             del oldGPR
 
-            #for g in OLD_GPR_MAP[R.getId()]['genes']:
-                #if g.getLabel() in self.selected_reactions[r_]['genematch']:
-                    ##test orthology match
-                    ##gid2 = '{}_{}'.format(target2source[g.getLabel()], g.getLabel())
-                    #gid2 = '{}'.format(target2source[g.getLabel()])
-                    #lbl2 = target2source[g.getLabel()]
-                    #if gid2 not in self.model.getGeneIds():
-                        #if lbl2 not in self.model.getGeneLabels():
-                            #self.model.addGene(g)
-                            #g.setId(gid2)
-                            #g.setLabel(lbl2)
-                        #else:
-                            #gid1 = self.model.getGeneByLabel(lbl2).getId()
-                            #print('Ortholog duplicate labels: {} {} {}'.format(gid2, gid1, lbl2))
-                            #if source2target[gid1] not in orthogenes:
-                                #orthogenes[source2target[gid1]] = [source2target[gid2]]
-                            #else:
-                                #if source2target[gid2] not in orthogenes[source2target[gid1]]:
-                                    #orthogenes[source2target[gid1]].append(source2target[gid2])
-
+            # for g in OLD_GPR_MAP[R.getId()]['genes']:
+            # if g.getLabel() in self.selected_reactions[r_]['genematch']:
+            ##test orthology match
+            ##gid2 = '{}_{}'.format(target2source[g.getLabel()], g.getLabel())
+            # gid2 = '{}'.format(target2source[g.getLabel()])
+            # lbl2 = target2source[g.getLabel()]
+            # if gid2 not in self.model.getGeneIds():
+            # if lbl2 not in self.model.getGeneLabels():
+            # self.model.addGene(g)
+            # g.setId(gid2)
+            # g.setLabel(lbl2)
+            # else:
+            # gid1 = self.model.getGeneByLabel(lbl2).getId()
+            # print('Ortholog duplicate labels: {} {} {}'.format(gid2, gid1, lbl2))
+            # if source2target[gid1] not in orthogenes:
+            # orthogenes[source2target[gid1]] = [source2target[gid2]]
+            # else:
+            # if source2target[gid2] not in orthogenes[source2target[gid1]]:
+            # orthogenes[source2target[gid1]].append(source2target[gid2])
 
         def createGPRmetadraft(protein, gprtree, gid, name, altlabels):
             if altlabels is None:
@@ -1860,7 +2209,6 @@ the template library submodule has been initialised (see readme.md) and correctl
                     name = gid
                 gpr.setName(name)
                 gpr.createAssociationAndGeneRefsFromTree(gprtree, altlabels=altlabels)
-
 
         def renameGeneIdRefsInGPRTree(gprd, old, new):
             """
@@ -1894,7 +2242,6 @@ the template library submodule has been initialised (see readme.md) and correctl
                     pruneTree(D[k])
             return D
 
-
         def deleteGeneFromTree(D, delid):
             """
             Recursively delete a gene Id from a gprTree.
@@ -1916,71 +2263,77 @@ the template library submodule has been initialised (see readme.md) and correctl
 
             return D
 
+        # deletestart
 
-# deletestart
-
-# deletend
+        # deletend
 
         # deal with orthogenes/GPR's here
 
-        #print('target2source')
+        # print('target2source')
         cbmpy.CBTools.pprint.pprint(target2source)
-        #cbmpy.CBTools.pprint.pprint(source2target)
+        # cbmpy.CBTools.pprint.pprint(source2target)
 
-        #dakeys = OLD_GPR_MAP.keys()[-2:]
-        #print(dakeys)
-        #cbmpy.CBTools.pprint.pprint([OLD_GPR_MAP[p] for p in dakeys])
+        # dakeys = OLD_GPR_MAP.keys()[-2:]
+        # print(dakeys)
+        # cbmpy.CBTools.pprint.pprint([OLD_GPR_MAP[p] for p in dakeys])
 
-        #print('\nGPRmap')
-        #print(OLD_GPR_MAP.keys()[-3])
-        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-3]])
-        #print(OLD_GPR_MAP.keys()[-2])
-        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-2]])
+        # print('\nGPRmap')
+        # print(OLD_GPR_MAP.keys()[-3])
+        # cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-3]])
+        # print(OLD_GPR_MAP.keys()[-2])
+        # cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-2]])
 
-        #print('\northogenes')
-        #cbmpy.CBTools.pprint.pprint(orthogenes)
+        # print('\northogenes')
+        # cbmpy.CBTools.pprint.pprint(orthogenes)
 
         for react in OLD_GPR_MAP:
             gprinf = OLD_GPR_MAP[react]
             for g in gprinf['id2lbl'].keys():
                 if gprinf['id2lbl'][g] in target2source:
-                    renameGeneIdRefsInGPRTree(gprinf['tree'], g, target2source[gprinf['id2lbl'][g]])
+                    renameGeneIdRefsInGPRTree(
+                        gprinf['tree'], g, target2source[gprinf['id2lbl'][g]]
+                    )
                 else:
-                    #renameGeneIdRefsInGPRTree(gprinf['tree'], g, 'UNKNOWN')
+                    # renameGeneIdRefsInGPRTree(gprinf['tree'], g, 'UNKNOWN')
                     gprinf['tree'] = deleteGeneFromTree(gprinf['tree'], g)
 
             gprinf['tree'] = pruneTree(gprinf['tree'])
 
-
-        #print('\nGPRmap')
-        #print(OLD_GPR_MAP.keys()[-3])
-        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-3]])
-        #print(OLD_GPR_MAP.keys()[-2])
-        #cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-2]])
+        # print('\nGPRmap')
+        # print(OLD_GPR_MAP.keys()[-3])
+        # cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-3]])
+        # print(OLD_GPR_MAP.keys()[-2])
+        # cbmpy.CBTools.pprint.pprint(OLD_GPR_MAP[OLD_GPR_MAP.keys()[-2]])
 
         for rid in self.model.getReactionIds():
             if rid in OLD_GPR_MAP:
-                createGPRmetadraft(rid,
+                createGPRmetadraft(
+                    rid,
                     OLD_GPR_MAP[rid]['tree'],
                     gid='gpr_{}'.format(rid),
                     name='{} computationally generated by MetaDraft'.format(rid),
-                    altlabels=OLD_GPR_MAP[rid]['id2lbl'])
+                    altlabels=OLD_GPR_MAP[rid]['id2lbl'],
+                )
             else:
                 print('WARNING: no GPR for reaction {}'.format(rid))
 
         # add objective functions
         for of in objfuncs:
-            #self.model.addReaction(of['reaction'], create_default_bounds=True, silent=False)
+            # self.model.addReaction(of['reaction'], create_default_bounds=True, silent=False)
             if self.model.getReaction(of['rid']) is None:
                 cbmpy.CBMultiModel.copyReaction(of['src'], self.model, of['rid'])
                 new_obj_id = of['rid'] + '_' + time.strftime("%M%S")
                 obj = cbmpy.CBModel.Objective(new_obj_id, of['operation'])
-                FO = cbmpy.CBModel.FluxObjective('{}_{}_fluxobj'.format(new_obj_id, of['rid']), of['rid'], of['coefficient'])
+                FO = cbmpy.CBModel.FluxObjective(
+                    '{}_{}_fluxobj'.format(new_obj_id, of['rid']),
+                    of['rid'],
+                    of['coefficient'],
+                )
                 self.model.addObjective(obj, active=of['active'])
                 obj.addFluxObjective(FO)
                 time.sleep(1)
-            #elif:
-                #self.model.createObjectiveFunction(of['rid'], of['coefficient'], of['operation'], of['active'])
+            # elif:
+            # self.model.createObjectiveFunction(of['rid'], of['coefficient'], of['operation'], of['active'])
 
         # generate new group information
         cntr = 1
@@ -2013,8 +2366,14 @@ the template library submodule has been initialised (see readme.md) and correctl
             self.model.createGroup(new_gid)
             G = self.model.getGroup(new_gid)
             G.setName('MetaDraft reactions {}'.format(o))
-            G.setNotes('These {} reactions were included from the {} model using MetaDraft (https://github.com/SystemsBioinformatics/metadraft) ver. {}'.format(len(new_groups[o]['grpd']), o, metadraft_version))
-            G.addMember([self._DAT_MODELS[o].getReaction(r_) for r_ in new_groups[o]['grpd']])
+            G.setNotes(
+                'These {} reactions were included from the {} model using MetaDraft (https://github.com/SystemsBioinformatics/metadraft) ver. {}'.format(
+                    len(new_groups[o]['grpd']), o, metadraft_version
+                )
+            )
+            G.addMember(
+                [self._DAT_MODELS[o].getReaction(r_) for r_ in new_groups[o]['grpd']]
+            )
 
         return self.model
 
@@ -2033,15 +2392,16 @@ the template library submodule has been initialised (see readme.md) and correctl
     @pyqtSlot()
     def menu_exportCOMBINE(self):
 
-        arch_fname = str(self.saveFile('Export COMBINE archive', self.sbml_save_dir, '*.omex'))
+        arch_fname = str(
+            self.saveFile('Export COMBINE archive', self.sbml_save_dir, '*.omex')
+        )
         print(arch_fname)
         out_dir, arch_fname = os.path.split(arch_fname)
         fname = arch_fname.replace('.omex', '')
         print(out_dir, fname)
-        #fname = 'combine-export'
+        # fname = 'combine-export'
         print('File: {}'.format(fname))
         print('Dir: {}'.format(self._tmpDir_))
-
 
         self.widget_busy.setWindowTitle("Exporting COMBINE archive")
         self.widget_busy.setLabelText("Exporting COMBINE archive")
@@ -2065,11 +2425,18 @@ the template library submodule has been initialised (see readme.md) and correctl
         zf = zipfile.ZipFile(zfpath, mode='w', compression=zipfile.ZIP_DEFLATED)
 
         self.widgetBusyUpdate(20)
-        cbmpy.writeSBML3FBCV2(model, os.path.join(arch_dir, fname), add_cobra_annot=False)
+        cbmpy.writeSBML3FBCV2(
+            model, os.path.join(arch_dir, fname), add_cobra_annot=False
+        )
         zf.write(os.path.join(arch_dir, fname), arcname=fname)
         self.widgetBusyUpdate(30)
-        cbmpy.writeModelToExcel97(model, os.path.join(arch_dir, fname.replace('.xml', '')))
-        zf.write(os.path.join(arch_dir, fname.replace('.xml', '.xls')), arcname=fname.replace('.xml', '.xls'))
+        cbmpy.writeModelToExcel97(
+            model, os.path.join(arch_dir, fname.replace('.xml', ''))
+        )
+        zf.write(
+            os.path.join(arch_dir, fname.replace('.xml', '.xls')),
+            arcname=fname.replace('.xml', '.xls'),
+        )
         self.widgetBusyUpdate(40)
         self.func_generateSummaryReport()
         self.widgetBusyUpdate(50)
@@ -2094,58 +2461,75 @@ the template library submodule has been initialised (see readme.md) and correctl
         tfn = os.path.join(arch_dir, '2_gene_report.html')
         F = open(tfn, 'w')
         try:
-            F.write(grpt.replace('\n',''))
+            F.write(grpt.replace('\n', ''))
         except TypeError:
-            F.write(str(grpt).replace('\n','').strip())
+            F.write(str(grpt).replace('\n', '').strip())
         F.close()
         zf.write(tfn, arcname='2_gene_report.html')
 
         tfn = os.path.join(arch_dir, '3_reaction_report.html')
         F = open(tfn, 'w')
         try:
-            F.write(rrpt.replace('\n',''))
+            F.write(rrpt.replace('\n', ''))
         except TypeError:
-            F.write(str(rrpt).replace('\n','').strip())
+            F.write(str(rrpt).replace('\n', '').strip())
         F.close()
         zf.write(tfn, arcname='3_reaction_report.html')
 
         tfn = os.path.join(arch_dir, '4_metabolite_report.html')
         F = open(tfn, 'w')
         try:
-            F.write(mrpt.replace('\n',''))
+            F.write(mrpt.replace('\n', ''))
         except TypeError:
-            F.write(str(mrpt).replace('\n','').strip())
+            F.write(str(mrpt).replace('\n', '').strip())
         F.close()
         zf.write(tfn, arcname='4_metabolite_report.html')
 
         self.widgetBusyUpdate(95)
         F = open(os.path.join(arch_dir, 'index.html'), 'w')
-        F.write(report_templates.combine_index_template(fname, fname.replace('.xml', '.xls')))
+        F.write(
+            report_templates.combine_index_template(
+                fname, fname.replace('.xml', '.xls')
+            )
+        )
         F.close()
         zf.write(os.path.join(arch_dir, 'index.html'), arcname='index.html')
 
         F = open(os.path.join(arch_dir, 'manifest.xml'), 'w')
-        F.write(report_templates.combine_manifest_file(fname, fname.replace('.xml', '.xls')))
+        F.write(
+            report_templates.combine_manifest_file(fname, fname.replace('.xml', '.xls'))
+        )
         F.close()
         zf.write(os.path.join(arch_dir, 'manifest.xml'), arcname='manifest.xml')
 
         F = open(os.path.join(arch_dir, 'metadata.rdf'), 'w')
-        F.write(report_templates.combine_metadata_file(vc_given=self.func_getCurrentUser(),
-                                                      vc_family='MetaDraft Software',
-                                                      vc_email='', vc_org='', scTime=None))
+        F.write(
+            report_templates.combine_metadata_file(
+                vc_given=self.func_getCurrentUser(),
+                vc_family='MetaDraft Software',
+                vc_email='',
+                vc_org='',
+                scTime=None,
+            )
+        )
         F.close()
         zf.write(os.path.join(arch_dir, 'metadata.rdf'), arcname='metadata.rdf')
 
         zf.close()
         self.widgetBusyUpdate(100)
 
-
     @pyqtSlot()
     def menu_exportSBML(self, fbcv):
         if fbcv == 0:
-            filename = str(self.saveFile('Export COBRA SBML dialect', self.sbml_save_dir, '*.xml'))
+            filename = str(
+                self.saveFile('Export COBRA SBML dialect', self.sbml_save_dir, '*.xml')
+            )
         else:
-            filename = str(self.saveFile('Export SBML L3 FBCv{}'.format(fbcv), self.sbml_save_dir, '*.xml'))
+            filename = str(
+                self.saveFile(
+                    'Export SBML L3 FBCv{}'.format(fbcv), self.sbml_save_dir, '*.xml'
+                )
+            )
         self.widget_busy.setWindowTitle("Exporting SBML")
         self.widget_busy.setLabelText("Exporting SBML")
         self.widget_busy.show()
@@ -2174,7 +2558,9 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot()
     def menu_exportExcel(self):
-        filename = str(self.saveFile('Export Excel spreadsheet', self.excel_save_dir, '*.xls'))
+        filename = str(
+            self.saveFile('Export Excel spreadsheet', self.excel_save_dir, '*.xls')
+        )
         self.widget_busy.setWindowTitle("Exporting Model to Excel")
         self.widget_busy.setLabelText("Exporting Model to Excel")
         self.widget_busy.show()
@@ -2224,8 +2610,9 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_menu_sbmlConvertApp = QWidget()
         self.widget_menu_sbmlConvertApp.setWindowTitle('SBML tools')
         ppos = self.func_getNewPopupWindowCoords()
-        self.widget_menu_sbmlConvertApp.setGeometry(QtCore.QRect(ppos[0], ppos[1], 450, 150))
-
+        self.widget_menu_sbmlConvertApp.setGeometry(
+            QtCore.QRect(ppos[0], ppos[1], 450, 150)
+        )
 
         fnamel = QLabel(self.widget_menu_sbmlConvertApp)
         fnamel.setText('File name')
@@ -2241,7 +2628,9 @@ the template library submodule has been initialised (see readme.md) and correctl
             F = None
             output = None
             try:
-                F = os.path.abspath(str(self.openFile('SBML file', self._history_open_dir_, '*')))
+                F = os.path.abspath(
+                    str(self.openFile('SBML file', self._history_open_dir_, '*'))
+                )
                 fname.setText(F)
                 output = msg = ''
                 try:
@@ -2269,46 +2658,70 @@ the template library submodule has been initialised (see readme.md) and correctl
         openbut.setText('Load SBML')
         openbut.clicked.connect(openFile)
 
-        #typebut = QPushButton(self.widget_menu_sbmlConvertApp)
-        #typebut.setText('Get Type')
-        #typebut.clicked.connect(getType)
+        # typebut = QPushButton(self.widget_menu_sbmlConvertApp)
+        # typebut.setText('Get Type')
+        # typebut.clicked.connect(getType)
 
         @pyqtSlot()
         def toFBC1F():
             xmod = None
-            #try:
+            # try:
             if self._test_sbml_type_ == 'COBRA':
                 xmod = cbmpy.readCOBRASBML(self._test_sbml_file_)
             elif self._test_sbml_type_ == 'L2FBA':
                 xmod = cbmpy.readSBML2FBA(self._test_sbml_file_)
-            elif self._test_sbml_type_ == 'L3V1FBC1' or self._test_sbml_type_ == 'L3V1FBC2':
+            elif (
+                self._test_sbml_type_ == 'L3V1FBC1'
+                or self._test_sbml_type_ == 'L3V1FBC2'
+            ):
                 xmod = cbmpy.readSBML3FBC(self._test_sbml_file_)
             if xmod is None:
                 raise RuntimeError('Invalid file to convert')
-            #except:
-                #xmod = None
-                #self.widgetMsgBox(QMessageBox.Critical, 'SBML Conversion Error', 'File conversion failed!')
+            # except:
+            # xmod = None
+            # self.widgetMsgBox(QMessageBox.Critical, 'SBML Conversion Error', 'File conversion failed!')
             if xmod is not None:
-                cbmpy.writeSBML3FBC(xmod, str(self.saveFile('Save converted file', self._history_save_dir_, '*.fbcv1.xml')))
+                cbmpy.writeSBML3FBC(
+                    xmod,
+                    str(
+                        self.saveFile(
+                            'Save converted file',
+                            self._history_save_dir_,
+                            '*.fbcv1.xml',
+                        )
+                    ),
+                )
             del xmod
 
         @pyqtSlot()
         def toFBC2F():
             xmod = None
-            #try:
+            # try:
             if self._test_sbml_type_ == 'COBRA':
                 xmod = cbmpy.readCOBRASBML(self._test_sbml_file_)
             elif self._test_sbml_type_ == 'L2FBA':
                 xmod = cbmpy.readSBML2FBA(self._test_sbml_file_)
-            elif self._test_sbml_type_ == 'L3V1FBC1' or self._test_sbml_type_ == 'L3V1FBC2':
+            elif (
+                self._test_sbml_type_ == 'L3V1FBC1'
+                or self._test_sbml_type_ == 'L3V1FBC2'
+            ):
                 xmod = cbmpy.readSBML3FBC(self._test_sbml_file_)
             if xmod is None:
                 raise RuntimeError('Invalid file to convert')
-            #except:
-                #xmod = None
-                #self.widgetMsgBox(QMessageBox.Critical, 'SBML Conversion Error', 'File conversion failed!')
+            # except:
+            # xmod = None
+            # self.widgetMsgBox(QMessageBox.Critical, 'SBML Conversion Error', 'File conversion failed!')
             if xmod is not None:
-                cbmpy.writeSBML3FBCV2(xmod, str(self.saveFile('Save converted file', self._history_save_dir_, '*.fbcv2.xml')))
+                cbmpy.writeSBML3FBCV2(
+                    xmod,
+                    str(
+                        self.saveFile(
+                            'Save converted file',
+                            self._history_save_dir_,
+                            '*.fbcv2.xml',
+                        )
+                    ),
+                )
             del xmod
 
         toFBC1 = QPushButton(self.widget_menu_sbmlConvertApp)
@@ -2328,19 +2741,21 @@ the template library submodule has been initialised (see readme.md) and correctl
         layout.addWidget(ftypel, 1, 0, 1, 3)
         layout.addWidget(ftype, 1, 1, 1, 3)
         layout.addWidget(openbut, 2, 0)
-        #layout.addWidget(typebut, 2, 1)
+        # layout.addWidget(typebut, 2, 1)
         layout.addWidget(toFBC1, 2, 1)
         layout.addWidget(toFBC2, 2, 2)
 
         self.widget_menu_sbmlConvertApp.show()
 
     def func_tableSaveCSV(self, table):
-        path = self.saveFile('Save File', directory=self._history_save_dir_, filterex='CSV(*.csv)')
+        path = self.saveFile(
+            'Save File', directory=self._history_save_dir_, filterex='CSV(*.csv)'
+        )
         if path is not None and len(path) > 0:
             if not str(path).endswith('.csv'):
                 path += '.csv'
             ftype = 'w'
-            if os.sys.version_info < (3,0,0):
+            if os.sys.version_info < (3, 0, 0):
                 path = unicode(path)
                 ftype = 'wb'
             with open(path, ftype) as stream:
@@ -2350,18 +2765,26 @@ the template library submodule has been initialised (see readme.md) and correctl
                     for column in range(table.columnCount()):
                         item = table.item(row, column)
                         if item.checkState() == Qt.Checked:
-                            if os.sys.version_info < (3,0,0):
+                            if os.sys.version_info < (3, 0, 0):
                                 rowdata.append(unicode('checked').encode('utf8'))
                             else:
                                 rowdata.append('checked')
                         # this can be removed when the gene prefix is killed
-                        elif item is not None and column == 0 and self._tabpanel_idx_[self._active_tab_] == 'Genes':
-                            if os.sys.version_info < (3,0,0):
-                                rowdata.append(unicode(item.text()).encode('utf8')[len(self.gene_prefix):])
+                        elif (
+                            item is not None
+                            and column == 0
+                            and self._tabpanel_idx_[self._active_tab_] == 'Genes'
+                        ):
+                            if os.sys.version_info < (3, 0, 0):
+                                rowdata.append(
+                                    unicode(item.text()).encode('utf8')[
+                                        len(self.gene_prefix) :
+                                    ]
+                                )
                             else:
-                                rowdata.append(item.text()[len(self.gene_prefix):])
+                                rowdata.append(item.text()[len(self.gene_prefix) :])
                         elif item is not None:
-                            if os.sys.version_info < (3,0,0):
+                            if os.sys.version_info < (3, 0, 0):
                                 rowdata.append(unicode(item.text()).encode('utf8'))
                             else:
                                 rowdata.append(item.text())
@@ -2382,21 +2805,21 @@ the template library submodule has been initialised (see readme.md) and correctl
         non_gpr_reac_ids = list(set(all_reac_ids).difference(set(gene_assoc_reac_ids)))
 
         ## now we want to write out a csv with the ids, names and equations of the non-gpr reactions
-        #for rid in non_gpr_reac_ids:
-            #R = model.getReaction(rid)
-            #rows.append([rid, R.getName(), R.getEquation(), R.getEquation(use_names=True)[:-1]])
+        # for rid in non_gpr_reac_ids:
+        # R = model.getReaction(rid)
+        # rows.append([rid, R.getName(), R.getEquation(), R.getEquation(use_names=True)[:-1]])
 
         return non_gpr_reac_ids
 
     def widgetBusy(self):
         self.widget_busy = QProgressDialog(self)
-        #self.widget_busy.setWindowModality(Qt.WindowModal)
-        self.widget_busy.setRange(0,100)
+        # self.widget_busy.setWindowModality(Qt.WindowModal)
+        self.widget_busy.setRange(0, 100)
         self.widget_busy.setMinimumDuration(0)
         self.widget_busy.setValue(100)
 
     def widgetBusyUpdate(self, value):
-        self.widget_busy.setValue(value-1)
+        self.widget_busy.setValue(value - 1)
         QCoreApplication.instance().processEvents()
         self.widget_busy.setValue(value)
         QCoreApplication.instance().processEvents()
@@ -2417,7 +2840,9 @@ the template library submodule has been initialised (see readme.md) and correctl
         return str(filename)
 
     def openFiles(self, title, directory, filterex):
-        filenames = QFileDialog.getOpenFileNames(self, title, directory, filter=filterex)
+        filenames = QFileDialog.getOpenFileNames(
+            self, title, directory, filter=filterex
+        )
         if HAVE_QT5:
             filenames = [os.path.abspath(str(a[0])) for a in filenames]
         else:
@@ -2439,19 +2864,23 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.reactDisplay.update()
 
     def widgetTableReaction(self, parent=None):
-        self.table_reaction = QTableWidget(0, len(self.table_react_cols), parent=self.widget_tabpanel)
-        self.table_reaction.setColumnWidth(0,100)
+        self.table_reaction = QTableWidget(
+            0, len(self.table_react_cols), parent=self.widget_tabpanel
+        )
+        self.table_reaction.setColumnWidth(0, 100)
         self.widgetTableReaction_populate()
         self.table_reaction.setSortingEnabled(True)
 
         # this works for mouseclicks
-        #self.table_reaction.cellClicked.connect(self.widgetTableReaction_cellClicked)
+        # self.table_reaction.cellClicked.connect(self.widgetTableReaction_cellClicked)
         # this should also work for cursor changes
-        self.table_reaction.itemSelectionChanged.connect(self.widgetTableReaction_cellSelectionChanged)
+        self.table_reaction.itemSelectionChanged.connect(
+            self.widgetTableReaction_cellSelectionChanged
+        )
         self.table_reaction.cellChanged.connect(self.widgetTableReaction_cellChecked)
         # not sure if I want this right now until I have sorted out the persistence between sessions issues
-        #self.table_reaction.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        #self.table_reaction.customContextMenuRequested.connect(self.widgetTableReaction_tableRightClicked)
+        # self.table_reaction.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.table_reaction.customContextMenuRequested.connect(self.widgetTableReaction_tableRightClicked)
 
     def widgetTableReaction_populate(self):
         self.reaction_table_loading = True
@@ -2462,7 +2891,9 @@ the template library submodule has been initialised (see readme.md) and correctl
         for row in range(self.table_gene.rowCount()):
             if self.table_gene.item(row, 3).checkState() == QtCore.Qt.Checked:
                 geneId = str(self.table_gene.item(row, 1).text())
-                new_geneId = str(self.table_gene.item(row, 0).text())[len(self.gene_prefix):]
+                new_geneId = str(self.table_gene.item(row, 0).text())[
+                    len(self.gene_prefix) :
+                ]
                 geneIdtarget = str(self.table_gene.item(row, 0).text())
                 if geneId in self._DAT_G2REACT:
                     for r_ in self._DAT_G2REACT[geneId]:
@@ -2475,16 +2906,19 @@ the template library submodule has been initialised (see readme.md) and correctl
                             selected_reactions[rkey]['genematch'].append(geneId)
                             selected_reactions[rkey]['genematch_new'].append(new_geneId)
                         else:
-                            selected_reactions[rkey] = {'id' : rid,
-                                                       'name' : r_.getName(),
-                                                       'org' : org,
-                                                       'genes' : [geneIdtarget],
-                                                       'genematch' : [geneId],
-                                                       'genematch_new' : [new_geneId],
-                                                       'obj' : r_
-                                                       }
+                            selected_reactions[rkey] = {
+                                'id': rid,
+                                'name': r_.getName(),
+                                'org': org,
+                                'genes': [geneIdtarget],
+                                'genematch': [geneId],
+                                'genematch_new': [new_geneId],
+                                'obj': r_,
+                            }
                 else:
-                    print('WARNING: {} not in _DAT_G2REACT: gene defined that does not appear in a GPR association').format(geneId)
+                    print(
+                        'WARNING: {} not in _DAT_G2REACT: gene defined that does not appear in a GPR association'
+                    ).format(geneId)
             else:
                 geneId = str(self.table_gene.item(row, 1).text())
                 if geneId in self._DAT_G2REACT:
@@ -2502,17 +2936,23 @@ the template library submodule has been initialised (see readme.md) and correctl
             item2 = QTableWidgetItem()
             item3 = QTableWidgetItem(selected_reactions[r_]['org'])
             # optional, show genematch the alternative is the genesource
-            #item4 = QTableWidgetItem(','.join(selected_reactions[r_]['genes']))
-            item4 = NumberTableListLengthItem(','.join(selected_reactions[r_]['genematch']))
-            item5 = NumberTableListLengthItem(','.join(selected_reactions[r_]['genematch_new']))
+            # item4 = QTableWidgetItem(','.join(selected_reactions[r_]['genes']))
+            item4 = NumberTableListLengthItem(
+                ','.join(selected_reactions[r_]['genematch'])
+            )
+            item5 = NumberTableListLengthItem(
+                ','.join(selected_reactions[r_]['genematch_new'])
+            )
 
             items = [item0, item1, item2, item3, item4, item5]
             for c_ in range(len(items)):
                 if c_ == 2:
                     items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
-                    items[c_].setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                    items[c_].setFlags(
+                        QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+                    )
                     if r_ in self._reaction_selected_map_:
-                        #print('INFO: duplicate reaction ID in reaction table')
+                        # print('INFO: duplicate reaction ID in reaction table')
                         if self._reaction_selected_map_[r_]:
                             items[c_].setCheckState(QtCore.Qt.Checked)
                         else:
@@ -2524,13 +2964,12 @@ the template library submodule has been initialised (see readme.md) and correctl
                 self.table_reaction.setItem(row, c_, items[c_])
             row += 1
         self.selected_reactions = selected_reactions
-        #if len(self._reaction_selected_map_) > 0:
-        #self._reaction_selected_map_ = self.widgetTableReaction_getMap()
-        #self._reaction_selected_ids_ = self.widgetTableReaction_getSelectedIds()
+        # if len(self._reaction_selected_map_) > 0:
+        # self._reaction_selected_map_ = self.widgetTableReaction_getMap()
+        # self._reaction_selected_ids_ = self.widgetTableReaction_getSelectedIds()
         self.reaction_table_loading = False
         self._updateReactionMap_()
         self.table_reaction.sortByColumn(0, Qt.SortOrder(0))
-
 
     @pyqtSlot(QtCore.QPoint)
     def widgetTableReaction_tableRightClicked(self, QPos):
@@ -2552,7 +2991,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         mod = self._DAT_MODELS[str(self.table_reaction.item(idx.row(), 3).text())]
         self.widget_annot_edit = CBMPyAnnotationEditor(mod, rid)
         parentPosition = self.table_reaction.viewport().mapToGlobal(self.pos())
-        parentPosition.setY(parentPosition.y()-250)
+        parentPosition.setY(parentPosition.y() - 250)
         self.widget_annot_edit.move(parentPosition)
 
     def widgetBuildPanel(self):
@@ -2580,7 +3019,6 @@ the template library submodule has been initialised (see readme.md) and correctl
         bp_text_out = QLineEdit(bp)
         bp_text_out.setDisabled(True)
 
-
         bp_label_lib = QLabel(bp)
         bp_label_lib.setText('Select target network(s) ')
 
@@ -2600,7 +3038,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         datF = []
         for f in os.listdir(self.seqplus_files):
             if f.endswith('.seqplus.xml'):
-                datF.append(f.replace('.seqplus.xml',''))
+                datF.append(f.replace('.seqplus.xml', ''))
         datF.sort()
         bp_lview.addItems(datF)
         bp_lview.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -2609,17 +3047,17 @@ the template library submodule has been initialised (see readme.md) and correctl
         bp_label_res.setText('Load result')
 
         ## this is the simple directory listing
-        #bp_lview_res = QListWidget(bp)
-        #bp_lview_res.setDragDropMode(QAbstractItemView.InternalMove)
-        #bp_lview_res.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        #bp_lview_res.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        #bp_lview_res.customContextMenuRequested.connect(self.bp_lviewOnRightClick)
-        #datF = []
-        #for f in os.listdir(self.result_files):
-            #if f.endswith('.resplus.json'):
-                #datF.append(f.replace('.resplus.json',''))
-        #datF.sort()
-        #bp_lview_res.addItems(datF)
+        # bp_lview_res = QListWidget(bp)
+        # bp_lview_res.setDragDropMode(QAbstractItemView.InternalMove)
+        # bp_lview_res.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        # bp_lview_res.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # bp_lview_res.customContextMenuRequested.connect(self.bp_lviewOnRightClick)
+        # datF = []
+        # for f in os.listdir(self.result_files):
+        # if f.endswith('.resplus.json'):
+        # datF.append(f.replace('.resplus.json',''))
+        # datF.sort()
+        # bp_lview_res.addItems(datF)
 
         ## this is the replacement tree view for the result listing
         self.widgetResultTree()
@@ -2643,13 +3081,13 @@ the template library submodule has been initialised (see readme.md) and correctl
         bp.layout.addWidget(bp_label_res, 8, 0)
 
         ## simple view
-        #bp.layout.addWidget(bp_lview_res, 6, 1, 2, 1)
+        # bp.layout.addWidget(bp_lview_res, 6, 1, 2, 1)
 
         # tree view
         bp.layout.addWidget(self.tree_results, 8, 1, 2, 1)
         bp.layout.addWidget(bp_btn_res, 8, 2)
         # replaced with menu option
-        #bp.layout.addWidget(self.bp_btn_idopt, 4, 0)
+        # bp.layout.addWidget(self.bp_btn_idopt, 4, 0)
         bp.setLayout(bp.layout)
 
         self.build_panel = bp
@@ -2658,7 +3096,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.bp_label_out = bp_label_out
         self.bp_btn_out = bp_btn_out
         self.bp_lview = bp_lview
-        #self.bp_lview_res = bp_lview_res
+        # self.bp_lview_res = bp_lview_res
         self.bp_btn_meta = bp_btn_meta
         self.bp_btn_blast = bp_btn_blast
 
@@ -2666,55 +3104,99 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_busy.setWindowTitle("Loading sequences")
         self.widget_busy.setLabelText("Loading sequences")
         self.widget_busy.show()
-        fname = self.openFile('Open Target file', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
+        fname = self.openFile(
+            'Open Target file',
+            self._history_open_dir_,
+            'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)',
+        )
         self.widgetBusyUpdate(10)
-        if fname.endswith('.fasta') or fname.endswith('.faa') or fname.endswith('.fa') or fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
-            fname1 = biotools.createBasicFASTAfromFile(fname, ext_replace='.in.fasta', gene_prefix=self.gene_prefix)
+        if (
+            fname.endswith('.fasta')
+            or fname.endswith('.faa')
+            or fname.endswith('.fa')
+            or fname.endswith('.gbk')
+            or fname.endswith('.gb')
+            or fname.endswith('.gbff')
+        ):
+            fname1 = biotools.createBasicFASTAfromFile(
+                fname, ext_replace='.in.fasta', gene_prefix=self.gene_prefix
+            )
             self.widgetBusyUpdate(50)
             if os.path.exists(fname1 + '.pseudo.txt'):
                 with open(fname1 + '.pseudo.txt', 'r') as F:
                     pgenes = F.readlines()[1:]
                     lpg = len(pgenes)
                     pgenes = pgenes[:11]
-                    pgenes.append('\n{} more pseudogenes ... ignored.'.format(lpg-10))
-                    self.widgetMsgBox(QMessageBox.Information, '{} pseudogenes detected and ignored in input FASTA file'.format(lpg), ''.join(pgenes))
+                    pgenes.append('\n{} more pseudogenes ... ignored.'.format(lpg - 10))
+                    self.widgetMsgBox(
+                        QMessageBox.Information,
+                        '{} pseudogenes detected and ignored in input FASTA file'.format(
+                            lpg
+                        ),
+                        ''.join(pgenes),
+                    )
                 os.remove(fname1 + '.pseudo.txt')
 
-            if not (fname.endswith('.fasta') or fname.endswith('.faa') or fname.endswith('.fa')):
+            if not (
+                fname.endswith('.fasta')
+                or fname.endswith('.faa')
+                or fname.endswith('.fa')
+            ):
                 biotools.addGeneInformationToDB(fname, self._genedb_, 'GENES', 'id')
             self.widgetBusyUpdate(80)
             fname = fname1
             del fname1
         else:
-            self.status_bar.showMessage('Invalid file type: \"{}\" ignored.'.format(str(fname)))
+            self.status_bar.showMessage(
+                'Invalid file type: \"{}\" ignored.'.format(str(fname))
+            )
             self.widgetBusyUpdate(100)
             return
         self.bp_text_targ.setText(fname)
         r_html = self.buildHtmlStringMetaprot()
         self.widgetBusyUpdate(90)
         self.widgetDisplayReact_update(r_html)
-        self.status_bar.showMessage('User proteome: \"{}\" opened.'.format(str(self.bp_text_targ.text())))
+        self.status_bar.showMessage(
+            'User proteome: \"{}\" opened.'.format(str(self.bp_text_targ.text()))
+        )
         self.widgetBusyUpdate(100)
         self.bp_btn_meta.setEnabled(True)
 
     def bp_targetOpen2(self):
-        fname = self.openFile('Open benchmark file', self._history_open_dir_, 'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)')
-        if fname.endswith('.fasta') or fname.endswith('.faa') or fname.endswith('.fa') or fname.endswith('.gbk') or fname.endswith('.gb') or fname.endswith('.gbff'):
+        fname = self.openFile(
+            'Open benchmark file',
+            self._history_open_dir_,
+            'Supported (*.gbk *.gbff *.gb *.fasta *.faa *.fa);;FASTA (*.fasta *.faa *.fa);;GenBank (*.gbk *.gbff *.gb)',
+        )
+        if (
+            fname.endswith('.fasta')
+            or fname.endswith('.faa')
+            or fname.endswith('.fa')
+            or fname.endswith('.gbk')
+            or fname.endswith('.gb')
+            or fname.endswith('.gbff')
+        ):
             fname = biotools.createBasicFASTAfromFile(fname)
         else:
-            self.status_bar.showMessage('Invalid file type: \"{}\" ignored.'.format(str(fname)))
+            self.status_bar.showMessage(
+                'Invalid file type: \"{}\" ignored.'.format(str(fname))
+            )
             return
         self.bp_text_out.setText(fname)
         r_html = self.buildHtmlStringMetaprot()
         self.widgetDisplayReact_update(r_html)
-        self.status_bar.showMessage('Benchmark proteome: \"{}\" loaded.'.format(str(self.bp_text_out.text())))
+        self.status_bar.showMessage(
+            'Benchmark proteome: \"{}\" loaded.'.format(str(self.bp_text_out.text()))
+        )
 
     def bp_loadResult(self):
-        #if len(self.bp_lview_res.selectedItems()) < 1:
-            #return
-        #print(self.result_file)
+        # if len(self.bp_lview_res.selectedItems()) < 1:
+        # return
+        # print(self.result_file)
         if not os.path.exists(self.result_file):
-            self.status_bar.showMessage('Invalid selection: \"{}\".'.format(self.result_file))
+            self.status_bar.showMessage(
+                'Invalid selection: \"{}\".'.format(self.result_file)
+            )
             return
 
         self.widget_busy.setWindowTitle("Loading results")
@@ -2746,16 +3228,26 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.tblxApp.setEnabled(True)
         self.menuTools.setDisabled(True)
         self.menuToolsM.setEnabled(True)
-        #self.menuConfig.setDisabled(True)
+        # self.menuConfig.setDisabled(True)
         self.widgetBusyUpdate(100)
         self.status_bar.showMessage('Loaded results: \"{}\".'.format(self.result_file))
-        self.appwindow.setWindowTitle('MetaDraft {} result: {}'.format(metadraft_version, os.path.split(self.result_file)[-1].replace('_metalink.resplus.json','')))
-
+        self.appwindow.setWindowTitle(
+            'MetaDraft {} result: {}'.format(
+                metadraft_version,
+                os.path.split(self.result_file)[-1].replace(
+                    '_metalink.resplus.json', ''
+                ),
+            )
+        )
 
     def bp_runBLAST(self):
         if str(self.bp_text_targ.text()) == '' and self.metaproteome_file == '':
-            self.status_bar.showMessage('ERROR: please select both a user target file and generate a metaproteome')
-            self.widgetDisplayReact_update('<html><body><h3>ERROR: please input a user proteome and generate a metaproteome</h3></body></html>')
+            self.status_bar.showMessage(
+                'ERROR: please select both a user target file and generate a metaproteome'
+            )
+            self.widgetDisplayReact_update(
+                '<html><body><h3>ERROR: please input a user proteome and generate a metaproteome</h3></body></html>'
+            )
             return
         self.runBLASTFUNC()
         self.bp_btn_blast.setEnabled(False)
@@ -2763,13 +3255,13 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.status_bar.showMessage('BLAST run successful')
         self.widgetResultTree_fill()
 
-        #datF = []
-        #for f in os.listdir(self.result_files):
-            #if f.endswith('.resplus.json'):
-                #datF.append(f.replace('.resplus.json',''))
-        #datF.sort()
-        #self.bp_lview_res.clear()
-        #self.bp_lview_res.addItems(datF)
+        # datF = []
+        # for f in os.listdir(self.result_files):
+        # if f.endswith('.resplus.json'):
+        # datF.append(f.replace('.resplus.json',''))
+        # datF.sort()
+        # self.bp_lview_res.clear()
+        # self.bp_lview_res.addItems(datF)
 
     def bp_buildMetaproteome(self):
         items = self.bp_lview.selectedItems()
@@ -2780,14 +3272,15 @@ the template library submodule has been initialised (see readme.md) and correctl
         for i in items:
             sp_str = str(i.text()).split(')-(')
             items2.append('{}'.format(sp_str[0][1:]))
-        #print(items)
-        #print(items2)
+        # print(items)
+        # print(items2)
 
-        #self.optimized_metaproteome = self.bp_btn_idopt.isChecked()
+        # self.optimized_metaproteome = self.bp_btn_idopt.isChecked()
         self.optimized_metaproteome = self.enableOptimizationApp.isChecked()
         print('Optimization:', self.optimized_metaproteome)
-        self.buildMetaProteomeFromSeqplus(items2, self.seqplus_files,
-                                          self.optimized_metaproteome)
+        self.buildMetaProteomeFromSeqplus(
+            items2, self.seqplus_files, self.optimized_metaproteome
+        )
         r_html = self.buildHtmlStringMetaprot()
         self.widgetDisplayReact_update(r_html)
         self.bp_btn_blast.setEnabled(True)
@@ -2808,21 +3301,25 @@ the template library submodule has been initialised (see readme.md) and correctl
         metap = self.metaproteome_file
         self.widgetBusyUpdate(20)
         if self.SEQUENCE_MATCH == 'orthfind1':
-            #inp_exec = os.path.join(self.blast_tools, 'inparanoid41_base.zip')
+            # inp_exec = os.path.join(self.blast_tools, 'inparanoid41_base.zip')
             inp_exec = os.path.join(self.blast_tools, 'orthfind1.zip')
         self.widgetBusyUpdate(30)
         outgroup = None
         if self.bp_text_out.isEnabled():
             outgroup = str(self.bp_text_out.text())
-            #print(outgroup)
+            # print(outgroup)
             if not os.path.exists(outgroup):
                 self.widgetBusyUpdate(40)
-                self.status_bar.showMessage('Error in benchmark file: \"{}\"'.format(outgroup))
-                #self.bp_text_out.setText('')
+                self.status_bar.showMessage(
+                    'Error in benchmark file: \"{}\"'.format(outgroup)
+                )
+                # self.bp_text_out.setText('')
                 outgroup = None
                 self.menu_enableBenchmark()
         self.widgetBusyUpdate(50)
-        _DAT_LINK_DICT_, resraw = self.runSequenceSearch(input_fasta, linkd, metap, wDir, inp_exec, outgroup, RUN_SEARCH)
+        _DAT_LINK_DICT_, resraw = self.runSequenceSearch(
+            input_fasta, linkd, metap, wDir, inp_exec, outgroup, RUN_SEARCH
+        )
         self.widgetBusyUpdate(80)
         if self.DEL_BLAST_TMP:
             shutil.rmtree(wDir, ignore_errors=True)
@@ -2859,30 +3356,38 @@ the template library submodule has been initialised (see readme.md) and correctl
         else:
             os_call = ['perl', 'inparanoid.pl', target, dbase, out]
 
-        if self.DEBUG_MODE: print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
+        if self.DEBUG_MODE:
+            print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
 
         if True:
             TSTART = time.time()
             try:
                 if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
                     subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
-                out = subprocess.check_call(os_call, stderr=subprocess.STDOUT, shell=False)
+                out = subprocess.check_call(
+                    os_call, stderr=subprocess.STDOUT, shell=False
+                )
             except subprocess.CalledProcessError as err:
                 out = err.returncode
                 if err.returncode == 2:
-                    print('\n\nPERL/BLAST ERROR: possible no homology between source and target proteomes!')
+                    print(
+                        '\n\nPERL/BLAST ERROR: possible no homology between source and target proteomes!'
+                    )
                 F = open(error_flag, 'w')
                 F.close()
-            #out = self.blast_process.start(os_call)
+            # out = self.blast_process.start(os_call)
             TEND = time.time()
 
-        runtime = int(math.floor((TEND-TSTART)/60.0))
+        runtime = int(math.floor((TEND - TSTART) / 60.0))
 
         F = open(end_flag, 'w')
         F.close()
 
-        print('\n\nSequence search took {} minutes to complete with return code: {}'.format(runtime, out))
-
+        print(
+            '\n\nSequence search took {} minutes to complete with return code: {}'.format(
+                runtime, out
+            )
+        )
 
     def setupOrthfind1(self, ip_src, work_dir, target_fasta, metaproteome, outgroup):
         """
@@ -2891,16 +3396,22 @@ the template library submodule has been initialised (see readme.md) and correctl
         """
         if not os.path.exists(work_dir):
             os.makedirs(work_dir)
-        assert os.path.exists(work_dir), "\nWork directory [{}] does not exist".format(work_dir)
+        assert os.path.exists(work_dir), "\nWork directory [{}] does not exist".format(
+            work_dir
+        )
         assert os.path.exists(ip_src), "\nCannot find inparanoid"
 
-        assert os.path.exists(metaproteome), "Cannot find metaproteome [{}]".format(metaproteome)
-        assert os.path.exists(target_fasta), "Cannot find target fasta [{}]".format(target_fasta)
+        assert os.path.exists(metaproteome), "Cannot find metaproteome [{}]".format(
+            metaproteome
+        )
+        assert os.path.exists(target_fasta), "Cannot find target fasta [{}]".format(
+            target_fasta
+        )
         k = base64.standard_b64decode(self._ortfind1_)
-        #assert os.path.exists(link), "Cannot find link dictionary [{}]".format(link)
+        # assert os.path.exists(link), "Cannot find link dictionary [{}]".format(link)
 
         zfile = zipfile.ZipFile(ip_src, 'r')
-        #zfile.extractall(work_dir)
+        # zfile.extractall(work_dir)
         zfile.extractall(work_dir, None, k)
         zfile.close()
         inoid = os.path.join(work_dir, 'inparanoid.pl')
@@ -2909,12 +3420,18 @@ the template library submodule has been initialised (see readme.md) and correctl
         else:
             bionoid.CONFIGKEYS['PY_use_outgroup'] = '1'
         del k
-        bionoid.USERWIN, bionoid.USERLINUX = bionoid.buildUser(bionoid.CONFIGKEYS, bionoid.WINKEYS, bionoid.LINUXKEYS)
+        bionoid.USERWIN, bionoid.USERLINUX = bionoid.buildUser(
+            bionoid.CONFIGKEYS, bionoid.WINKEYS, bionoid.LINUXKEYS
+        )
 
         if os.sys.platform == 'win32':
-            bionoid.writeInparanoidBase(inoid, bionoid.HEAD, bionoid.USERWIN, bionoid.BODYWIN)
+            bionoid.writeInparanoidBase(
+                inoid, bionoid.HEAD, bionoid.USERWIN, bionoid.BODYWIN
+            )
         else:
-            bionoid.writeInparanoidBase(inoid, bionoid.HEAD, bionoid.USERLINUX, bionoid.BODYLINUX)
+            bionoid.writeInparanoidBase(
+                inoid, bionoid.HEAD, bionoid.USERLINUX, bionoid.BODYLINUX
+            )
 
         para_in = 'IN'
         para_db = 'DB'
@@ -2929,16 +3446,23 @@ the template library submodule has been initialised (see readme.md) and correctl
         try:
             st = os.stat(os.path.join(work_dir, 'inparanoid.pl'))
             os.chmod(os.path.join(work_dir, 'inparanoid.pl'), st.st_mode | stat.S_IEXEC)
-            os.chmod(os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC)
+            os.chmod(
+                os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC
+            )
         except:
             print('Could not change mode')
 
         return (work_dir, para_in, para_db, para_out)
 
-
-    def runSequenceSearch(self, input_fasta, linkd, metap, wDir, inp_exec, outgroup, run_inparanoid):
+    def runSequenceSearch(
+        self, input_fasta, linkd, metap, wDir, inp_exec, outgroup, run_inparanoid
+    ):
         # if needed parse input genbank file and output a Orthfind1 fasta
-        if input_fasta.endswith('.gbk') or input_fasta.endswith('.gb') or input_fasta.endswith('.gbff'):
+        if (
+            input_fasta.endswith('.gbk')
+            or input_fasta.endswith('.gb')
+            or input_fasta.endswith('.gbff')
+        ):
             print('INFO: GenBank input detected creating FASTA file:')
             input_fasta = biotools.createBasicFASTAfromFile([input_fasta])
 
@@ -2967,11 +3491,11 @@ the template library submodule has been initialised (see readme.md) and correctl
             input_seq_length = {}
             input_fasta_ids = []
             for seq_record in biotools.SeqIO.parse(input_fasta, "fasta"):
-                #print(seq_record)
+                # print(seq_record)
                 input_seq_length[seq_record.id] = len(seq_record.seq)
                 input_fasta_ids.append(seq_record.id)
 
-            #setup results dictionary
+            # setup results dictionary
             resraw = {}
             for l in inPtab:
                 if l.startswith('OrtoID'):
@@ -2985,19 +3509,21 @@ the template library submodule has been initialised (see readme.md) and correctl
                     while GO:
                         a = r[3].pop(0)
                         b = float(r[3].pop(0))
-                        pairs.append((a,b))
+                        pairs.append((a, b))
                         if len(r[3]) < 2:
                             r[3] = pairs
                             GO = False
-                    #print(r)
+                    # print(r)
 
-                    resraw[r[2]] = {'id' : int(r[0]),
-                                    'bits' : int(r[1]),
-                                    'source' : r[2],
-                                    'match' : r[3],
-                                    #'length' : linkDict['__metaproteome__']['protein_lengths'][r[2]],
-                                    'length' : input_seq_length[r[2]],
-                                    'total' : linkDict['__metaproteome__']['total_length']}
+                    resraw[r[2]] = {
+                        'id': int(r[0]),
+                        'bits': int(r[1]),
+                        'source': r[2],
+                        'match': r[3],
+                        #'length' : linkDict['__metaproteome__']['protein_lengths'][r[2]],
+                        'length': input_seq_length[r[2]],
+                        'total': linkDict['__metaproteome__']['total_length'],
+                    }
             inPtab.close()
 
             resmatch = {}
@@ -3009,7 +3535,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                 if gid not in resmatch:
                     resmatch[gid] = None
                     print('INFO: match not found: {}'.format(gid))
-                    linkDict['__metaproteome__']['reports']['genes']['unmatched'].append(str(gid))
+                    linkDict['__metaproteome__']['reports']['genes'][
+                        'unmatched'
+                    ].append(str(gid))
 
             linkDict['__metaproteome__']['search_results'] = resmatch
             if self.bp_btn_out.isEnabled():
@@ -3018,18 +3546,23 @@ the template library submodule has been initialised (see readme.md) and correctl
                 linkDict['__metaproteome__']['benchmark'] = None
 
             outfname1 = os.path.split(input_fasta)[-1]
-            Fj = open(os.path.join(wDir, outfname1.replace('.fasta','.search_results.json')), 'w')
+            Fj = open(
+                os.path.join(wDir, outfname1.replace('.fasta', '.search_results.json')),
+                'w',
+            )
             json.dump(resmatch, Fj, indent=1, separators=(',', ': '))
             Fj.close()
 
-            #Fj = open(linkd, 'w')
+            # Fj = open(linkd, 'w')
             new_ldict = os.path.join(wDir, os.path.split(linkd)[-1])
             Fj = open(new_ldict, 'w')
             json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
             Fj.close()
 
             respath = self.result_files
-            respath = os.path.join(respath, self.func_getCurrentUser(), time.strftime('%y-%m-%d'))
+            respath = os.path.join(
+                respath, self.func_getCurrentUser(), time.strftime('%y-%m-%d')
+            )
             if not os.path.exists(respath):
                 os.makedirs(respath)
             outfname2 = os.path.split(linkd)[-1].replace('.json', '.resplus.json')
@@ -3037,16 +3570,20 @@ the template library submodule has been initialised (see readme.md) and correctl
                 outfname2 = outfname2.replace('_metalink', '-(opt)_metalink')
             if linkDict['__metaproteome__']['benchmark'] is not None:
                 outfname2 = outfname2.replace('_metalink', '-(f)_metalink')
-            outfname2 = outfname2.replace('.in.fasta','')
-            #print(outfname1, outfname2)
-            outfname1 = outfname1.replace('.in.fasta','')
+            outfname2 = outfname2.replace('.in.fasta', '')
+            # print(outfname1, outfname2)
+            outfname1 = outfname1.replace('.in.fasta', '')
             # update name to current result file name
-            linkDict['__metaproteome__']['file_name'] = os.path.join(respath, '({})-{}'.format(outfname1, outfname2))
-            Fj = open(os.path.join(respath, '({})-{}'.format(outfname1, outfname2)), 'w')
+            linkDict['__metaproteome__']['file_name'] = os.path.join(
+                respath, '({})-{}'.format(outfname1, outfname2)
+            )
+            Fj = open(
+                os.path.join(respath, '({})-{}'.format(outfname1, outfname2)), 'w'
+            )
             json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
             Fj.close()
-            #writeLogBLAST(os.path.join(self.cDir, 'blast.log'), int(math.floor((INP_END - INP_START)/60.0)),\
-                                #input_fasta, linkd, metap)
+            # writeLogBLAST(os.path.join(self.cDir, 'blast.log'), int(math.floor((INP_END - INP_START)/60.0)),\
+            # input_fasta, linkd, metap)
             print(input_fasta)
             os.remove(input_fasta)
             os.chdir(self.cDir)
@@ -3058,13 +3595,20 @@ the template library submodule has been initialised (see readme.md) and correctl
     def buildHtmlStringMetaprot(self):
         r_html = "<html><body>"
         r_html += "<table cellpadding=\"5\", border=\"1\", cellspacing=\"0\"><caption></caption>"
-        r_html += "<tr><td>Input</td><td>{}</td></tr>".format(str(self.bp_text_targ.text()))
-        r_html += "<tr><td>Benchmark</td><td>{}</td></tr>".format(str(self.bp_text_out.text()))
-        r_html += "<tr><td>Metaproteome</td><td>{}</td></tr>".format(self.metaproteome_file)
-        r_html += "<tr><td>Optimization</td><td>{}</td></tr>".format(self.optimized_metaproteome)
+        r_html += "<tr><td>Input</td><td>{}</td></tr>".format(
+            str(self.bp_text_targ.text())
+        )
+        r_html += "<tr><td>Benchmark</td><td>{}</td></tr>".format(
+            str(self.bp_text_out.text())
+        )
+        r_html += "<tr><td>Metaproteome</td><td>{}</td></tr>".format(
+            self.metaproteome_file
+        )
+        r_html += "<tr><td>Optimization</td><td>{}</td></tr>".format(
+            self.optimized_metaproteome
+        )
         r_html += "</table></body></html>"
         return r_html
-
 
     def buildMetaProteomeFromSeqplus(self, oid_list, model_lib, optimized_metaproteome):
         """
@@ -3083,11 +3627,11 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         outDir = self.metaproteome_files
         linkDict = self.buildLinkedDictFromSeqplus(oid_list, model_lib)
-        #print(linkDict.keys())
-        #print(oid_list)
+        # print(linkDict.keys())
+        # print(oid_list)
 
         for o in oid_list:
-            #old
+            # old
             sbml1 = linkDict[o]["sbml_out"]
             sbml2 = linkDict[o]["sbml_out_generic"]
 
@@ -3102,7 +3646,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                 sbml1 = sbml1.split('\\')[-1]
                 sbml2 = sbml2.split('\\')[-1]
                 linkDict[o]["sbml_out"] = os.path.join(self.seqplus_files, sbml1)
-                linkDict[o]["sbml_out_generic"] = os.path.join(self.seqplus_files, sbml2)
+                linkDict[o]["sbml_out_generic"] = os.path.join(
+                    self.seqplus_files, sbml2
+                )
 
             if type(linkDict[o]) == dict and 'data_path' in linkDict[o]:
                 linkDict[o]['data_path'] = self.seqplus_files
@@ -3116,15 +3662,18 @@ the template library submodule has been initialised (see readme.md) and correctl
         self._progress_ = 50
         self.widgetBusyUpdate(self._progress_)
 
-
         # create new style metaproteome
         fullname = oidString
         if len(oidString) > 100:
             oidString = 'metaproteome-{}'.format(time.strftime('%y%m%d%H%M'))
             print('Truncating metaproteome name to: {}'.format(oidString))
 
-        biotools.createMetaProteome(os.path.join(outDir, '({})_metaproteome.fasta'.format(oidString)),\
-                                    linkDict, optimized=optimized_metaproteome, paranoid_style=True)
+        biotools.createMetaProteome(
+            os.path.join(outDir, '({})_metaproteome.fasta'.format(oidString)),
+            linkDict,
+            optimized=optimized_metaproteome,
+            paranoid_style=True,
+        )
         linkDict['__metaproteome__']['optimization'] = optimized_metaproteome
         linkDict['__metaproteome__']['__fullname__'] = fullname
 
@@ -3140,15 +3689,19 @@ the template library submodule has been initialised (see readme.md) and correctl
         json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
         Fj.close()
 
-        #for n in range(len(biotools.IDMAP0)):
-            #print(len(biotools.IDMAP0[n]), len(biotools.IDMAP1[n]))
+        # for n in range(len(biotools.IDMAP0)):
+        # print(len(biotools.IDMAP0[n]), len(biotools.IDMAP1[n]))
 
         self.metaproteome = linkDict
-        self.metaproteome_file = os.path.join(outDir, '({})_metaproteome.fasta'.format(oidString))
+        self.metaproteome_file = os.path.join(
+            outDir, '({})_metaproteome.fasta'.format(oidString)
+        )
         self.link_file = os.path.join(outDir, '({})_metalink.json'.format(oidString))
         self._progress_ = 100
         self.widgetBusyUpdate(self._progress_)
-        self.status_bar.showMessage('Metaproteome: \"{}\" created.'.format(self.metaproteome_file))
+        self.status_bar.showMessage(
+            'Metaproteome: \"{}\" created.'.format(self.metaproteome_file)
+        )
 
     def buildLinkedDictFromSeqplus(self, oid_list, model_lib):
         """
@@ -3158,18 +3711,20 @@ the template library submodule has been initialised (see readme.md) and correctl
         - *model_lib* the directory that contains the model lib
 
         """
-        assert os.path.exists(model_lib), '\nModel library not found at location: \"{}\"'.format(model_lib)
+        assert os.path.exists(
+            model_lib
+        ), '\nModel library not found at location: \"{}\"'.format(model_lib)
         files = os.listdir(model_lib)
         assert len(files) >= 2, '\nModel library must contain at least two files.'
-        #print(files)
+        # print(files)
         linkDict = {}
         self._progress_ = 10
         for o_ in oid_list:
             for f_ in files:
-                #print(o_)
-                #print(f_.split(')-(', 1)[0][1:])
+                # print(o_)
+                # print(f_.split(')-(', 1)[0][1:])
                 if f_.split(')-(', 1)[0][1:] == o_ and f_.endswith('.json'):
-                    #print(f_.split(')-(', 1)[0][1:])
+                    # print(f_.split(')-(', 1)[0][1:])
                     F = open(os.path.join(model_lib, f_), 'r')
                     odict = json.load(F)
                     linkDict[o_] = odict[o_]
@@ -3187,23 +3742,46 @@ the template library submodule has been initialised (see readme.md) and correctl
         return linkDict
 
     def widgetTableGene(self, parent=None):
-        self.table_gene = QTableWidget(len(self._DAT_SEARCH_RES), len(self.table_gene_cols), parent=self.widget_tabpanel)
+        self.table_gene = QTableWidget(
+            len(self._DAT_SEARCH_RES),
+            len(self.table_gene_cols),
+            parent=self.widget_tabpanel,
+        )
         self.table_gene.setColumnWidth(0, 100)
         self.table_gene.setHorizontalHeaderLabels(self.table_gene_cols)
         self.widgetTableGene_populate()
         self.table_gene.setSortingEnabled(True)
         self.table_gene.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.table_gene.customContextMenuRequested.connect(self.widgetTableGene_tableRightClicked)
+        self.table_gene.customContextMenuRequested.connect(
+            self.widgetTableGene_tableRightClicked
+        )
 
         # this works for mouseclicks
-        #self.table_gene.cellClicked.connect(self.widgetTableGene_cellClicked)
+        # self.table_gene.cellClicked.connect(self.widgetTableGene_cellClicked)
         # this should also work for cursor changes
-        self.table_gene.itemSelectionChanged.connect(self.widgetTableGene_cellSelectionChanged)
+        self.table_gene.itemSelectionChanged.connect(
+            self.widgetTableGene_cellSelectionChanged
+        )
 
         self.table_gene.cellChanged.connect(self.widgetTableGene_cellChecked)
-        self._gene_all_ids_ = tuple([str(self.table_gene.item(r, 1).text()) for r in range(self.table_gene.rowCount())])
-        self._gene_all_ids_src_ = tuple([str(self.table_gene.item(r, 0).text())[len(self.gene_prefix):] for r in range(self.table_gene.rowCount())])
-        self._gene_all_ids_org_ = tuple([str(self.table_gene.item(r, 4).text()) for r in range(self.table_gene.rowCount())])
+        self._gene_all_ids_ = tuple(
+            [
+                str(self.table_gene.item(r, 1).text())
+                for r in range(self.table_gene.rowCount())
+            ]
+        )
+        self._gene_all_ids_src_ = tuple(
+            [
+                str(self.table_gene.item(r, 0).text())[len(self.gene_prefix) :]
+                for r in range(self.table_gene.rowCount())
+            ]
+        )
+        self._gene_all_ids_org_ = tuple(
+            [
+                str(self.table_gene.item(r, 4).text())
+                for r in range(self.table_gene.rowCount())
+            ]
+        )
         self._gene_status_changed_ = False
 
     @pyqtSlot(QtCore.QPoint)
@@ -3215,7 +3793,9 @@ the template library submodule has been initialised (see readme.md) and correctl
             self.widget_tablegene_selectApp = QWidget()
             self.widget_tablegene_selectApp.setWindowTitle('Filter selected genes')
             ppos = self.func_getNewPopupWindowCoords()
-            self.widget_tablegene_selectApp.setGeometry(QtCore.QRect(ppos[0], ppos[1], 350, 100))
+            self.widget_tablegene_selectApp.setGeometry(
+                QtCore.QRect(ppos[0], ppos[1], 350, 100)
+            )
 
             low_label = QLabel(self.widget_tablegene_selectApp)
             low_label.setText('Minimum score')
@@ -3242,15 +3822,23 @@ the template library submodule has been initialised (see readme.md) and correctl
                 if not input_error:
                     if low > high:
                         input_error = True
-                        self.widgetMsgBox(QMessageBox.Critical, 'Input error', 'low <= high')
+                        self.widgetMsgBox(
+                            QMessageBox.Critical, 'Input error', 'low <= high'
+                        )
                         return
                     elif low > 1.0 or high > 1.0:
                         input_error = True
-                        self.widgetMsgBox(QMessageBox.Critical, 'Input error', 'low <= 1.0 and high <= 1.0')
+                        self.widgetMsgBox(
+                            QMessageBox.Critical,
+                            'Input error',
+                            'low <= 1.0 and high <= 1.0',
+                        )
                         return
 
                 if input_error:
-                    self.widgetMsgBox(QMessageBox.Critical, 'Input error', 'Invalid value')
+                    self.widgetMsgBox(
+                        QMessageBox.Critical, 'Input error', 'Invalid value'
+                    )
                     return
 
                 self._gene_score_limits_[0] = low
@@ -3277,7 +3865,6 @@ the template library submodule has been initialised (see readme.md) and correctl
 
                 # restore normal behaviour
                 self._updateGeneMap_disable_info_update_ = False
-
 
                 # DEBUG
                 self.table_gene.setSortingEnabled(True)
@@ -3314,13 +3901,13 @@ the template library submodule has been initialised (see readme.md) and correctl
         ##self.table_gene.setRowCount(0)
         ##self.table_gene.setColumnCount(0)
         # maybe ...
-        #self.table_gene.setRowCount(len(self._DAT_SEARCH_RES))
-        #self.table_gene.setColumnCount(len(self.table_gene_cols))
+        # self.table_gene.setRowCount(len(self._DAT_SEARCH_RES))
+        # self.table_gene.setColumnCount(len(self.table_gene_cols))
         self.gene_table_loading = True
         for t_ in sres:
             if sres[t_] != None:
                 grp_colour = None
-                #print(t_, sres[t_])
+                # print(t_, sres[t_])
                 if len(sres[t_]) > 1:
                     grp_colour = next(self._colourCycler_)
                     vals = [sres[t_][g] for g in sres[t_]]
@@ -3348,7 +3935,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                     for c_ in range(len(items)):
                         if c_ == 3:
                             items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
-                            items[c_].setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                            items[c_].setFlags(
+                                QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+                            )
                             if sres[t_][g_] == max(vals):
                                 items[c_].setCheckState(QtCore.Qt.Checked)
                             else:
@@ -3366,7 +3955,11 @@ the template library submodule has been initialised (see readme.md) and correctl
                 self.table_gene.setItem(row, 2, NumberTableWidgetItem(''))
                 chkBox = QTableWidgetItem()
                 chkBox.setCheckState(QtCore.Qt.Unchecked)
-                chkBox.setFlags(chkBox.flags() & ~QtCore.Qt.ItemIsUserCheckable & ~QtCore.Qt.ItemIsEnabled)
+                chkBox.setFlags(
+                    chkBox.flags()
+                    & ~QtCore.Qt.ItemIsUserCheckable
+                    & ~QtCore.Qt.ItemIsEnabled
+                )
                 self.table_gene.setItem(row, 3, chkBox)
                 self.table_gene.setItem(row, 4, QTableWidgetItem(''))
                 row += 1
@@ -3376,25 +3969,27 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.table_gene.sortByColumn(0, Qt.SortOrder(0))
 
     def widgetTableMetab(self):
-        self.table_metab = QTableWidget(0, len(self.table_metab_cols), parent=self.widget_tabpanel)
-        self.table_metab.setColumnWidth(0,100)
+        self.table_metab = QTableWidget(
+            0, len(self.table_metab_cols), parent=self.widget_tabpanel
+        )
+        self.table_metab.setColumnWidth(0, 100)
         self.widgetTableMetab_populate()
         self.table_metab.setSortingEnabled(True)
-        #self.table_metab.currentCellChanged.connect(self.widgetTableMetab_cellClicked)
+        # self.table_metab.currentCellChanged.connect(self.widgetTableMetab_cellClicked)
         self.table_metab.cellClicked.connect(self.widgetTableMetab_cellClicked)
         self._metab_selected_map_ = self.widgetTableMetab_getMap()
         self._metab_status_changed_ = False
 
     def getMetabFromReactions(self):
         selected_metabolites = {}
-        #print(self.widgetTableReaction_getMap())
-        #print(self.widgetTableMetab_getMap())
+        # print(self.widgetTableReaction_getMap())
+        # print(self.widgetTableMetab_getMap())
 
         for r in self._reaction_selected_map_:
             if self._reaction_selected_map_[r]:
                 R = self.selected_reactions[r]['obj']
                 for S in R.getSpeciesObj():
-                    #S = S.clone()
+                    # S = S.clone()
                     S._organism_ = R._organism_
                     if S not in selected_metabolites:
                         selected_metabolites[S.getId()] = S
@@ -3422,7 +4017,9 @@ the template library submodule has been initialised (see readme.md) and correctl
             for c_ in range(len(items)):
                 if c_ == 3:
                     items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
-                    items[c_].setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                    items[c_].setFlags(
+                        QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+                    )
                     if s_ not in self.selected_metabolites:
                         items[c_].setCheckState(QtCore.Qt.Unchecked)
                     elif s_ in self._metab_selected_map_:
@@ -3438,7 +4035,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             row += 1
 
         self.selected_metabolites = selected_metabolites
-        #if len(self._metab_selected_map_) > 0:
+        # if len(self._metab_selected_map_) > 0:
         self._updateMetaboliteMap_()
         self._metab_status_changed_ = False
         self.table_metab.sortByColumn(0, Qt.SortOrder(0))
@@ -3479,7 +4076,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             tid = str(self.table_gene.item(r, 1).text())
             key = '{}{}{}'.format(mid, self.id_sep, tid)
             if tid != '':
-                #print(key)
+                # print(key)
                 if key in mmap:
                     print('IMPOSSIBLE DUPLICATE MMAP KEY')
                     time.sleep(1)
@@ -3490,24 +4087,35 @@ the template library submodule has been initialised (see readme.md) and correctl
         return mmap
 
     def widgetTableGene_getSelectedIds(self):
-        #tuple([str(self.table_gene.item(r, 1).text()) for r in range(self.table_gene.rowCount()) if self.table_gene.item(r, 3).checkState() == Qt.Checked])
+        # tuple([str(self.table_gene.item(r, 1).text()) for r in range(self.table_gene.rowCount()) if self.table_gene.item(r, 3).checkState() == Qt.Checked])
 
         if self._gene_selected_map_ is not None:
-            return [i.split(self.id_sep)[1] for i in self._gene_selected_map_ if self._gene_selected_map_[i]]
+            return [
+                i.split(self.id_sep)[1]
+                for i in self._gene_selected_map_
+                if self._gene_selected_map_[i]
+            ]
         else:
             return []
 
     def widgetTableReaction_getSelectedIds(self):
-        #tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == Qt.Checked])
+        # tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == Qt.Checked])
         if self._reaction_selected_map_ is not None:
-            return [i for i in self._reaction_selected_map_ if self._reaction_selected_map_[i]]
+            return [
+                i
+                for i in self._reaction_selected_map_
+                if self._reaction_selected_map_[i]
+            ]
         else:
             return []
 
     def widgetTableReaction_getMap(self):
         rmap = {}
         for r in range(self.table_reaction.rowCount()):
-            if self.table_reaction.item(r, 0) is not None and self.table_reaction.item(r, 2) is not None:
+            if (
+                self.table_reaction.item(r, 0) is not None
+                and self.table_reaction.item(r, 2) is not None
+            ):
                 rid = str(self.table_reaction.item(r, 0).text())
                 org = str(self.table_reaction.item(r, 3).text())
                 rkey = '{}{}{}'.format(rid, self.id_sep, org)
@@ -3520,14 +4128,16 @@ the template library submodule has been initialised (see readme.md) and correctl
     @pyqtSlot()
     def widgetTableGene_cellSelectionChanged(self):
         items = self.table_gene.selectedItems()
-        #print(','.join([i.text() for i in items]))
-        #print(items)
+        # print(','.join([i.text() for i in items]))
+        # print(items)
         if len(items) == 0:
             print('No items doing nothing')
         elif items[0].row() == self.GENE_LAST_SELECTED_ROW:
             print('Same row doing nothing')
         else:
-            print('New row {} --> {}'.format(self.GENE_LAST_SELECTED_ROW, items[0].row()))
+            print(
+                'New row {} --> {}'.format(self.GENE_LAST_SELECTED_ROW, items[0].row())
+            )
             self.widgetTableGene_cellClicked(items[0].row(), items[0].column())
 
     @pyqtSlot(int, int)
@@ -3538,44 +4148,50 @@ the template library submodule has been initialised (see readme.md) and correctl
         print("Gene: Row %d and Column %d was clicked" % (row, column))
         self.GENE_LAST_SELECTED_ROW = row
         gene = str(self.table_gene.item(row, 0).text())
-        r_html = self.buildHtmlStringsGene(str(self.table_gene.item(row, 1).text()), gene)
+        r_html = self.buildHtmlStringsGene(
+            str(self.table_gene.item(row, 1).text()), gene
+        )
         self.widgetDisplayReact_update(r_html)
 
         if realmatch:
             if self._wnotes_current_obj_ is not None:
                 self.note_readFromNotesWidget(self._wnotes_current_obj_)
-            gene = gene[len(self.gene_prefix):]
+            gene = gene[len(self.gene_prefix) :]
             self._dummy_gene_obj_.id = gene
             self._dummy_gene_obj_.setName(gene)
             self._dummy_gene_obj_.__setObjRef__(self._dummy_gene_obj_)
             self._wnotes_current_obj_ = self._dummy_gene_obj_
-            self.note_writeToNotesWidget(self._dummy_gene_obj_, self.func_getCurrentUser(realname=False))
+            self.note_writeToNotesWidget(
+                self._dummy_gene_obj_, self.func_getCurrentUser(realname=False)
+            )
 
     @pyqtSlot(int, int)
     def widgetTableGene_cellChecked(self, row, column):
         if self.gene_table_loading:
             return
-        #print("Gene: Row %d and Column %d was checked" % (row, column))
+        # print("Gene: Row %d and Column %d was checked" % (row, column))
         itm = self.table_gene.item(row, column)
         src = str(self.table_gene.item(row, 0).text())
         gen = str(self.table_gene.item(row, 1).text())
-        #print('GENEKEY: {}{}{}'.format(src, self.id_sep, gen))
+        # print('GENEKEY: {}{}{}'.format(src, self.id_sep, gen))
         self.GENE_LAST_CHECKED_ROW = row
         self._updateGeneMap_(from_click=True)
         self.GENE_SELECTION_STATE_CHANGE = True
-        #print(self._gene_selected_ids_)
+        # print(self._gene_selected_ids_)
 
     @pyqtSlot()
     def widgetTableReaction_cellSelectionChanged(self):
         items = self.table_reaction.selectedItems()
-        #print(','.join([i.text() for i in items]))
-        #print(items)
+        # print(','.join([i.text() for i in items]))
+        # print(items)
         if len(items) == 0:
             print('No items doing nothing')
         elif items[0].row() == self.REACT_LAST_SELECTED_ROW:
             print('Same row doing nothing')
         else:
-            print('New row {} --> {}'.format(self.REACT_LAST_SELECTED_ROW, items[0].row()))
+            print(
+                'New row {} --> {}'.format(self.REACT_LAST_SELECTED_ROW, items[0].row())
+            )
             self.widgetTableReaction_cellClicked(items[0].row(), items[0].column())
 
     @pyqtSlot(int, int)
@@ -3598,7 +4214,7 @@ the template library submodule has been initialised (see readme.md) and correctl
     def widgetTableReaction_cellChecked(self, row, column):
         if self.reaction_table_loading:
             return
-        #print("Reaction: Row %d and Column %d was checked" % (row, column))
+        # print("Reaction: Row %d and Column %d was checked" % (row, column))
         itm = self.table_reaction.item(row, column)
         self.REACT_LAST_CHECKED_ROW = row
         self.REACTION_SELECTION_STATE_CHANGE = True
@@ -3617,21 +4233,24 @@ the template library submodule has been initialised (see readme.md) and correctl
         self._notesdb_sqlcols_ = ['unixtime REAL PRIMARY KEY', 'user TEXT', 'model TEXT', 'id TEXT', 'notes TEXT', 'other TEXT']
 
         """
-        data = {'unixtime' : time.time(),
-                'user' : self.func_getCurrentUser(realname=False),
-                'model' : str(model),
-                'id' : str(sid),
-                'notes' : str(notes),
-                'other' : str(session)
-                }
-        #pprint.pprint(data)
+        data = {
+            'unixtime': time.time(),
+            'user': self.func_getCurrentUser(realname=False),
+            'model': str(model),
+            'id': str(sid),
+            'notes': str(notes),
+            'other': str(session),
+        }
+        # pprint.pprint(data)
         self._notesdb_.insertData('NOTES', data, commit=True)
-        #if str(notes) != self._notesdb_.getCell('NOTES', 'notes', str(notes), 'notes'):
-            #pprint.pprint(data)
-            #self._notesdb_.insertData('NOTES', data, commit=True)
+        # if str(notes) != self._notesdb_.getCell('NOTES', 'notes', str(notes), 'notes'):
+        # pprint.pprint(data)
+        # self._notesdb_.insertData('NOTES', data, commit=True)
 
     def readNotesFromNotesDB(self, model, sid, user, session):
-        sql = 'SELECT notes FROM NOTES WHERE model=\"{}\" AND id=\"{}\" AND user=\"{}\" AND other=\"{}\" ORDER BY unixtime DESC'.format(model, sid, user, session)
+        sql = 'SELECT notes FROM NOTES WHERE model=\"{}\" AND id=\"{}\" AND user=\"{}\" AND other=\"{}\" ORDER BY unixtime DESC'.format(
+            model, sid, user, session
+        )
         notes = ''
         try:
             notes = self._notesdb_.fetchAll(sql)
@@ -3645,27 +4264,34 @@ the template library submodule has been initialised (see readme.md) and correctl
         return notes
 
     def note_readFromNotesWidget(self, obj):
-        #print('note_readFromNotesWidget')
+        # print('note_readFromNotesWidget')
         if obj is not None:
             notes = str(self._wnotes_.toPlainText())
-            #print('note_readFromNotesWidget', notes)
+            # print('note_readFromNotesWidget', notes)
             if notes not in ['', ' ']:
-                #print('-inserting')
-                #print(obj.__objref__().getName(), obj.getId())
-                self.insertNotesToNotesDB(obj.__objref__().getName(), obj.getId(), notes, self._DAT_NOTESDB_KEY_)
+                # print('-inserting')
+                # print(obj.__objref__().getName(), obj.getId())
+                self.insertNotesToNotesDB(
+                    obj.__objref__().getName(),
+                    obj.getId(),
+                    notes,
+                    self._DAT_NOTESDB_KEY_,
+                )
             else:
                 pass
-                #print('-skipping empty1')
+                # print('-skipping empty1')
         else:
             pass
-            #print('-skipping empty2')
+            # print('-skipping empty2')
 
     def note_writeToNotesWidget(self, obj, user):
-        #print('note_writeToNotesWidget')
+        # print('note_writeToNotesWidget')
         if obj is not None:
-            #print(obj.__objref__().getName(), obj.getId())
-            notes = self.readNotesFromNotesDB(obj.__objref__().getName(), obj.getId(), user, self._DAT_NOTESDB_KEY_)
-            #print('note_writeToNotesWidget', notes)
+            # print(obj.__objref__().getName(), obj.getId())
+            notes = self.readNotesFromNotesDB(
+                obj.__objref__().getName(), obj.getId(), user, self._DAT_NOTESDB_KEY_
+            )
+            # print('note_writeToNotesWidget', notes)
             self._wnotes_.setText(notes)
 
     def getCellX(self, table, col, rid, cell):
@@ -3679,7 +4305,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         """
 
-        #print(sql)
+        # print(sql)
         data = None
         try:
             data = str(self.db_cursor.execute(sql).fetchone()[0])
@@ -3698,38 +4324,56 @@ the template library submodule has been initialised (see readme.md) and correctl
     def func_formatGeneAnnotationToHTML(self, gene, gannot, r_html, color='#ffffff'):
         for ga_ in gannot:
             if ga_ in ['GO_process', 'GO_function', 'GO_component']:
-                #match = re.search(self.regex['GOterm'], gannot[ga_])
+                # match = re.search(self.regex['GOterm'], gannot[ga_])
                 match = re.findall(self.regex['GOterm'], gannot[ga_])
                 gstring = gannot[ga_]
                 for m in range(len(match)):
-                    href = '<a href=\"http://identifiers.org/go/{}\">{}</a>'.format(match[m], match[m])
+                    href = '<a href=\"http://identifiers.org/go/{}\">{}</a>'.format(
+                        match[m], match[m]
+                    )
                     if m >= 1:
                         href = '<br/>' + href
                     gstring = gstring.replace(match[m], href)
-                r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(color, ga_, gstring)
+                r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(
+                    color, ga_, gstring
+                )
             elif ga_ == 'EC_number':
-                href = '<a href=\"http://identifiers.org/ec-code/{}\">{}</a>'.format(gannot[ga_], gannot[ga_])
-                r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(color, ga_, href)
+                href = '<a href=\"http://identifiers.org/ec-code/{}\">{}</a>'.format(
+                    gannot[ga_], gannot[ga_]
+                )
+                r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(
+                    color, ga_, href
+                )
             elif ga_ in ['raw_location', 'codon_start', 'transl_table', 'locus_tag']:
                 pass
             else:
-                r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(color, ga_, gannot[ga_])
+                r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(
+                    color, ga_, gannot[ga_]
+                )
         try:
-            db_xref =  eval(self.getDBXrefFromGeneDB(gene))
+            db_xref = eval(self.getDBXrefFromGeneDB(gene))
         except (TypeError, AttributeError):
-            #print('dbxref error')
+            # print('dbxref error')
             db_xref = {}
         db_xrefs = ''
         for i in db_xref:
             if 'GeneID:' in i:
-                db_xrefs += '<a href=\"http://www.ncbi.nlm.nih.gov/gene/{}\">{}</a><br/>'.format(i.split(':')[1], i)
+                db_xrefs += '<a href=\"http://www.ncbi.nlm.nih.gov/gene/{}\">{}</a><br/>'.format(
+                    i.split(':')[1], i
+                )
             elif 'UniProtKB' in i:
-                db_xrefs += '<a href=\"http://www.uniprot.org/uniprot/{}\">{}</a><br/>'.format(i.split(':')[1], i)
+                db_xrefs += '<a href=\"http://www.uniprot.org/uniprot/{}\">{}</a><br/>'.format(
+                    i.split(':')[1], i
+                )
             elif 'GI:' in i:
-                db_xrefs += '<a href=\"http://www.ncbi.nlm.nih.gov/protein/{}\">{}</a><br/>'.format(i.split(':')[1], i)
+                db_xrefs += '<a href=\"http://www.ncbi.nlm.nih.gov/protein/{}\">{}</a><br/>'.format(
+                    i.split(':')[1], i
+                )
             else:
                 db_xrefs += '{}<br/>'.format(i)
-        r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(color, 'db_xref', db_xrefs)
+        r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(
+            color, 'db_xref', db_xrefs
+        )
 
         return r_html
 
@@ -3738,53 +4382,64 @@ the template library submodule has been initialised (see readme.md) and correctl
         realmatch = True
         if gene == '' or gene is None:
             realmatch = False
-        genesrc = genesrc[len(self.gene_prefix):]
+        genesrc = genesrc[len(self.gene_prefix) :]
         if realmatch:
             organism = self._DAT_LINK_DICT_["__idx__"][gene]
             reactions = self._DAT_G2REACT[gene]
-        #print(self._DAT_SEARCH_RES)
-        #print(self._DAT_G2REACT)
-        #self._updateGeneMap_()
+        # print(self._DAT_SEARCH_RES)
+        # print(self._DAT_G2REACT)
+        # self._updateGeneMap_()
 
-        r_html = "<table cellpadding=\"5\", border=\"1\", cellspacing=\"0\"><caption>GeneMatch: {} --> {}</caption>".format(genesrc, gene)
+        r_html = "<table cellpadding=\"5\", border=\"1\", cellspacing=\"0\"><caption>GeneMatch: {} --> {}</caption>".format(
+            genesrc, gene
+        )
         gannot = gannotsrc = None
         try:
             gannot = self.getGeneAnnotationFromGeneDB(gene)
         except TypeError:
-            #print('gannot error')
+            # print('gannot error')
             gannot = {}
         try:
             gannotsrc = self.getGeneAnnotationFromGeneDB(genesrc)
         except TypeError:
-            #print('gannot error')
+            # print('gannot error')
             gannotsrc = {}
 
-        #print('\nDebug:', gene, genesrc)
-        #print(gannot)
-        #print(gannotsrc)
+        # print('\nDebug:', gene, genesrc)
+        # print(gannot)
+        # print(gannotsrc)
 
         if len(gannotsrc) > 0:
-            r_html += '<tr><td colspan="2" align=\"center\"><strong>Source Gene Information: {}</strong></td></tr>'.format(genesrc)
-            r_html = self.func_formatGeneAnnotationToHTML(genesrc, gannotsrc, r_html, color='#e6ffe6')
-
+            r_html += '<tr><td colspan="2" align=\"center\"><strong>Source Gene Information: {}</strong></td></tr>'.format(
+                genesrc
+            )
+            r_html = self.func_formatGeneAnnotationToHTML(
+                genesrc, gannotsrc, r_html, color='#e6ffe6'
+            )
 
         if realmatch:
-            r_html += '<tr><td colspan="2" align=\"center\"><strong>Matching Gene Information: {}</strong></td></tr>'.format(gene)
-            r_html = self.func_formatGeneAnnotationToHTML(gene, gannot, r_html, color='#ffffcc')
+            r_html += '<tr><td colspan="2" align=\"center\"><strong>Matching Gene Information: {}</strong></td></tr>'.format(
+                gene
+            )
+            r_html = self.func_formatGeneAnnotationToHTML(
+                gene, gannot, r_html, color='#ffffcc'
+            )
             r_html += '<tr><td colspan="2" align=\"center\"><strong>Associated reactions(s)</strong></td></tr>'
 
             for o_ in reactions:
-                #r_html += "<tr><td><strong>Organism</strong></td><td><strong>{}</strong></td></tr>".format(organism)
-                #if o_.reversible:
-                    #reverse = '(reversible)'
-                #else:
-                    #reverse = '(irreversble)'
-                #r_html += "<tr><td><strong>{}</strong><br/>{}</td><td><strong>{}</strong></td></tr>".format(o_.getId(), reverse, o_.getName())
-                r_html += "<tr><td><strong>{}</strong> ({})</td><td><strong>{}</strong></td></tr>".format(o_.getId(), organism, o_.getName())
-                #r_html += "<tr><td><strong>Equation ID</strong></td><td>{}</td></tr>".format(o_.getEquation())
-                #r_html += "<tr><td><strong>Equation Name</strong></td><td>{}</td></tr>".format(o_.getEquation(use_names=True))
-                #r_html += "<tr><td><strong>Source gene</strong></td><td>{}</td></tr>".format(gene)
-                #r_html += "<tr><td><strong>Matching gene</strong></td><td>{}</td></tr>".format(gene)
+                # r_html += "<tr><td><strong>Organism</strong></td><td><strong>{}</strong></td></tr>".format(organism)
+                # if o_.reversible:
+                # reverse = '(reversible)'
+                # else:
+                # reverse = '(irreversble)'
+                # r_html += "<tr><td><strong>{}</strong><br/>{}</td><td><strong>{}</strong></td></tr>".format(o_.getId(), reverse, o_.getName())
+                r_html += "<tr><td><strong>{}</strong> ({})</td><td><strong>{}</strong></td></tr>".format(
+                    o_.getId(), organism, o_.getName()
+                )
+                # r_html += "<tr><td><strong>Equation ID</strong></td><td>{}</td></tr>".format(o_.getEquation())
+                # r_html += "<tr><td><strong>Equation Name</strong></td><td>{}</td></tr>".format(o_.getEquation(use_names=True))
+                # r_html += "<tr><td><strong>Source gene</strong></td><td>{}</td></tr>".format(gene)
+                # r_html += "<tr><td><strong>Matching gene</strong></td><td>{}</td></tr>".format(gene)
                 try:
                     emod = self._DAT_MODELS[o_._organism_]
                     gpr = emod.getGPRforReaction(o_.getId())
@@ -3795,46 +4450,70 @@ the template library submodule has been initialised (see readme.md) and correctl
                     # TODO: use a regular expression here
                     gids = gpr.getGeneLabels()
                     gids = list(set(gids))
-                    gids.sort(key = len)
+                    gids.sort(key=len)
                     gids.reverse()
-                    #print(self._gene_selected_ids_)
-                    #print(self._gene_selected_map_)
-                    #print(assoc)
-                    #print(gids)
+                    # print(self._gene_selected_ids_)
+                    # print(self._gene_selected_map_)
+                    # print(assoc)
+                    # print(gids)
                     if len(gids) == 1:
                         if gids[0] in self._gene_selected_ids_:
-                            assoc = assoc.replace(assoc, '<span style="color: green;">{}</span> '.format(gids[0]))
+                            assoc = assoc.replace(
+                                assoc,
+                                '<span style="color: green;">{}</span> '.format(
+                                    gids[0]
+                                ),
+                            )
                         elif gids[0] in self._gene_all_ids_:
-                            assoc = assoc.replace(assoc, '<span style="color: red;">{}</span> '.format(gids[0]))
+                            assoc = assoc.replace(
+                                assoc,
+                                '<span style="color: red;">{}</span> '.format(gids[0]),
+                            )
                     else:
                         for g_ in gids:
-                            #ids = str('{}{}{}'.format(genesrc, self.id_sep, g_))
+                            # ids = str('{}{}{}'.format(genesrc, self.id_sep, g_))
                             if g_ in self._gene_selected_ids_:
-                                #print(ids, g_ in self._gene_selected_ids_)
-                                assoc = assoc.replace(g_+' ', '<span style="color: green;">{}</span> '.format(g_))
-                                assoc = assoc.replace(' '+g_, ' <span style="color: green;">{}</span>'.format(g_))
-                                #assoc = assoc.replace(g_, ' <span style="color: green;">{}</span>'.format(g_))
+                                # print(ids, g_ in self._gene_selected_ids_)
+                                assoc = assoc.replace(
+                                    g_ + ' ',
+                                    '<span style="color: green;">{}</span> '.format(g_),
+                                )
+                                assoc = assoc.replace(
+                                    ' ' + g_,
+                                    ' <span style="color: green;">{}</span>'.format(g_),
+                                )
+                                # assoc = assoc.replace(g_, ' <span style="color: green;">{}</span>'.format(g_))
                             elif g_ in self._gene_all_ids_:
-                                assoc = assoc.replace(g_+' ', '<span style="color: red;">{}</span> '.format(g_))
-                                assoc = assoc.replace(' '+g_, ' <span style="color: red;">{}</span>'.format(g_))
-                                #assoc = assoc.replace(g_, ' <span style="color: red;">{}</span>'.format(g_))
+                                assoc = assoc.replace(
+                                    g_ + ' ',
+                                    '<span style="color: red;">{}</span> '.format(g_),
+                                )
+                                assoc = assoc.replace(
+                                    ' ' + g_,
+                                    ' <span style="color: red;">{}</span>'.format(g_),
+                                )
+                                # assoc = assoc.replace(g_, ' <span style="color: red;">{}</span>'.format(g_))
                     assoc = assoc.replace(gene, '<strong>{}</strong>'.format(gene))
 
                 except AttributeError as why:
-                    #o_.serializeToDisk(o_.getId())
+                    # o_.serializeToDisk(o_.getId())
                     print('ERROR: {} - {}'.format(gene, o_.getId()))
                     print(why)
-                    assoc = '<span style="color: red;"><strong>{}</strong></span> '.format('UNKNOWN')
+                    assoc = '<span style="color: red;"><strong>{}</strong></span> '.format(
+                        'UNKNOWN'
+                    )
 
-                #r_html += "<tr><td><strong>Association</strong></td><td>{}</td></tr>".format(assoc)
-                r_html += '<tr><td colspan="2" align=\"left\">{}</td></tr>'.format(assoc)
+                # r_html += "<tr><td><strong>Association</strong></td><td>{}</td></tr>".format(assoc)
+                r_html += '<tr><td colspan="2" align=\"left\">{}</td></tr>'.format(
+                    assoc
+                )
                 # disabled for now, using geneDB
-                #miriam = o_.getMIRIAMannotations()
-                #if miriam != None:
-                    #for m in miriam:
-                        #if len(miriam[m]) > 0:
-                            #for u in range(len(miriam[m])):
-                                #r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(m, miriam[m][u], miriam[m][u])
+                # miriam = o_.getMIRIAMannotations()
+                # if miriam != None:
+                # for m in miriam:
+                # if len(miriam[m]) > 0:
+                # for u in range(len(miriam[m])):
+                # r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(m, miriam[m][u], miriam[m][u])
         r_html += "</table>"
 
         return r_html
@@ -3859,26 +4538,34 @@ the template library submodule has been initialised (see readme.md) and correctl
         r_html = '<html><head>'
 
         r_html += '</head><body>'
-        r_html += "<table><tr><td><strong>Organism</strong></td><td><strong>{}</strong></td></tr>".format(reac._organism_)
+        r_html += "<table><tr><td><strong>Organism</strong></td><td><strong>{}</strong></td></tr>".format(
+            reac._organism_
+        )
         if reac.reversible:
             reverse = '(reversible)'
         else:
             reverse = '(irreversble)'
-        r_html += "<tr><td><strong>{}</strong><br/>{}</td><td><strong>{}</strong></td></tr>".format(reac.getId(), reverse, reac.getName())
+        r_html += "<tr><td><strong>{}</strong><br/>{}</td><td><strong>{}</strong></td></tr>".format(
+            reac.getId(), reverse, reac.getName()
+        )
         _gene_selected_ids_ = self.widgetTableGene_getSelectedIds()
         gpr = self._DAT_MODELS[reac._organism_].getGPRforReaction(reac.getId())
         assoc = gpr.getAssociationStr(use_labels=True)
         assoc_new = ''
-        #tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == Qt.Checked])
+        # tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == Qt.Checked])
         for r in range(self.table_reaction.rowCount()):
-            rkey = '{}{}{}'.format(str(self.table_reaction.item(r, 0).text()), self.id_sep, str(self.table_reaction.item(r, 3).text()))
+            rkey = '{}{}{}'.format(
+                str(self.table_reaction.item(r, 0).text()),
+                self.id_sep,
+                str(self.table_reaction.item(r, 3).text()),
+            )
             if rkey == '{}{}{}'.format(reac.getId(), self.id_sep, reac._organism_):
                 assoc_new = str(self.table_reaction.item(r, 5).text())
                 if ',' in assoc_new:
                     # this might be or
                     assoc_new = ' and '.join(list(set(assoc_new.split(','))))
                 assoc_new = '({})'.format(assoc_new)
-                #print(assoc_new)
+                # print(assoc_new)
                 break
 
         # TODO: use a regular expression here
@@ -3891,29 +4578,70 @@ the template library submodule has been initialised (see readme.md) and correctl
             if g_ in _gene_selected_ids_:
                 ginfo = self.buildHtmlStringsReaction_getGeneInfo(g_)
                 if len(gids) == 1:
-                    assoc = assoc.replace(g_, '<span title="{}" style="color: green;">{}</span> '.format(ginfo, g_))
+                    assoc = assoc.replace(
+                        g_,
+                        '<span title="{}" style="color: green;">{}</span> '.format(
+                            ginfo, g_
+                        ),
+                    )
                 else:
-                    assoc = assoc.replace(g_+' ', '<span title="{}" style="color: green;">{}</span> '.format(ginfo, g_))
-                    assoc = assoc.replace(' '+g_, ' <span title="{}" style="color: green;">{}</span>'.format(ginfo, g_))
-                    #assoc = '<p title="{}">{}</p>'.format(g_, assoc)
+                    assoc = assoc.replace(
+                        g_ + ' ',
+                        '<span title="{}" style="color: green;">{}</span> '.format(
+                            ginfo, g_
+                        ),
+                    )
+                    assoc = assoc.replace(
+                        ' ' + g_,
+                        ' <span title="{}" style="color: green;">{}</span>'.format(
+                            ginfo, g_
+                        ),
+                    )
+                    # assoc = '<p title="{}">{}</p>'.format(g_, assoc)
             elif g_ in self._gene_all_ids_:
                 ginfo = self.buildHtmlStringsReaction_getGeneInfo(g_)
-                assoc = assoc.replace(g_+' ', '<span title="{}" style="color: red;">{}</span> '.format(ginfo, g_))
-                assoc = assoc.replace(' '+g_, ' <span title="{}" style="color: red;">{}</span>'.format(ginfo, g_))
-        r_html += "<tr><td><strong>Association</strong></td><td>{}</td></tr>".format(assoc)
-        r_html += "<tr><td><strong>Association new</strong></td><td>{}</td></tr>".format(assoc_new)
-        r_html += "<tr><td><strong>Equation ID</strong></td><td>{}</td></tr>".format(reac.getEquation())
-        r_html += "<tr><td><strong>Equation Name</strong></td><td>{}</td></tr>".format(reac.getEquation(use_names=True))
-        r_html += '<tr><td colspan="2" align=\"center\"><strong>Substrates</strong></td></tr>'
+                assoc = assoc.replace(
+                    g_ + ' ',
+                    '<span title="{}" style="color: red;">{}</span> '.format(ginfo, g_),
+                )
+                assoc = assoc.replace(
+                    ' ' + g_,
+                    ' <span title="{}" style="color: red;">{}</span>'.format(ginfo, g_),
+                )
+        r_html += "<tr><td><strong>Association</strong></td><td>{}</td></tr>".format(
+            assoc
+        )
+        r_html += "<tr><td><strong>Association new</strong></td><td>{}</td></tr>".format(
+            assoc_new
+        )
+        r_html += "<tr><td><strong>Equation ID</strong></td><td>{}</td></tr>".format(
+            reac.getEquation()
+        )
+        r_html += "<tr><td><strong>Equation Name</strong></td><td>{}</td></tr>".format(
+            reac.getEquation(use_names=True)
+        )
+        r_html += (
+            '<tr><td colspan="2" align=\"center\"><strong>Substrates</strong></td></tr>'
+        )
         for s in reac.getSubstrateIds():
             S = reac.__objref__().getSpecies(s)
-            r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(bkg_clr_sub, S.getId(), bkg_clr_sub, S.getName())
-            r_html += "<tr><td>charge: {}</td><td>{}</td></tr>".format(S.getCharge(), S.getChemFormula())
-        r_html += '<tr><td colspan="2" align=\"center\"><strong>Products</strong></td></tr>'
+            r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(
+                bkg_clr_sub, S.getId(), bkg_clr_sub, S.getName()
+            )
+            r_html += "<tr><td>charge: {}</td><td>{}</td></tr>".format(
+                S.getCharge(), S.getChemFormula()
+            )
+        r_html += (
+            '<tr><td colspan="2" align=\"center\"><strong>Products</strong></td></tr>'
+        )
         for p in reac.getProductIds():
             P = reac.__objref__().getSpecies(p)
-            r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(bkg_clr_prd, P.getId(), bkg_clr_prd, P.getName())
-            r_html += "<tr><td>charge: {}</td><td>{}</td></tr>".format(P.getCharge(), P.getChemFormula())
+            r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(
+                bkg_clr_prd, P.getId(), bkg_clr_prd, P.getName()
+            )
+            r_html += "<tr><td>charge: {}</td><td>{}</td></tr>".format(
+                P.getCharge(), P.getChemFormula()
+            )
         r_annot = reac.getAnnotations()
         r_html += '<tr><td colspan="2" align=\"center\"><strong>Annotations</strong></td></tr>'
         for ant in r_annot:
@@ -3929,23 +4657,35 @@ the template library submodule has been initialised (see readme.md) and correctl
         bkg_clr_sub = '#FFFFFF'
         S = self.selected_metabolites[metab]
         r_html = '<html><body>'
-        r_html += '<table cellpadding="5", border="1", cellspacing="0"><caption></caption>'
-        r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(bkg_clr_sub, 'Id', bkg_clr_sub, S.getId())
-        r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(bkg_clr_sub, 'Name', bkg_clr_sub, S.getName())
+        r_html += (
+            '<table cellpadding="5", border="1", cellspacing="0"><caption></caption>'
+        )
+        r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(
+            bkg_clr_sub, 'Id', bkg_clr_sub, S.getId()
+        )
+        r_html += "<tr><td bgcolor=\"{}\"><strong>{}</strong></td><td bgcolor=\"{}\"><strong>{}</strong></td></tr>".format(
+            bkg_clr_sub, 'Name', bkg_clr_sub, S.getName()
+        )
         r_html += "<tr><td>Charge</td><td>{}</td></tr>".format(S.getCharge())
         r_html += "<tr><td>Formula</td><td>{}</td></tr>".format(S.getChemFormula())
-        reag_of = [r for r in S.isReagentOf() if r in [rr.split('@')[0] for rr in self.selected_reactions]]
+        reag_of = [
+            r
+            for r in S.isReagentOf()
+            if r in [rr.split('@')[0] for rr in self.selected_reactions]
+        ]
         r_html += "<tr><td>ReagentOf</td><td>{}</td></tr>".format(', '.join(reag_of))
-        #S.addMIRIAMannotation('is', 'CheBI', 'CHEBI:17822')
-        #S.addMIRIAMannotation('isPartOf', 'CheBI', 'CHEBI:17822')
-        #S.addMIRIAMannotation('is', 'CheBI', 'CHEBI:17822')
+        # S.addMIRIAMannotation('is', 'CheBI', 'CHEBI:17822')
+        # S.addMIRIAMannotation('isPartOf', 'CheBI', 'CHEBI:17822')
+        # S.addMIRIAMannotation('is', 'CheBI', 'CHEBI:17822')
         miriam = S.getMIRIAMannotations()
         if miriam != None:
             r_html += "<tr><td colspan=\"2\" align=\"center\">RDF references (opens in browser)</td></tr>"
             for m in miriam:
                 if len(miriam[m]) > 0:
                     for u in range(len(miriam[m])):
-                        r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(m, miriam[m][u], miriam[m][u])
+                        r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(
+                            m, miriam[m][u], miriam[m][u]
+                        )
         r_html += '</table></body></html>'
         return r_html
 
@@ -3954,10 +4694,14 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.tree_results.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tree_results.setUniformRowHeights(True)
         self.tree_results.setColumnCount(1)
-        #self.tree_results.setColumnWidth(0, 300)
+        # self.tree_results.setColumnWidth(0, 300)
         self.tree_results.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.tree_results.customContextMenuRequested.connect(self.widgetTreeRightClickMenu)
-        self.tree_results.setHeaderLabels(['Results ({})'.format(self.func_getCurrentUser(realname=True))])
+        self.tree_results.customContextMenuRequested.connect(
+            self.widgetTreeRightClickMenu
+        )
+        self.tree_results.setHeaderLabels(
+            ['Results ({})'.format(self.func_getCurrentUser(realname=True))]
+        )
         self.tree_results.itemSelectionChanged.connect(self.bp_rtreeOnSelect)
         self.widgetResultTree_fill()
 
@@ -3968,10 +4712,14 @@ the template library submodule has been initialised (see readme.md) and correctl
         if len(indexes) == 1:
             print(indexes[0].parent().data(Qt.DisplayRole))
             if indexes[0].parent().data(Qt.DisplayRole) is None:
-                self._widget_result_tree_rightclick_data_ = str(indexes[0].data(Qt.DisplayRole))
+                self._widget_result_tree_rightclick_data_ = str(
+                    indexes[0].data(Qt.DisplayRole)
+                )
             else:
-                self._widget_result_tree_rightclick_data_ = os.path.join(str(indexes[0].parent().data(Qt.DisplayRole)),
-                                                                         str(indexes[0].data(Qt.DisplayRole)))
+                self._widget_result_tree_rightclick_data_ = os.path.join(
+                    str(indexes[0].parent().data(Qt.DisplayRole)),
+                    str(indexes[0].data(Qt.DisplayRole)),
+                )
         if len(indexes) > 0:
             level = 0
             index = indexes[0]
@@ -3992,23 +4740,36 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot()
     def widgetResultTreeRightClickRename(self):
-        path = os.path.join(self.result_files, self.func_getCurrentUser(), self._widget_result_tree_rightclick_data_)
-        text, ok = QInputDialog.getText(self, 'Input Dialog',
-                                              'Enter new directory name:')
+        path = os.path.join(
+            self.result_files,
+            self.func_getCurrentUser(),
+            self._widget_result_tree_rightclick_data_,
+        )
+        text, ok = QInputDialog.getText(
+            self, 'Input Dialog', 'Enter new directory name:'
+        )
         if ok:
             path2 = path.replace(self._widget_result_tree_rightclick_data_, text)
             print(path)
             print(path2)
             if not os.path.exists(path2):
-                shutil.move(path,  path2)
+                shutil.move(path, path2)
                 self.widgetResultTree_fill()
             else:
-                self.widgetMsgBox(QMessageBox.Warning, 'Warning Dialog', 'Directory {} already exists'.format(text))
+                self.widgetMsgBox(
+                    QMessageBox.Warning,
+                    'Warning Dialog',
+                    'Directory {} already exists'.format(text),
+                )
 
     @pyqtSlot()
     def widgetResultTreeRightClickDelete(self):
-        path = os.path.join(self.result_files, self.func_getCurrentUser(), self._widget_result_tree_rightclick_data_)
-        #print(os.path.split(self._widget_result_tree_rightclick_data_))
+        path = os.path.join(
+            self.result_files,
+            self.func_getCurrentUser(),
+            self._widget_result_tree_rightclick_data_,
+        )
+        # print(os.path.split(self._widget_result_tree_rightclick_data_))
         DELTREE = True
 
         if os.path.split(self._widget_result_tree_rightclick_data_)[0] != '':
@@ -4016,9 +4777,15 @@ the template library submodule has been initialised (see readme.md) and correctl
             DELTREE = False
 
         if os.path.exists(path):
-            reply = QMessageBox.question(self, 'Message',\
-                                               "Are you sure you want to delete:\n{}?".format(self._widget_result_tree_rightclick_data_),\
-                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            reply = QMessageBox.question(
+                self,
+                'Message',
+                "Are you sure you want to delete:\n{}?".format(
+                    self._widget_result_tree_rightclick_data_
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
             if reply == QMessageBox.Yes:
                 if not DELTREE:
                     os.remove(path)
@@ -4032,15 +4799,17 @@ the template library submodule has been initialised (see readme.md) and correctl
             for key, val in value.items():
                 child = QTreeWidgetItem()
                 if val is None:
-                    child.setText(0, u'{}'.format(key.replace('_metalink.resplus.json', '')))
+                    child.setText(
+                        0, u'{}'.format(key.replace('_metalink.resplus.json', ''))
+                    )
                     ## this is the timestamp code that has now been removed
                     ##print(item.text(0), key, val)
                     ##try:
-                        ##path = os.path.join(self.getRtreeItemPath(item), key)
-                        ##t = datetime.datetime.fromtimestamp(os.path.getmtime(path))
-                        ##child.setText(1, unicode('{}:{}'.format(t.hour, t.minute)))
+                    ##path = os.path.join(self.getRtreeItemPath(item), key)
+                    ##t = datetime.datetime.fromtimestamp(os.path.getmtime(path))
+                    ##child.setText(1, unicode('{}:{}'.format(t.hour, t.minute)))
                     ##except WindowsError:
-                        ##print('DEBUG: {}'.format(self.getRtreeItemPath(item)), key, value)
+                    ##print('DEBUG: {}'.format(self.getRtreeItemPath(item)), key, value)
                     child.setExpanded(True)
                 else:
                     child.setText(0, u'{}'.format(key))
@@ -4053,14 +4822,13 @@ the template library submodule has been initialised (see readme.md) and correctl
         if getSelected:
             path = self.getRtreeItemPath(getSelected[0])
             path += '_metalink.resplus.json'
-            #print(path)
+            # print(path)
             if os.path.exists(path):
                 self.result_file = path
-                #print('Good path {}'.format(path))
+                # print('Good path {}'.format(path))
             else:
                 self.result_file = ''
-                #print('Invalid path {}'.format(path))
-
+                # print('Invalid path {}'.format(path))
 
     def getRtreeItemPath(self, item):
         path = os.path.join(self.result_files, self.func_getCurrentUser())
@@ -4068,7 +4836,6 @@ the template library submodule has been initialised (see readme.md) and correctl
         for i_ in item_path:
             path = os.path.join(path, i_)
         return path
-
 
     def func_getTreePathOfItem(self, item):
         path = []
@@ -4085,17 +4852,19 @@ the template library submodule has been initialised (see readme.md) and correctl
         if not realname:
             return self._CONFIG_['system']['current_user']
         else:
-            return self._CONFIG_['users'][self._CONFIG_['system']['current_user']]['name']
+            return self._CONFIG_['users'][self._CONFIG_['system']['current_user']][
+                'name'
+            ]
 
     def widgetResultTree_fill(self):
         self.tree_results.clear()
-        #print(self.result_files)
+        # print(self.result_files)
         root = os.path.join(self.result_files, self.func_getCurrentUser())
         print(root)
         if not os.path.exists(root):
             os.makedirs(root)
         root = self.getDirectoryStructure(root)[self.func_getCurrentUser()]
-        #print(root)
+        # print(root)
         self.widgetResultTree_item(self.tree_results.invisibleRootItem(), root)
         self.tree_results.expandToDepth(2)
 
@@ -4148,32 +4917,33 @@ the template library submodule has been initialised (see readme.md) and correctl
     def _update_Reactions_(self):
         self.widgetTableReaction_populate()
         self._gene_status_changed_ = False
-        #gselect = self.widgetTableGene_getSelectedIds()
-        #if self._gene_selected_ids_ != gselect:
-            #self._gene_status_changed_ = True
-            #self._gene_selected_ids_ = gselect
-            #self.widgetTableReaction_populate()
-        #else:
-            #self._gene_status_changed_ = False
+        # gselect = self.widgetTableGene_getSelectedIds()
+        # if self._gene_selected_ids_ != gselect:
+        # self._gene_status_changed_ = True
+        # self._gene_selected_ids_ = gselect
+        # self.widgetTableReaction_populate()
+        # else:
+        # self._gene_status_changed_ = False
 
     def _update_Metabolites_(self):
         self.widgetTableMetab_populate()
-
 
     def _updateReactionMap_(self, from_click=False):
         self._reaction_selected_map_ = self.widgetTableReaction_getMap()
         self._reaction_selected_ids_ = self.widgetTableReaction_getSelectedIds()
         if from_click:
             row = self.REACT_LAST_CHECKED_ROW
-            self.status_bar.showMessage('Selected Reactions: {}'.format(len(self._reaction_selected_ids_)))
+            self.status_bar.showMessage(
+                'Selected Reactions: {}'.format(len(self._reaction_selected_ids_))
+            )
 
-            #gene = str(self.table_reaction.item(row, 1).text())
-            #genesrc = str(self.table_reaction.item(row, 0).text())
-            #print(row, gene, genesrc)
+            # gene = str(self.table_reaction.item(row, 1).text())
+            # genesrc = str(self.table_reaction.item(row, 0).text())
+            # print(row, gene, genesrc)
 
-        #print('R', len(self._reaction_selected_map_), len(self._reaction_selected_ids_))
-        #print(self._reaction_selected_map_)
-        #print(self._reaction_selected_ids_)
+        # print('R', len(self._reaction_selected_map_), len(self._reaction_selected_ids_))
+        # print(self._reaction_selected_map_)
+        # print(self._reaction_selected_ids_)
 
     def _updateMetaboliteMap_(self):
         self._metab_selected_map_ = self.widgetTableMetab_getMap()
@@ -4188,13 +4958,15 @@ the template library submodule has been initialised (see readme.md) and correctl
             row = self.GENE_LAST_CHECKED_ROW
             gene = str(self.table_gene.item(row, 1).text())
             genesrc = str(self.table_gene.item(row, 0).text())
-            #print(row, gene, genesrc)
+            # print(row, gene, genesrc)
             html = self.buildHtmlStringsGene(gene, genesrc)
             self.widgetDisplayReact_update(html)
-        self.status_bar.showMessage('Selected Genes: {}'.format(len(self._gene_selected_ids_)))
-        #print(self._gene_selected_map_)
-        #print(self._gene_selected_ids_)
-        #print('G', len(self._gene_selected_map_), len(self._gene_selected_ids_))
+        self.status_bar.showMessage(
+            'Selected Genes: {}'.format(len(self._gene_selected_ids_))
+        )
+        # print(self._gene_selected_map_)
+        # print(self._gene_selected_ids_)
+        # print('G', len(self._gene_selected_map_), len(self._gene_selected_ids_))
 
     @pyqtSlot(int)
     def onTabChange(self, idx):
@@ -4204,7 +4976,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
         self._last_tab_ = self._active_tab_
         self._active_tab_ = idx
-        #print('tabChange', self._last_tab_, self._active_tab_)
+        # print('tabChange', self._last_tab_, self._active_tab_)
 
         # read notes to object and clear text
         self.note_readFromNotesWidget(self._wnotes_current_obj_)
@@ -4239,7 +5011,6 @@ the template library submodule has been initialised (see readme.md) and correctl
         else:
             print('OnTabChange no selection state change')
 
-
         if self._tabpanel_idx_[self._active_tab_] == 'Genes':
             update_generic_status = True
             self._wnotes_.setEnabled(True)
@@ -4251,21 +5022,26 @@ the template library submodule has been initialised (see readme.md) and correctl
             print('Landing on reactions')
             update_generic_status = True
             self._wnotes_.setEnabled(True)
-            #self.table_reaction.clearSelection()
-            #self.table_reaction.clearFocus()
+            # self.table_reaction.clearSelection()
+            # self.table_reaction.clearFocus()
             print('react', self.REACT_LAST_SELECTED_ROW)
             self.table_reaction.setCurrentCell(self.REACT_LAST_SELECTED_ROW, 0)
         elif self._tabpanel_idx_[self._active_tab_] == 'Metabolites':
             self.table_metab.update()
             update_generic_status = True
             self._wnotes_.setEnabled(True)
-            #self.status_bar.showMessage('Including {} metabolites.'.format(self.table_metab.rowCount()))
+            # self.status_bar.showMessage('Including {} metabolites.'.format(self.table_metab.rowCount()))
             print('metab', self.METAB_LAST_SELECTED_ROW)
             self.table_metab.setCurrentCell(self.METAB_LAST_SELECTED_ROW, 0)
 
         if update_generic_status:
-            self.status_bar.showMessage('Genes: {} Reactions: {} Metabolites: {}'.format(len(self._gene_selected_ids_),\
-                                                                                         len(self._reaction_selected_ids_), self.table_metab.rowCount()))
+            self.status_bar.showMessage(
+                'Genes: {} Reactions: {} Metabolites: {}'.format(
+                    len(self._gene_selected_ids_),
+                    len(self._reaction_selected_ids_),
+                    self.table_metab.rowCount(),
+                )
+            )
 
         self.func_saveSelectionState(False, False, False)
         QApplication.restoreOverrideCursor()
@@ -4279,21 +5055,22 @@ the template library submodule has been initialised (see readme.md) and correctl
             self._update_Reactions_()
             self._update_Metabolites_()
 
-        selstate = self._DAT_LINK_DICT_['__metaproteome__']['selection_state']['__tmp__'].copy()
+        selstate = self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][
+            '__tmp__'
+        ].copy()
         selstate['selected_genes'] = self._gene_selected_map_
         selstate['selected_reactions'] = self._reaction_selected_map_
         selstate['selected_metabolites'] = self._metab_selected_map_
         if new_session:
-            key, ok = QInputDialog.getText(self, 'Input Dialog',
-                                                  'Enter session name:')
+            key, ok = QInputDialog.getText(self, 'Input Dialog', 'Enter session name:')
             key = str(key)
             if not ok or key in ['', ' ']:
                 key = time.strftime('%Y-%m-%d-%H-%M-%S')
             self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][key] = selstate
         if write:
             self.func_saveResultsFile()
-        #print('I AM SAVING STATE')
-        #pprint.pprint(selstate['selected_genes'])
+        # print('I AM SAVING STATE')
+        # pprint.pprint(selstate['selected_genes'])
 
     def func_saveResultsFile(self):
         fp = open(self.result_file, 'w')
@@ -4303,9 +5080,11 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     def func_loadSelectionState(self, state):
         state = str(state)
-        #print(state, self._DAT_LINK_DICT_['__metaproteome__']['selection_state'].keys())
+        # print(state, self._DAT_LINK_DICT_['__metaproteome__']['selection_state'].keys())
         if state in self._DAT_LINK_DICT_['__metaproteome__']['selection_state']:
-            selstate = self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][state]
+            selstate = self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][
+                state
+            ]
             self._gene_selected_map_ = copy.deepcopy(selstate['selected_genes'])
             self._reaction_selected_map_ = copy.deepcopy(selstate['selected_reactions'])
             self._metab_selected_map_ = copy.deepcopy(selstate['selected_metabolites'])
@@ -4321,31 +5100,38 @@ the template library submodule has been initialised (see readme.md) and correctl
         for row in range(self.table_gene.rowCount()):
             mid = str(self.table_gene.item(row, 0).text())
             tid = str(self.table_gene.item(row, 1).text())
-            #print(mid,tid)
+            # print(mid,tid)
             key = '{}{}{}'.format(mid, self.id_sep, tid)
-            #print(key, self._gene_selected_map_[key])
-            if key not in self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][self.CURRENT_SELECTION_STATE]['selected_genes']:
+            # print(key, self._gene_selected_map_[key])
+            if (
+                key
+                not in self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][
+                    self.CURRENT_SELECTION_STATE
+                ]['selected_genes']
+            ):
                 print('StateSetError: {}'.format(key))
             else:
-                if self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][self.CURRENT_SELECTION_STATE]['selected_genes'][key]:
+                if self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][
+                    self.CURRENT_SELECTION_STATE
+                ]['selected_genes'][key]:
                     self.table_gene.item(row, 3).setCheckState(QtCore.Qt.Checked)
                 else:
                     self.table_gene.item(row, 3).setCheckState(QtCore.Qt.Unchecked)
         self.table_gene.update()
         self.menu_buildAll()
 
-        #self.widgetTableReaction_populate()
+        # self.widgetTableReaction_populate()
         ## set reaction selected state
-        #self.widgetTableMetab_populate()
+        # self.widgetTableMetab_populate()
         ## set metab selection state
-        #print('I HAVE SET THE SELECTION STATE')
+        # print('I HAVE SET THE SELECTION STATE')
 
     @pyqtSlot(int)
     def onTabRightChange(self, idx):
         self._last_tab_right_ = self._active_tab_right_
         self._active_tab_right_ = idx
-        #print('r', self._last_tab_right_, self._active_tab_right_)
-        #print(self._tabpanel_right_idx_[self._last_tab_right_], self._tabpanel_right_idx_[idx])
+        # print('r', self._last_tab_right_, self._active_tab_right_)
+        # print(self._tabpanel_right_idx_[self._last_tab_right_], self._tabpanel_right_idx_[idx])
 
     def widgetPanel(self):
         self.widgetTableGene()
@@ -4358,22 +5144,22 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widgetTabPanel_add(tab2L, 'Reactions', setcurrent=False)
         tab3L = self.widgetTabPanel_createtab(self.table_metab)
         self.widgetTabPanel_add(tab3L, 'Metabolites', setcurrent=False)
-        #tab4L = self.widgetTabPanel_createtab(QWidget())
-        #self.widgetTabPanel_add(tab4L, 'Objective', setcurrent=False)
-        #tab5L = self.widgetTabPanel_createtab(QWidget())
-        #self.widgetTabPanel_add(tab5L, 'Other', setcurrent=False)
+        # tab4L = self.widgetTabPanel_createtab(QWidget())
+        # self.widgetTabPanel_add(tab4L, 'Objective', setcurrent=False)
+        # tab5L = self.widgetTabPanel_createtab(QWidget())
+        # self.widgetTabPanel_add(tab5L, 'Other', setcurrent=False)
 
         # Dev
-        #self.widget_tabpanel.setTabEnabled(0, True)
+        # self.widget_tabpanel.setTabEnabled(0, True)
         self.widget_tabpanel.setCurrentIndex(1)
 
         self.widget_tabpanel.setTabEnabled(1, False)
         self.widget_tabpanel.setTabEnabled(2, False)
         self.widget_tabpanel.setTabEnabled(3, False)
-        #self.widget_tabpanel.setTabEnabled(4, False)
-        #self.widget_tabpanel.setTabEnabled(5, False)
+        # self.widget_tabpanel.setTabEnabled(4, False)
+        # self.widget_tabpanel.setTabEnabled(5, False)
 
-        #self.grid.update()
+        # self.grid.update()
 
 
 class InputValidators(object):
@@ -4398,7 +5184,6 @@ class InputValidators(object):
             return False
 
 
-
 class ConfigPanelWidgetINP(QWidget, InputValidators):
     """Generates a configurations panel from a dictionary of options"""
 
@@ -4411,23 +5196,23 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
         self.kobjdict = {}
         self.setWindowModality(Qt.ApplicationModal)
 
-        keys =  list(getattr(dictobject, dictname).keys())
+        keys = list(getattr(dictobject, dictname).keys())
         keys.sort()
 
         self.grid = QGridLayout(self)
         self.grid.setSpacing(10)
 
         # config tooltips
-        tooltips = {'PY_score_cutoff': 'Value must in range 0 <= value <= 100',
-                    'PY_grey_zone': 'Value must in range 0 <= value <= 1',
-                    'PY_conf_cutoff': 'Value must in range 0 <= value <= 1',
-                    'PY_seq_overlap_cutoff': 'Value must in range 0 <= value <= 1',
-                    'PY_group_overlap_cutoff': 'Value must in range 0 <= value <= 1',
-                    'PY_segment_coverage_cutoff': 'Value must in range 0 <= value <= 1',
-                    'PY_outgroup_cutoff': 'Value must in range 0 <= value <= 100',
-                    'PY_matrix': 'One of: BLOSUM45, BLOSUM62, BLOSUM62, BLOSUM80, PAM70, PAM30'
-                    }
-
+        tooltips = {
+            'PY_score_cutoff': 'Value must in range 0 <= value <= 100',
+            'PY_grey_zone': 'Value must in range 0 <= value <= 1',
+            'PY_conf_cutoff': 'Value must in range 0 <= value <= 1',
+            'PY_seq_overlap_cutoff': 'Value must in range 0 <= value <= 1',
+            'PY_group_overlap_cutoff': 'Value must in range 0 <= value <= 1',
+            'PY_segment_coverage_cutoff': 'Value must in range 0 <= value <= 1',
+            'PY_outgroup_cutoff': 'Value must in range 0 <= value <= 100',
+            'PY_matrix': 'One of: BLOSUM45, BLOSUM62, BLOSUM62, BLOSUM80, PAM70, PAM30',
+        }
 
         for r in range(len(keys)):
             if keys[r] not in ['PY_use_bootstrap', 'PY_use_outgroup']:
@@ -4456,19 +5241,35 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                 pal.setColor(QPalette.Text, textgood)
                 self.kobjdict[o].setPalette(pal)
                 if self.kobjdict[o].mtk_keyid == 'PY_matrix':
-                    if not val in ["BLOSUM45","BLOSUM62","BLOSUM62","BLOSUM80","PAM70","PAM30"]:
+                    if not val in [
+                        "BLOSUM45",
+                        "BLOSUM62",
+                        "BLOSUM62",
+                        "BLOSUM80",
+                        "PAM70",
+                        "PAM30",
+                    ]:
                         GO = False
                         print('bad1', val)
                         pal.setColor(QPalette.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
                 # TODO: add type checks for numerical values
-                elif self.kobjdict[o].mtk_keyid in ['PY_outgroup_cutoff', 'PY_score_cutoff']:
+                elif self.kobjdict[o].mtk_keyid in [
+                    'PY_outgroup_cutoff',
+                    'PY_score_cutoff',
+                ]:
                     if not self.inpv_floatItemInRange(val, 0, 100):
                         GO = False
                         print('bad2', val)
                         pal.setColor(QPalette.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
-                elif self.kobjdict[o].mtk_keyid in ['PY_conf_cutoff', 'PY_seq_overlap_cutoff', 'PY_group_overlap_cutoff', 'PY_segment_coverage_cutoff', 'PY_grey_zone']:
+                elif self.kobjdict[o].mtk_keyid in [
+                    'PY_conf_cutoff',
+                    'PY_seq_overlap_cutoff',
+                    'PY_group_overlap_cutoff',
+                    'PY_segment_coverage_cutoff',
+                    'PY_grey_zone',
+                ]:
                     if not self.inpv_floatItemInRange(val, 0, 1):
                         GO = False
                         print('bad3', val)
@@ -4483,43 +5284,47 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
         bp_saveExit = QPushButton(parent=self)
         bp_saveExit.setText('Save and Exit')
         bp_saveExit.clicked.connect(bp_SaveExitFunc)
-        self.grid.addWidget(bp_saveExit, len(keys)+1, 0, 1, 1)
+        self.grid.addWidget(bp_saveExit, len(keys) + 1, 0, 1, 1)
 
         bp_Exit = QPushButton(parent=self)
         bp_Exit.setText('Exit')
         bp_Exit.clicked.connect(self.close)
-        self.grid.addWidget(bp_Exit, len(keys)+1, 1, 1, 1)
+        self.grid.addWidget(bp_Exit, len(keys) + 1, 1, 1, 1)
 
         self.show()
 
-BQBIOL = {'encodes' : 'encodes',
-          'has part' : 'hasPart',
-          'has version' : 'hasVersion',
-          'has taxon' : 'hasTaxon',
-          'is' : 'is',
-          'is encoded by' : 'isEncodedBy',
-          'is homolog to' : 'isHomologTo',
-          'is part of' : 'isPartOf',
-          'is version of' : 'isVersionOf'
-          }
 
-BQMODEL = {'is derived from' : 'isDerivedFrom',
-           'is described by' : 'isDescribedBy',
-           'occurs in' :  'occursIn'
-           }
+BQBIOL = {
+    'encodes': 'encodes',
+    'has part': 'hasPart',
+    'has version': 'hasVersion',
+    'has taxon': 'hasTaxon',
+    'is': 'is',
+    'is encoded by': 'isEncodedBy',
+    'is homolog to': 'isHomologTo',
+    'is part of': 'isPartOf',
+    'is version of': 'isVersionOf',
+}
+
+BQMODEL = {
+    'is derived from': 'isDerivedFrom',
+    'is described by': 'isDescribedBy',
+    'occurs in': 'occursIn',
+}
+
 
 class CBMPyAnnotationEditor(QWidget):
     mod = None
     sid = None
     miriam = None
     bqbiol = None
-    #bqmodel = None
-    #bqmodelrev = None
+    # bqmodel = None
+    # bqmodelrev = None
     bqbiolrev = None
     fixed_font = QFont('Courier', 9.5)
-    _fixColour = QColor(0,0,153,alpha=255)
-    _errColour = QColor(255,0,0,alpha=255)
-    _goodColour = QColor(0,100,0,alpha=255)
+    _fixColour = QColor(0, 0, 153, alpha=255)
+    _errColour = QColor(255, 0, 0, alpha=255)
+    _goodColour = QColor(0, 100, 0, alpha=255)
     _wnotes_ = None
 
     def __init__(self, mod, sid):
@@ -4542,17 +5347,17 @@ class CBMPyAnnotationEditor(QWidget):
         self.miriam = copy.deepcopy(cbmpy.miriamids.miriamids)
         self.bqbiol = BQBIOL
         self.bqbiol.update(BQMODEL)
-        #self.bqmodel = BQMODEL
+        # self.bqmodel = BQMODEL
 
         self.miriam_keys = list(self.miriam.keys())
         self.miriam_keys.sort()
         self.bqbiol_keys = list(self.bqbiol.keys())
         self.bqbiol_keys.sort()
-        #self.bqmodel_keys = list(self.bqmodel.keys())
-        #self.bqmodel_keys.sort()
+        # self.bqmodel_keys = list(self.bqmodel.keys())
+        # self.bqmodel_keys.sort()
 
-        self.bqbiolrev = {value:key for key,value in self.bqbiol.items()}
-        #self.bqmodelrev = {value:key for key,value in BQMODEL.items()}
+        self.bqbiolrev = {value: key for key, value in self.bqbiol.items()}
+        # self.bqmodelrev = {value:key for key,value in BQMODEL.items()}
 
         self.url2miriam = {}
         for k in self.miriam:
@@ -4572,15 +5377,21 @@ class CBMPyAnnotationEditor(QWidget):
     def func_saveKVPairs(self):
         self.obj.annotation = {}
         for r in range(self.tblKvp.rowCount()):
-            if not (str(self.tblKvp.item(r, 0).text()) == '' and str(self.tblKvp.item(r, 1).text()) == ''):
-                self.obj.setAnnotation(str(self.tblKvp.item(r, 0).text()), str(self.tblKvp.item(r, 1).text()))
+            if not (
+                str(self.tblKvp.item(r, 0).text()) == ''
+                and str(self.tblKvp.item(r, 1).text()) == ''
+            ):
+                self.obj.setAnnotation(
+                    str(self.tblKvp.item(r, 0).text()),
+                    str(self.tblKvp.item(r, 1).text()),
+                )
 
     def func_saveMiriam(self):
         newanno = []
         GO = True
         badanno = []
         for r in range(self.tblDesc.rowCount()):
-            #try:
+            # try:
             qual = rsrc = idx = None
             if self.tblDesc.item(r, 0) is not None:
                 qual = self.bqbiol[str(self.tblDesc.item(r, 0).text())]
@@ -4601,16 +5412,17 @@ class CBMPyAnnotationEditor(QWidget):
                     GO = False
                     badanno.append((qual, rsrc, idx))
 
-
-        #except Exception as e:
-                #print(e)
-                #print('Error with MIRIAM annotation row: {}'.format(r))
+        # except Exception as e:
+        # print(e)
+        # print('Error with MIRIAM annotation row: {}'.format(r))
         if not GO:
             print(badanno)
             title = "MIRIAM identifier check"
             msg = 'ID check failures:\n'
             for fail in badanno:
-                msg += '- \"{}\" is of class \"{}\" should have form: {}\n'.format(fail[2], fail[1], self.miriam[fail[1]]['example'])
+                msg += '- \"{}\" is of class \"{}\" should have form: {}\n'.format(
+                    fail[2], fail[1], self.miriam[fail[1]]['example']
+                )
             self._widget_msgBox_ = QMessageBox(QMessageBox.Warning, title, msg)
             self._widget_msgBox_.show()
             return False
@@ -4618,7 +5430,6 @@ class CBMPyAnnotationEditor(QWidget):
         for qual, rsrc, idx in newanno:
             self.obj.addMIRIAMannotation(qual, rsrc, idx)
         return True
-
 
     def func_insertDescRow(self, qual, rsrc, sid, new=True):
         print('insertRow')
@@ -4633,9 +5444,9 @@ class CBMPyAnnotationEditor(QWidget):
             self.tblDesc.setCellWidget(newrow, 1, miriam)
         else:
             item0 = QTableWidgetItem(qual)
-            item0.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
+            item0.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             item1 = QTableWidgetItem(rsrc)
-            item1.setFlags(QtCore.Qt.ItemIsSelectable |  QtCore.Qt.ItemIsEnabled )
+            item1.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.tblDesc.setItem(newrow, 0, item0)
             self.tblDesc.setItem(newrow, 1, item1)
 
@@ -4664,19 +5475,18 @@ class CBMPyAnnotationEditor(QWidget):
         self.tblDesc.update()
         item.setText('')
 
-    #@pyqtSlot()
-    #def btn_clicked_add_create(self):
-        #print('I CLICKED ADD CREATE BUTTON')
+    # @pyqtSlot()
+    # def btn_clicked_add_create(self):
+    # print('I CLICKED ADD CREATE BUTTON')
 
-    #@pyqtSlot()
-    #def btn_clicked_add_ref(self):
-        #print('I CLICKED ADD REF BUTTON')
+    # @pyqtSlot()
+    # def btn_clicked_add_ref(self):
+    # print('I CLICKED ADD REF BUTTON')
 
     @pyqtSlot()
     def btn_clicked_add_kvp(self):
         print('I CLICKED ADD KVP BUTTON')
         self.func_insertKvpRow('', '')
-
 
     def createMirimComboBoxItem(self):
         widget = QComboBox()
@@ -4693,11 +5503,11 @@ class CBMPyAnnotationEditor(QWidget):
         widget.view
         return widget
 
-    #def createBQModelComboBoxItem(self):
-        #widget = QComboBox()
-        #for m_ in self.bqmodel_keys:
-            #widget.addItem('{}'.format(m_))
-        #return widget
+    # def createBQModelComboBoxItem(self):
+    # widget = QComboBox()
+    # for m_ in self.bqmodel_keys:
+    # widget.addItem('{}'.format(m_))
+    # return widget
 
     @pyqtSlot(QtCore.QPoint)
     def tblDesc_rightClickMenu(self, QPos):
@@ -4708,10 +5518,9 @@ class CBMPyAnnotationEditor(QWidget):
             idx = self.tblDesc.selectedIndexes()[0]
         except:
             return
-        #self.tblDesc.selectRow(idx.row())
+        # self.tblDesc.selectRow(idx.row())
         val = str(self.tblDesc.item(idx.row(), 2).text())
         print(idx.row(), val)
-
 
         def deleteAnnotation():
             print('Delete annotation')
@@ -4730,7 +5539,9 @@ class CBMPyAnnotationEditor(QWidget):
 
             if not self.obj.miriam.checkId(str(entity), val):
                 print('Failed id check')
-                msg = 'Invalid ID! Id should be of the form: {}'.format(self.miriam[entity]['example'])
+                msg = 'Invalid ID! Id should be of the form: {}'.format(
+                    self.miriam[entity]['example']
+                )
                 self._widget_msgBox_ = QMessageBox(QMessageBox.Warning, title, msg)
             else:
                 msg = 'ID check passed'
@@ -4745,7 +5556,7 @@ class CBMPyAnnotationEditor(QWidget):
         checkid = self.widget_tbldesc_rclickmenu.addAction('Check identifier')
         checkid.triggered.connect(checkId)
 
-        #self.widget_tbldesc_rclickmenu.addSeparator()
+        # self.widget_tbldesc_rclickmenu.addSeparator()
 
         parentPosition = self.tblDesc.viewport().mapToGlobal(QPos)
         self.widget_tbldesc_rclickmenu.move(parentPosition)
@@ -4760,10 +5571,9 @@ class CBMPyAnnotationEditor(QWidget):
             idx = self.tblKvp.selectedIndexes()[0]
         except:
             return
-        #self.tblKvp.selectRow(idx.row())
+        # self.tblKvp.selectRow(idx.row())
         val = str(self.tblKvp.item(idx.row(), 1).text())
         print(idx.row(), val)
-
 
         def deleteAnnotation():
             print('Delete annotation')
@@ -4787,7 +5597,7 @@ class CBMPyAnnotationEditor(QWidget):
 
         # define label font from default font
         lbl_bld_font = lbl_notes.font()
-        #lbl_bld_font.setBold(True)
+        # lbl_bld_font.setBold(True)
         lbl_bld_font.setPointSize(10)
 
         lbl_notes.setFont(lbl_bld_font)
@@ -4800,17 +5610,17 @@ class CBMPyAnnotationEditor(QWidget):
         lbl_desc.setAlignment(Qt.AlignLeft)
         lbl_desc.setMaximumHeight(max_label_height)
 
-        #lbl_auth = QLabel(parent=self)
-        #lbl_auth.setText('Creator')
-        #lbl_auth.setFont(lbl_bld_font)
-        #lbl_auth.setAlignment(Qt.AlignLeft)
-        #lbl_auth.setMaximumHeight(max_label_height)
+        # lbl_auth = QLabel(parent=self)
+        # lbl_auth.setText('Creator')
+        # lbl_auth.setFont(lbl_bld_font)
+        # lbl_auth.setAlignment(Qt.AlignLeft)
+        # lbl_auth.setMaximumHeight(max_label_height)
 
-        #lbl_ref = QLabel(parent=self)
-        #lbl_ref.setFont(lbl_bld_font)
-        #lbl_ref.setText('References')
-        #lbl_ref.setAlignment(Qt.AlignLeft)
-        #lbl_ref.setMaximumHeight(max_label_height)
+        # lbl_ref = QLabel(parent=self)
+        # lbl_ref.setFont(lbl_bld_font)
+        # lbl_ref.setText('References')
+        # lbl_ref.setAlignment(Qt.AlignLeft)
+        # lbl_ref.setMaximumHeight(max_label_height)
 
         lbl_kvp = QLabel(parent=self)
         lbl_kvp.setFont(lbl_bld_font)
@@ -4818,11 +5628,11 @@ class CBMPyAnnotationEditor(QWidget):
         lbl_kvp.setAlignment(Qt.AlignLeft)
         lbl_kvp.setMaximumHeight(max_label_height)
 
-        #lbl_sel = QLabel(parent=self)
-        #lbl_sel.setFont(lbl_bld_font)
-        #lbl_sel.setText('')
-        #lbl_sel.setAlignment(Qt.AlignCenter)
-        #lbl_sel.setMaximumHeight(max_label_height)
+        # lbl_sel = QLabel(parent=self)
+        # lbl_sel.setFont(lbl_bld_font)
+        # lbl_sel.setText('')
+        # lbl_sel.setAlignment(Qt.AlignCenter)
+        # lbl_sel.setMaximumHeight(max_label_height)
 
         # create tables
         table_min_width = 600
@@ -4833,53 +5643,53 @@ class CBMPyAnnotationEditor(QWidget):
             self.tblDesc.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.tblDesc.horizontalHeader().setStretchLastSection(True)
         self.tblDesc.setMinimumWidth(table_min_width)
-        #self.tblDesc.setFont(self.fixed_font)
+        # self.tblDesc.setFont(self.fixed_font)
         self.tblDesc.setShowGrid(True)
         self.tblDesc.setSortingEnabled(False)
         self.tblDesc.insertColumn(0)
         self.tblDesc.insertColumn(1)
         self.tblDesc.insertColumn(2)
-        #self.tblDesc.insertColumn(3)
+        # self.tblDesc.insertColumn(3)
         self.tblDesc.setHorizontalHeaderLabels(['Relationship', 'Resource', 'ID'])
         self.tblDesc.verticalHeader().setVisible(True)
         self.tblDesc.horizontalHeader().setVisible(True)
-        #self.tblDesc.itemClicked.connect(self.action_reactionProdSelect)
-        #self.tblDesc.cellChanged.connect(self.checkBalance)
+        # self.tblDesc.itemClicked.connect(self.action_reactionProdSelect)
+        # self.tblDesc.cellChanged.connect(self.checkBalance)
         self.tblDesc.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.tblDesc.customContextMenuRequested.connect(self.tblDesc_rightClickMenu)
 
-        #self.tblAuth = QTableWidget(parent=self)
-        #self.tblAuth.setMinimumWidth(table_min_width)
+        # self.tblAuth = QTableWidget(parent=self)
+        # self.tblAuth.setMinimumWidth(table_min_width)
         ##self.tblAuth.setFont(self.fixed_font)
-        #self.tblAuth.setShowGrid(True)
-        #self.tblAuth.setSortingEnabled(False)
-        #self.tblAuth.insertColumn(0)
-        #self.tblAuth.insertColumn(1)
-        #self.tblAuth.insertColumn(2)
-        #self.tblAuth.insertColumn(3)
-        #self.tblAuth.setHorizontalHeaderLabels(['Famliy name', 'Given name', 'Email', 'Organisation'])
-        #self.tblAuth.verticalHeader().setVisible(True)
-        #self.tblAuth.horizontalHeader().setVisible(True)
+        # self.tblAuth.setShowGrid(True)
+        # self.tblAuth.setSortingEnabled(False)
+        # self.tblAuth.insertColumn(0)
+        # self.tblAuth.insertColumn(1)
+        # self.tblAuth.insertColumn(2)
+        # self.tblAuth.insertColumn(3)
+        # self.tblAuth.setHorizontalHeaderLabels(['Famliy name', 'Given name', 'Email', 'Organisation'])
+        # self.tblAuth.verticalHeader().setVisible(True)
+        # self.tblAuth.horizontalHeader().setVisible(True)
         ##self.tblAuth.itemClicked.connect(self.action_reactionConSelect)
-        #self.tblAuth.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        # self.tblAuth.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         ##self.tblSub.cellChanged.connect(self.checkBalance)
         ##self.tblSub.customContextMenuRequested.connect(self.tblSub_rightClickMenu)
-        #self.tblAuth.update()
+        # self.tblAuth.update()
 
-        #self.tblRef = QTableWidget(parent=self)
-        #self.tblRef.setMinimumWidth(table_min_width)
+        # self.tblRef = QTableWidget(parent=self)
+        # self.tblRef.setMinimumWidth(table_min_width)
         ##self.tblRef.setFont(self.fixed_font)
-        #self.tblRef.setShowGrid(True)
-        #self.tblRef.setSortingEnabled(False)
-        #self.tblRef.insertColumn(0)
-        #self.tblRef.insertColumn(1)
-        #self.tblRef.insertColumn(2)
-        #self.tblRef.setHorizontalHeaderLabels(['Resource', 'ID', 'Description'])
-        #self.tblRef.verticalHeader().setVisible(True)
-        #self.tblRef.horizontalHeader().setVisible(True)
+        # self.tblRef.setShowGrid(True)
+        # self.tblRef.setSortingEnabled(False)
+        # self.tblRef.insertColumn(0)
+        # self.tblRef.insertColumn(1)
+        # self.tblRef.insertColumn(2)
+        # self.tblRef.setHorizontalHeaderLabels(['Resource', 'ID', 'Description'])
+        # self.tblRef.verticalHeader().setVisible(True)
+        # self.tblRef.horizontalHeader().setVisible(True)
         ##self.tblRef.itemClicked.connect(self.action_reactionSpeciesSelect)
-        #self.tblRef.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        #self.tblRef.update()
+        # self.tblRef.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        # self.tblRef.update()
 
         table_min_width = 400
         self.tblKvp = QTableWidget(parent=self)
@@ -4889,7 +5699,7 @@ class CBMPyAnnotationEditor(QWidget):
         except:
             self.tblKvp.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.tblKvp.horizontalHeader().setStretchLastSection(True)
-        #self.tblKvp.setFont(self.fixed_font)
+        # self.tblKvp.setFont(self.fixed_font)
         self.tblKvp.setShowGrid(True)
         self.tblKvp.setSortingEnabled(False)
         self.tblKvp.insertColumn(0)
@@ -4897,7 +5707,7 @@ class CBMPyAnnotationEditor(QWidget):
         self.tblKvp.setHorizontalHeaderLabels(['Key', 'Value'])
         self.tblKvp.verticalHeader().setVisible(True)
         self.tblKvp.horizontalHeader().setVisible(True)
-        #self.tblKvp.itemClicked.connect(self.action_reactionSpeciesSelect)
+        # self.tblKvp.itemClicked.connect(self.action_reactionSpeciesSelect)
         self.tblKvp.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.tblKvp.customContextMenuRequested.connect(self.tblKvp_rightClickMenu)
         self.tblKvp.update()
@@ -4937,17 +5747,17 @@ class CBMPyAnnotationEditor(QWidget):
         btn_add_desc.setMaximumWidth(btn_max_w)
         btn_add_desc.setMaximumHeight(btn_max_h)
 
-        #btn_add_ref = QPushButton(parent=self)
-        #btn_add_ref.setText('Add')
-        #btn_add_ref.clicked.connect(self.btn_clicked_add_ref)
-        #btn_add_ref.setMaximumWidth(btn_max_w)
-        #btn_add_ref.setMaximumHeight(btn_max_h)
+        # btn_add_ref = QPushButton(parent=self)
+        # btn_add_ref.setText('Add')
+        # btn_add_ref.clicked.connect(self.btn_clicked_add_ref)
+        # btn_add_ref.setMaximumWidth(btn_max_w)
+        # btn_add_ref.setMaximumHeight(btn_max_h)
 
-        #btn_add_create = QPushButton(parent=self)
-        #btn_add_create.setText('Add')
-        #btn_add_create.clicked.connect(self.btn_clicked_add_create)
-        #btn_add_create.setMaximumWidth(btn_max_w)
-        #btn_add_create.setMaximumHeight(btn_max_h)
+        # btn_add_create = QPushButton(parent=self)
+        # btn_add_create.setText('Add')
+        # btn_add_create.clicked.connect(self.btn_clicked_add_create)
+        # btn_add_create.setMaximumWidth(btn_max_w)
+        # btn_add_create.setMaximumHeight(btn_max_h)
 
         btn_add_kvp = QPushButton(parent=self)
         btn_add_kvp.setText('Add')
@@ -4957,36 +5767,36 @@ class CBMPyAnnotationEditor(QWidget):
 
         ## create textFields
         self.widget_lblnotes = QTextEdit(parent=self)
-        #self.widget_lblnotes.setMaximumHeight(80)
-        #self.widget_lblnotes.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        #self.widget_lblnotes.customContextMenuRequested.connect(self.modelDetail_RightClicked)
+        # self.widget_lblnotes.setMaximumHeight(80)
+        # self.widget_lblnotes.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.widget_lblnotes.customContextMenuRequested.connect(self.modelDetail_RightClicked)
         self.widget_lblnotes.setHtml('{}'.format(self.obj.getNotes()))
-        #self.widget_lblnotes.setReadOnly(True)
+        # self.widget_lblnotes.setReadOnly(True)
         self.widget_lblnotes.setAlignment(QtCore.Qt.AlignLeft)
 
         ## resize columns
-        #self.tblReactProd.resizeColumnsToContents()
-        #self.tblReactProd.resizeRowsToContents()
-        #self.tblReactCon.resizeColumnsToContents()
-        #self.tblReactCon.resizeRowsToContents()
-        #self.tblSpecies.resizeColumnsToContents()
-        #self.tblSpecies.resizeRowsToContents()
+        # self.tblReactProd.resizeColumnsToContents()
+        # self.tblReactProd.resizeRowsToContents()
+        # self.tblReactCon.resizeColumnsToContents()
+        # self.tblReactCon.resizeRowsToContents()
+        # self.tblSpecies.resizeColumnsToContents()
+        # self.tblSpecies.resizeRowsToContents()
 
         # do layout
-        #grid = QVBoxLayout(self)
+        # grid = QVBoxLayout(self)
         grid = QGridLayout(self)
         grid.setSpacing(10)
 
-        #grid.addWidget(lbl_sel, 0, 0, 1, 2)
+        # grid.addWidget(lbl_sel, 0, 0, 1, 2)
         grid.addWidget(lbl_desc, 0, 0, 1, 2)
         grid.addWidget(btn_add_desc, 0, 2, 1, 1)
         grid.addWidget(self.tblDesc, 1, 0, 11, 3)
-        #grid.addWidget(lbl_ref, 4, 0, 1, 2)
-        #grid.addWidget(btn_add_ref, 4, 2, 1, 1)
-        #grid.addWidget(self.tblRef, 5, 0, 3, 3)
-        #grid.addWidget(lbl_auth, 8, 0, 1, 2)
-        #grid.addWidget(btn_add_create, 8, 2, 1, 1)
-        #grid.addWidget(self.tblAuth, 9, 0, 3, 3)
+        # grid.addWidget(lbl_ref, 4, 0, 1, 2)
+        # grid.addWidget(btn_add_ref, 4, 2, 1, 1)
+        # grid.addWidget(self.tblRef, 5, 0, 3, 3)
+        # grid.addWidget(lbl_auth, 8, 0, 1, 2)
+        # grid.addWidget(btn_add_create, 8, 2, 1, 1)
+        # grid.addWidget(self.tblAuth, 9, 0, 3, 3)
         grid.addWidget(lbl_kvp, 0, 3, 1, 2)
         grid.addWidget(btn_add_kvp, 0, 5, 1, 1)
         grid.addWidget(self.tblKvp, 1, 3, 5, 3)
@@ -4995,7 +5805,9 @@ class CBMPyAnnotationEditor(QWidget):
         grid.addWidget(btn_saveandclose, 12, 0, 1, 6)
 
         self.setLayout(grid)
-        self.setWindowTitle('Editing annotation: {} - ({})'.format(self.sid, self.obj.getName()))
+        self.setWindowTitle(
+            'Editing annotation: {} - ({})'.format(self.sid, self.obj.getName())
+        )
         self.show()
 
 
@@ -5004,7 +5816,11 @@ def writeLogBLAST(log, inp_time, input_fasta, metalink, metap):
         logF = open(log, 'w')
     else:
         logF = open(log, 'a')
-    logF.write('blast,run,{},\"{}\",\"{}\",\"{}\"\n'.format(inp_time, input_fasta, metalink, metap))
+    logF.write(
+        'blast,run,{},\"{}\",\"{}\",\"{}\"\n'.format(
+            inp_time, input_fasta, metalink, metap
+        )
+    )
     logF.close()
 
 
@@ -5016,9 +5832,8 @@ class MetaDraftApp(QMainWindow):
     def initUI(self):
         self._gui_ = MetaDraftGUI(self)
         self.setCentralWidget(self._gui_)
-        self.setGeometry(200,200,1200,700)
+        self.setGeometry(200, 200, 1200, 700)
         self.show()
-
 
 
 # Some code in this module has been reused from the following sources

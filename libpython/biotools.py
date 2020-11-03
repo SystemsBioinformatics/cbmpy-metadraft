@@ -34,9 +34,30 @@ import sqlite3
 cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
 dataDir = os.path.join(cDir, 'data')
 
-import Bio
-from Bio import SeqIO
-from Bio.Blast import NCBIWWW
+try:
+    import Bio
+    from Bio import SeqIO
+    from Bio.Blast import NCBIWWW
+except ImportError:
+    print(
+        '\n####\nERROR: please install Biopython.\n- conda install biopython\n or\n- pip install biopython\n'
+    )
+    os.sys.exit(1)
+
+# Compatible with both pre- and post Biopython 1.78:
+oldbiopython = True
+try:
+    from Bio.Alphabet import ProteinAlphabet
+
+    print(
+        '\n####\nINFO: please update your BioPython ({}) to 1.78 or newer.\n- conda update biopython\n or\n- pip update biopython\n'.format(
+            Bio.__version__
+        )
+    )
+except ImportError:
+    oldbiopython = False
+    print('You are using BioPython {}'.format(Bio.__version__))
+
 import cbmpy
 
 # backwards compatability
@@ -506,13 +527,19 @@ def createSequence(modrefseq, filtered_ids=None, description=None):
                 if a.startswith('gbank_seq_'):
                     newName = a.replace('gbank_seq_', '')
                     if newName not in geneseq:
-                        geneseq[newName] = Bio.SeqRecord.SeqRecord(
-                            Bio.Seq.Seq(
+                        if oldbiopython:
+                            seq = Bio.Seq.Seq(
                                 r_.getAnnotation(a), Bio.Alphabet.ProteinAlphabet()
-                            ),
+                            )
+                        else:
+                            seq = Bio.Seq.Seq(r_.getAnnotation(a))
+
+                        geneseq[newName] = Bio.SeqRecord.SeqRecord(
+                            seq,
                             id=newName,
                             name=newName,
                             description=secDescr,
+                            annotations={"molecule_type": "protein"},
                         )
                         # print('Adding {}'.format(a))
     print('{} genseqs added'.format(len(geneseq)))
