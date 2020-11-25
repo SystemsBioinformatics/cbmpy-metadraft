@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<omexManifest xmlns="http://identifiers.org/combine.specifications/omex-manifest">
+ <content location="." format="http://identifiers.org/combine.specifications/omex"/>
+ <content location="./metadata.rdf" format="http://identifiers.org/combine.specifications/omex-metadata"/>
+ <content location="./test.xml" format="http://identifiers.org/combine.specifications/sbml.level-3.version-1"/>
+ <content location="./test.xls" format="http://mediatypes.appspot.com/application/vnd.ms-excel"/>
+ <content location="./index.html" format="text/html"/>
+ <content location="./1_summary_report.html" format="text/html"/>
+ <content location="./2_gene_report.html" format="text/html"/>
+ <content location="./3_reaction_report.html" format="text/html"/>
+ <content location="./4_metabolite_report.html" format="text/html"/>
+
+</omexManifest>

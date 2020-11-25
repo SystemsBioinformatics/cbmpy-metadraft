@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:vCard="http://www.w3.org/2006/vcard/ns#"
+    xmlns:bqmodel="http://biomodels.net/models-qualifiers">
+ <rdf:Description rdf:about=".">
+ <dcterms:creator>
+ <rdf:Bag>
+  <rdf:li rdf:parseType="Resource">
+   <vCard:hasName rdf:parseType="Resource">
+    <vCard:family-name>MetaDraft Software</vCard:family-name>
+    <vCard:given-name>default</vCard:given-name>
+   </vCard:hasName>
+   <vCard:hasEmail rdf:resource="" />
+   <vCard:organization-name>
+      
+   </vCard:organization-name>
+  </rdf:li>
+ </rdf:Bag>
+ </dcterms:creator>
+   <dcterms:created rdf:parseType="Resource">
+    <dcterms:W3CDTF>20-11-02 14:54</dcterms:W3CDTF>
+   </dcterms:created>
+   <dcterms:modified rdf:parseType="Resource">
+    <dcterms:W3CDTF>20-11-02 14:54</dcterms:W3CDTF>
+   </dcterms:modified>
+ </rdf:Description>
+</rdf:RDF> 
