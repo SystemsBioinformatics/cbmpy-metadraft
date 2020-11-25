@@ -61,7 +61,7 @@ try:
 except ImportError:
     HAVE_DOCX = False
 
-metadraft_version = '0.9.4'
+metadraft_version = '0.9.5'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
