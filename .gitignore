@@ -104,3 +104,4 @@ ENV/
 tools/
 data_blast/
 blast_results/
+work/
