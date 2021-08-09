@@ -21,7 +21,7 @@ NEW: The MetaDraft User Guide is now available online and for download from the 
 
 MetaDraft requires working versions of Python, Perl, Java and NCBI Blast2. Once you have downloaded MetaDraft and it's Python dependencies, please run the *system test* script to that can be found in the MetaDraft directory `python systemtest.py`.
 
-Typically the default Java runtime (JRE) installed on your system is all that is require, for Windows this can be obtained from [https://www.java.com/]. On Linux please use your favourite package manager, for example, when using Ubuntu/Debian based oeprating systems, try `sudo apt-get install default-jre`. 
+Typically the default Java runtime (JRE) installed on your system is all that is require, for Windows this can be obtained from [https://www.java.com/]. On Linux please use your favourite package manager, for example, when using Ubuntu/Debian based oeprating systems, try `sudo apt-get install default-jre`.
 
 MetaDraft has been successfully tested using Windows 10, Ubuntu Linux 16.04/18.04, Python 2.7, Python 3.6, PyQt4 and PyQt5. MetaDraft is developed on Windows Anaconda Python 2.7 with PyQt5.
 
@@ -78,7 +78,7 @@ sh ./run.sh
 ### Adding the the core packages (minimal) to an existing CONDA environment:
 
 ```shell
-conda install -c bgoli -c sbmlteam sip pyqt python-libsbml xlrd xlwt cbmpy biopython
+conda install -c bgoli -c conda-forge pyqt5-sip pyqt python-libsbml xlrd xlwt cbmpy biopython
 ```
 
 
@@ -97,8 +97,8 @@ pip install -r requirements.txt
 Please cite this software if you use it (the author(s) enthusiasm to carry on maintaining this project depend on it), see CITATION.cff for more details.
 
 ```text
- Brett G. Olivier. (2019, October 8). 
- SystemsBioinformatics/cbmpy-metadraft: Metadraft. 
+ Brett G. Olivier. (2019, October 8).
+ SystemsBioinformatics/cbmpy-metadraft: Metadraft.
  Zenodo. http://doi.org/10.5281/zenodo.2398336
 ```
 
