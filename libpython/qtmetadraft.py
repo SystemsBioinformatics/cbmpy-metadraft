@@ -249,7 +249,7 @@ class StreamToLogger(object):
 
 
 ## Developer mode options
-DEBUG_MODE = False
+DEBUG_MODE = True
 DEL_BLAST_TMP = True
 
 
