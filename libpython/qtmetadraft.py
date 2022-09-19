@@ -37,6 +37,8 @@ try:
 except NameError:
     from functools import reduce
 
+"""
+# I think this used to be needed for Qt4 ... removing
 import sip
 
 API_NAMES = [
@@ -51,6 +53,9 @@ API_NAMES = [
 API_VERSION = 2
 for name in API_NAMES:
     sip.setapi(name, API_VERSION)
+
+print(API_VERSION)
+"""
 
 cDir = os.path.dirname(os.path.abspath(os.sys.argv[0]))
 
@@ -1586,7 +1591,10 @@ the template library submodule has been initialised (see readme.md) and correctl
         ppos = self.mapToGlobal(self.pos())
         size = self.size()
         w, h = int(size.width() / 2 - 200), int(size.height() / 2 - 100)
-        x, y, = int(ppos.x()) + w, int(ppos.y()) + h
+        x, y, = (
+            int(ppos.x()) + w,
+            int(ppos.y()) + h,
+        )
         return x, y
 
     def menu_userMetaDefApp_del(self):
@@ -4363,8 +4371,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                     i.split(':')[1], i
                 )
             elif 'UniProtKB' in i:
-                db_xrefs += '<a href=\"http://www.uniprot.org/uniprot/{}\">{}</a><br/>'.format(
-                    i.split(':')[1], i
+                db_xrefs += (
+                    '<a href=\"http://www.uniprot.org/uniprot/{}\">{}</a><br/>'.format(
+                        i.split(':')[1], i
+                    )
                 )
             elif 'GI:' in i:
                 db_xrefs += '<a href=\"http://www.ncbi.nlm.nih.gov/protein/{}\">{}</a><br/>'.format(
@@ -4372,8 +4382,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                 )
             else:
                 db_xrefs += '{}<br/>'.format(i)
-        r_html += "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(
-            color, 'db_xref', db_xrefs
+        r_html += (
+            "<tr bgcolor=\"{}\"><td><strong>{}</strong></td><td>{}</td></tr>".format(
+                color, 'db_xref', db_xrefs
+            )
         )
 
         return r_html
@@ -4500,8 +4512,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                     # o_.serializeToDisk(o_.getId())
                     print('ERROR: {} - {}'.format(gene, o_.getId()))
                     print(why)
-                    assoc = '<span style="color: red;"><strong>{}</strong></span> '.format(
-                        'UNKNOWN'
+                    assoc = (
+                        '<span style="color: red;"><strong>{}</strong></span> '.format(
+                            'UNKNOWN'
+                        )
                     )
 
                 # r_html += "<tr><td><strong>Association</strong></td><td>{}</td></tr>".format(assoc)
@@ -4612,8 +4626,10 @@ the template library submodule has been initialised (see readme.md) and correctl
         r_html += "<tr><td><strong>Association</strong></td><td>{}</td></tr>".format(
             assoc
         )
-        r_html += "<tr><td><strong>Association new</strong></td><td>{}</td></tr>".format(
-            assoc_new
+        r_html += (
+            "<tr><td><strong>Association new</strong></td><td>{}</td></tr>".format(
+                assoc_new
+            )
         )
         r_html += "<tr><td><strong>Equation ID</strong></td><td>{}</td></tr>".format(
             reac.getEquation()
@@ -4684,8 +4700,10 @@ the template library submodule has been initialised (see readme.md) and correctl
             for m in miriam:
                 if len(miriam[m]) > 0:
                     for u in range(len(miriam[m])):
-                        r_html += "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(
-                            m, miriam[m][u], miriam[m][u]
+                        r_html += (
+                            "<tr><td>{}</td><td><a href=\"{}\">{}</a></td></tr>".format(
+                                m, miriam[m][u], miriam[m][u]
+                            )
                         )
         r_html += '</table></body></html>'
         return r_html
