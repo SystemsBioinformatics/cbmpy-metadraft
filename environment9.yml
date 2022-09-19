@@ -1,0 +1,28 @@
+name: metadraft3
+channels:
+  - bgoli
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.9
+  - pip
+  - sympy
+  - biopython
+  - xlsxwriter
+  - python-libsbml
+  - qt
+  - pyqt
+  - sip
+  - nose
+  - parso
+  - tornado
+  - openssl
+  - prompt_toolkit
+  - decorator
+  - setuptools
+  - certifi
+  - pygments
+  - pip:
+    - cbmpy
+    - xlwt
+    - xlrd

@@ -1,0 +1,142 @@
+INFO:STDOUT:d:\Development\cbmpy-metadraft\blast_results\default
+INFO:STDOUT:INITDB: connecting geneDB
+INFO:STDOUT:INITDB: connecting notesDB
+INFO:STDOUT:FBC version: 2
+INFO:STDOUT:M.getNumReactions: 730
+INFO:STDOUT:M.getNumSpecies: 648
+INFO:STDOUT:FBC.getNumObjectives: 1
+INFO:STDOUT:FBC.getNumParameters: 5
+INFO:STDOUT:FBC.getNumGeneProducts: 516
+INFO:STDOUT:FluxBounds process1: 0.01
+INFO:STDOUT:INFO: Active objective:
+INFO:STDOUT:obj
+INFO:STDOUT:Adding objective: obj
+INFO:STDOUT:FluxBounds process2: 0.012
+INFO:STDOUT:SBML3 load time: 0.446
+INFO:STDOUT:lab_lla516
+INFO:STDOUT:lab-lla516
+INFO:STDOUT:Using notesdb_key
+INFO:STDOUT:1592066639.632189
+INFO:STDOUT:M
+INFO:STDOUT:118
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:gene
+INFO:STDOUT:0
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:Leaving genes
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:Landing on reactions
+INFO:STDOUT:react
+INFO:STDOUT:0
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:metab
+INFO:STDOUT:0
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:No items doing nothing
+INFO:STDOUT:gene
+INFO:STDOUT:0
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:d:\Development\cbmpy-metadraft\blast_results\default
+INFO:STDOUT:New row 0 --> 13
+INFO:STDOUT:Gene: Row 13 and Column 1 was clicked
+INFO:STDOUT:LLMG_RS09915
+INFO:STDOUT:in_stu0606
+INFO:STDOUT:Leaving genes
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:Landing on reactions
+INFO:STDOUT:react
+INFO:STDOUT:0
+INFO:STDOUT:New row 0 --> 8
+INFO:STDOUT:Reaction: Row 8 and Column 0 was clicked
+INFO:STDOUT:New row 8 --> 7
+INFO:STDOUT:Reaction: Row 7 and Column 4 was clicked
+INFO:STDOUT:New row 7 --> 9
+INFO:STDOUT:Reaction: Row 9 and Column 5 was clicked
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:metab
+INFO:STDOUT:0
+INFO:STDOUT:Metab: Row 5 and Column 0 was clicked
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:Landing on reactions
+INFO:STDOUT:react
+INFO:STDOUT:9
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:No items doing nothing
+INFO:STDOUT:gene
+INFO:STDOUT:13
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:New row 13 --> 9
+INFO:STDOUT:Gene: Row 9 and Column 1 was clicked
+INFO:STDOUT:LLMG_RS07455
+INFO:STDOUT:in_stu0505
+INFO:STDOUT:New row 9 --> 4
+INFO:STDOUT:Gene: Row 4 and Column 4 was clicked
+INFO:STDOUT:LLMG_RS06045
+INFO:STDOUT:in_stu0262
+INFO:STDOUT:New row 4 --> 8
+INFO:STDOUT:Gene: Row 8 and Column 4 was clicked
+INFO:STDOUT:LLMG_RS05670
+INFO:STDOUT:in_stu0501
+INFO:STDOUT:New row 8 --> 28
+INFO:STDOUT:Gene: Row 28 and Column 2 was clicked
+INFO:STDOUT:in_stu1013
+INFO:STDOUT:New row 28 --> 26
+INFO:STDOUT:Gene: Row 26 and Column 0 was clicked
+INFO:STDOUT:LLMG_RS00495
+INFO:STDOUT:in_stu0987
+INFO:STDOUT:GENE TABLE RIGHT CLICKED
+INFO:STDOUT:PyQt5.QtCore.QPoint(58, 257)
+INFO:STDOUT:Leaving genes
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:FBC version: 2
+INFO:STDOUT:M.getNumReactions: 2726
+INFO:STDOUT:M.getNumSpecies: 1938
+INFO:STDOUT:FBC.getNumObjectives: 1
+INFO:STDOUT:FBC.getNumParameters: 6
+INFO:STDOUT:FBC.getNumGeneProducts: 1302
+INFO:STDOUT:FluxBounds process1: 0.038
+INFO:STDOUT:INFO: Active objective:
+INFO:STDOUT:obj
+INFO:STDOUT:Adding objective: obj
+INFO:STDOUT:FluxBounds process2: 0.11
+INFO:STDOUT:Groups support: <libsbml.GroupsModelPlugin proxy of <Swig Object of type 'GroupsModelPlugin *' at 0x000001F5DC329720> >
+INFO:STDOUT:Group.getNumGroups: 62
+INFO:STDOUT:SBML3 load time: 3.448
+INFO:STDOUT:bigg2_eco42
+INFO:STDOUT:bigg2-eco42
+INFO:STDOUT:Using notesdb_key
+INFO:STDOUT:1604427415.278756
+INFO:STDOUT:M
+INFO:STDOUT:189
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:gene
+INFO:STDOUT:26
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:Leaving genes
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:Landing on reactions
+INFO:STDOUT:react
+INFO:STDOUT:9
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:metab
+INFO:STDOUT:5
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:No items doing nothing
+INFO:STDOUT:gene
+INFO:STDOUT:26
+INFO:STDOUT:Same row doing nothing
+INFO:STDOUT:d:\Development\cbmpy-metadraft\blast_results\default
+INFO:STDOUT:Leaving genes
+INFO:STDOUT:OnTabChange no selection state change
+INFO:STDOUT:Landing on reactions
+INFO:STDOUT:react
+INFO:STDOUT:9
+INFO:STDOUT:New row 9 --> 47
+INFO:STDOUT:Reaction: Row 47 and Column 5 was clicked
+INFO:STDOUT:New row 47 --> 48
+INFO:STDOUT:Reaction: Row 48 and Column 5 was clicked
