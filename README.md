@@ -1,9 +1,9 @@
 # cbmpy-metadraft
 CBMPy Metadraft: a flexible and extensible, GUI-based genome-scale model reconstruction tool that supports multiple Systems Biology standards.
 
-## New: upgrading to MetaDraft version 0.9.2
+## New: upgrading to MetaDraft version 0.9.7
 
-MetaDraft version 0.9.2 now defaults to the *2019-1* template library, if you are working directly in a cloned repository please initialise the new template library:
+MetaDraft version 0.9.7 now defaults to the *2019-1* template library, if you are working directly in a cloned repository please initialise the new template library:
 
 ```Shell
 cd cbmpy-metadraft
@@ -11,6 +11,8 @@ git submodule update --init --remote -- modeldb/2019-1/
 ```
 
 If you want to switch back to the *2018-1* library and results please edit the `_metadraft.cfg` file and change the value  of the `"metadraft_db_version"` key to `"2018-1"` (it is currently set to `"2019-1"`).
+
+- 0.9.7 removes the SIP dependency and is Python 3.10 compatible.
 
 
 ## Installation and system dependencies
@@ -23,7 +25,7 @@ MetaDraft requires working versions of Python, Perl, Java and NCBI Blast2. Once 
 
 Typically the default Java runtime (JRE) installed on your system is all that is require, for Windows this can be obtained from [https://www.java.com/]. On Linux please use your favourite package manager, for example, when using Ubuntu/Debian based oeprating systems, try `sudo apt-get install default-jre`.
 
-MetaDraft has been successfully tested using Windows 10, Ubuntu Linux 16.04/18.04, Python 2.7, Python 3.6, PyQt4 and PyQt5. MetaDraft is developed on Windows Anaconda Python 2.7 with PyQt5.
+MetaDraft has been successfully tested using Windows 10/11, Ubuntu Linux and is developed on Windows 11 using Anaconda Python 3.10 with PyQt5.
 
 ### Getting MetaDraft
 
@@ -44,9 +46,21 @@ cd cbmpy-metadraft
 git submodule update --init --remote -- modeldb/2019-1/
 ```
 
-If you have downloaded master repository as a zip file or as a release, download the `template-models-2018-1.zip` template archive provided with the [latest release](https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases). Unzip this archive into the `metadraft/modeldb` directory.
+If you have downloaded master repository as a zip file or as a release, download the `template-models-2019-1.zip` template archive provided with the [latest release](https://github.com/SystemsBioinformatics/cbmpy-metadraft/releases). Unzip this archive into the `metadraft/modeldb` directory.
 
 MetaDraft is archived on Zenodo, please see CITATION.cff for more details [![DOI](https://zenodo.org/badge/132483758.svg)](https://zenodo.org/badge/latestdoi/132483758)
+
+### For the latest code and development pull requests
+
+Once you have cloned the cbmpy-metadraft repository and installed the DB module, switch to the development branch:
+
+```shell
+git checkout dev
+git pull
+```
+
+You are now working in the development branch where anything can happen and the code can change often, please do a regular `git pull`. Please use this branch as the base for any metadraft pull requests (PR's).
+
 
 ## Creating a custom Anaconda Python environment
 
@@ -102,5 +116,5 @@ Please cite this software if you use it (the author(s) enthusiasm to carry on ma
  Zenodo. http://doi.org/10.5281/zenodo.2398336
 ```
 
-(C) Brett G. Olivier (b.g.olivier@vu.nl), Vrije Universiteit Amsterdam, Amsterdam, July 2020. Licence CC-BY 4.0
+(C) Brett G. Olivier (b.g.olivier@vu.nl), Vrije Universiteit Amsterdam, Amsterdam, July 2023. Licence CC-BY 4.0
 

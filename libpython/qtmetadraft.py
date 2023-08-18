@@ -5,7 +5,7 @@ MetaToolkit: MetaDraft
 MetaDraft: for the reconstruction of Genome Scale Models
 
 MetaToolkit: MetaDraft (https://github.com/SystemsBioinformatics/cbmpy-metadraft)
-Copyright (C) 2016-2019 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
+Copyright (C) 2016-2024 Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@ except ImportError as ex:
 
 try:
     import PyQt5
-    from PyQt5 import QtCore, QtGui, QtSvg, QtWidgets
+    from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
     from PyQt5.QtCore import Qt, QCoreApplication
     from PyQt5.QtWidgets import (
         QMainWindow,
@@ -157,10 +157,10 @@ try:
         QSizePolicy,
         QFileSystemModel
     )
-    from PyQt5.QtWidgets import QTextEdit, QListWidget, qApp, QStatusBar, QInputDialog
+    from PyQt5.QtWidgets import QTextEdit, QListWidget, QStatusBar, QInputDialog, qApp
     from PyQt5.QtWidgets import QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog
-    from PyQt5.QtGui import QCursor, QBrush, QColor, QPalette, QPixmap, QFont
-    from PyQt5.QtCore import pyqtSignal, pyqtSlot
+    from PyQt5.QtGui import QCursor, QColor, QPalette, QFont, QPixmap, QBrush
+    from PyQt5.QtCore import pyqtSlot, pyqtSignal
 
     HAVE_QT5 = True
     print('Using Qt5 - the next generation')
@@ -913,7 +913,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             qtv = 'Qt5'
         msg += "You are using Py{} provided by:\n{}.\n\n".format(qtv, os.sys.version)
         msg += (
-            "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2019."
+            "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2024."
         )
 
         self.widgetMsgBox(QMessageBox.Information, title, msg)
