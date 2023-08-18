@@ -1,0 +1,81 @@
+INFO:STDOUT:c:\Development\cbmpy-metadraft\blast_results\default
+INFO:STDOUT:INITDB: connecting geneDB
+INFO:STDOUT:INITDB: connecting notesDB
+INFO:STDOUT:[('txt', 'test.gbk', '(bigg1-eco)-(Ecoli_iAF1260.glc.l3).seqplus.xml')]
+INFO:STDOUT:C:\Development\cbmpy-metadraft\modeldb\2019-1\lib_model
+INFO:STDOUT:C:\Development\cbmpy-metadraft\testfiles\default
+INFO:STDOUT:MSG: Model creation error: input files must be in same directory
+INFO:STDOUT:c:\Development\cbmpy-metadraft\blast_results\default
+INFO:STDOUT:INITDB: connecting geneDB
+INFO:STDOUT:INITDB: connecting notesDB
+INFO:STDOUT:[('testbuild1', 'Saccharomyces_cerevisiae_S288c-(BK006935.2).gbk', 'iND750.xml')]
+INFO:STDOUT:C:\Development\cbmpy-metadraft\tmp\template-build
+INFO:STDOUT:C:\Development\cbmpy-metadraft\tmp\template-build
+INFO:STDOUT:Processing:
+INFO:STDOUT:testbuild1
+INFO:STDOUT:Saccharomyces_cerevisiae_S288c-(BK006935.2).gbk
+INFO:STDOUT:iND750.xml
+INFO:STDOUT:INITDB: connecting geneDB
+INFO:STDOUT:INFO: addGeneInformationToDB committed 0 new records
+INFO:STDOUT:FBC version: 2
+INFO:STDOUT:M.getNumReactions: 1266
+INFO:STDOUT:M.getNumSpecies: 1059
+INFO:STDOUT:FBC.getNumObjectives: 1
+INFO:STDOUT:FBC.getNumParameters: 4
+INFO:STDOUT:FBC.getNumGeneProducts: 750
+INFO:STDOUT:Zero dimension compartment detected: e
+INFO:STDOUT:Zero dimension compartment detected: x
+INFO:STDOUT:Zero dimension compartment detected: c
+INFO:STDOUT:Zero dimension compartment detected: m
+INFO:STDOUT:Zero dimension compartment detected: n
+INFO:STDOUT:Zero dimension compartment detected: r
+INFO:STDOUT:Zero dimension compartment detected: g
+INFO:STDOUT:Zero dimension compartment detected: v
+INFO:STDOUT:FluxBounds process1: 0.027
+INFO:STDOUT:INFO: Active objective:
+INFO:STDOUT:obj
+INFO:STDOUT:Adding objective: obj
+INFO:STDOUT:FluxBounds process2: 0.051
+INFO:STDOUT:Groups support: <libsbml.GroupsModelPlugin proxy of <Swig Object of type 'GroupsModelPlugin *' at 0x000002C0523B7660> >
+INFO:STDOUT:Group.getNumGroups: 56
+INFO:STDOUT:SBML3 load time: 1.818
+INFO:STDOUT:CheckModelLocusTags is processing: C:\Development\cbmpy-metadraft\tmp\template-build\Saccharomyces_cerevisiae_S288c-(BK006935.2).gbk
+INFO:STDOUT:INFO: Multiple sequences encountered in file: C:\Development\cbmpy-metadraft\tmp\template-build\Saccharomyces_cerevisiae_S288c-(BK006935.2).gbk
+INFO:STDOUT:checkModelLocusTags: no references
+INFO:STDOUT:
+INFO:STDOUT:
+INFO:STDOUT:Checking locus tags
+INFO:STDOUT:===================
+INFO:STDOUT:UNKNOWN gene: YER060W_A
+INFO:STDOUT:UNKNOWN gene: YCR024C_A
+INFO:STDOUT:UNKNOWN gene: YEL017C_A
+INFO:STDOUT:UNKNOWN gene: YHR039C_A
+INFO:STDOUT:UNKNOWN gene: YML081C_A
+INFO:STDOUT:UNKNOWN gene: Q0085
+INFO:STDOUT:UNKNOWN gene: Q0130
+INFO:STDOUT:UNKNOWN gene: Q0080
+INFO:STDOUT:UNKNOWN gene: YOL077W_A
+INFO:STDOUT:UNKNOWN gene: YDR322C_A
+INFO:STDOUT:UNKNOWN gene: Q0250
+INFO:STDOUT:UNKNOWN gene: Q0275
+INFO:STDOUT:UNKNOWN gene: Q0045
+INFO:STDOUT:UNKNOWN gene: Q0105
+INFO:STDOUT:UNKNOWN gene: YHR001W_A
+INFO:STDOUT:UNKNOWN gene: YPL276W
+INFO:STDOUT:UNKNOWN gene: YPL275W
+INFO:STDOUT:UNKNOWN gene: YAR073W
+INFO:STDOUT:UNKNOWN gene: YAR075W
+INFO:STDOUT:UNKNOWN gene: YCR073W_A
+INFO:STDOUT:UNKNOWN gene: YIL167W
+INFO:STDOUT:
+INFO:STDOUT:good: 729
+INFO:STDOUT:updated: {}
+INFO:STDOUT:noseq: []
+INFO:STDOUT:unknown: ['YER060W_A', 'YCR024C_A', 'YEL017C_A', 'YHR039C_A', 'YML081C_A', 'Q0085', 'Q0130', 'Q0080', 'YOL077W_A', 'YDR322C_A', 'Q0250', 'Q0275', 'Q0045', 'Q0105', 'YHR001W_A', 'YPL276W', 'YPL275W', 'YAR073W', 'YAR075W', 'YCR073W_A', 'YIL167W']
+INFO:STDOUT:810
+INFO:STDOUT:
+INFO:STDOUT:INFO: using FBC version: 2
+INFO:STDOUT:INFO: V2 bounds compression enabled
+INFO:STDOUT:INFO: added 0 non fluxbound parameters to model
+INFO:STDOUT:Model exported as: c:\Development\cbmpy-metadraft\modeldb\2019-1\lib_model\(usr-testbuild1)-(iND750).seqplus.xml
+INFO:STDOUT:MSG: Created new SeqPlus template model: (usr-testbuild1)-(iND750.xml)

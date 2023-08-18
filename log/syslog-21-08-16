@@ -1,0 +1,38 @@
+INFO:STDOUT:d:\Development\cbmpy-metadraft\blast_results\default
+INFO:STDOUT:INITDB: connecting geneDB
+INFO:STDOUT:INITDB: connecting notesDB
+INFO:STDOUT:MSG: Model creation error: missing information or  "-" in key
+INFO:STDOUT:[('smhs1', 'ownGB.gb', 'ihuman2_own.xml')]
+INFO:STDOUT:D:\Surfdrive\work\sebastian
+INFO:STDOUT:D:\Surfdrive\work\sebastian
+INFO:STDOUT:Processing:
+INFO:STDOUT:smhs1
+INFO:STDOUT:ownGB.gb
+INFO:STDOUT:ihuman2_own.xml
+INFO:STDOUT:INITDB: connecting geneDB
+INFO:STDOUT:INFO: addGeneInformationToDB committed 0 new records
+INFO:STDOUT:FBC version: 2
+INFO:STDOUT:M.getNumReactions: 8034
+INFO:STDOUT:M.getNumSpecies: 6896
+INFO:STDOUT:FBC.getNumObjectives: 0
+INFO:STDOUT:FBC.getNumParameters: 3
+INFO:STDOUT:FBC.getNumGeneProducts: 3625
+INFO:STDOUT:Zero dimension compartment detected: c
+INFO:STDOUT:Zero dimension compartment detected: g
+INFO:STDOUT:Zero dimension compartment detected: i
+INFO:STDOUT:Zero dimension compartment detected: l
+INFO:STDOUT:Zero dimension compartment detected: m
+INFO:STDOUT:Zero dimension compartment detected: n
+INFO:STDOUT:Zero dimension compartment detected: p
+INFO:STDOUT:Zero dimension compartment detected: r
+INFO:STDOUT:Zero dimension compartment detected: s
+INFO:STDOUT:FluxBounds process1: 0.15
+INFO:STDOUT:
+INFO:STDOUT:INFO: No active objective defined
+INFO:STDOUT:<class 'AttributeError'>
+INFO:STDOUT:FluxBounds process2: 1.055
+INFO:STDOUT:Groups support: <libsbml.GroupsModelPlugin proxy of <Swig Object of type 'GroupsModelPlugin *' at 0x0000025A68180E40> >
+INFO:STDOUT:Group.getNumGroups: 133
+INFO:STDOUT:INFO: No FBC objective functions were defined.
+INFO:STDOUT:SBML3 load time: 221.515
+INFO:STDOUT:CheckModelLocusTags is processing: D:\Surfdrive\work\sebastian\ownGB.gb

@@ -16,7 +16,6 @@ downloads/
 eggs/
 .eggs/
 lib/
-lib64/
 parts/
 sdist/
 var/
@@ -106,7 +105,7 @@ data_blast/
 blast_results/
 work/
 tmp/
-run_local.bat
+# run_local.bat
 wing-metadraft.wpu
 wing-metadraft.wpr
 metadradt-templates.wpu
