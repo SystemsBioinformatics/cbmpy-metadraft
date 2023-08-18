@@ -5340,7 +5340,8 @@ class CBMPyAnnotationEditor(QWidget):
     # bqmodel = None
     # bqmodelrev = None
     bqbiolrev = None
-    fixed_font = QFont('Courier', 9.5)
+    #fixed_font = QFont('Courier', 9.5) apparently these are now ints
+    fixed_font = QFont('Courier', 10)
     _fixColour = QColor(0, 0, 153, alpha=255)
     _errColour = QColor(255, 0, 0, alpha=255)
     _goodColour = QColor(0, 100, 0, alpha=255)
