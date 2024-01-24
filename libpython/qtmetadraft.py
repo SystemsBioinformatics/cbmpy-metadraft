@@ -2765,7 +2765,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 path += '.csv'
             ftype = 'w'
             if os.sys.version_info < (3, 0, 0):
-                path = unicode(path)
+                path = str(path)
                 ftype = 'wb'
             with open(path, ftype) as stream:
                 writer = csv.writer(stream)
@@ -2775,7 +2775,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                         item = table.item(row, column)
                         if item.checkState() == Qt.Checked:
                             if os.sys.version_info < (3, 0, 0):
-                                rowdata.append(unicode('checked').encode('utf8'))
+                                rowdata.append(str('checked').encode('utf8'))
                             else:
                                 rowdata.append('checked')
                         # this can be removed when the gene prefix is killed
@@ -2786,7 +2786,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                         ):
                             if os.sys.version_info < (3, 0, 0):
                                 rowdata.append(
-                                    unicode(item.text()).encode('utf8')[
+                                    str(item.text()).encode('utf8')[
                                         len(self.gene_prefix) :
                                     ]
                                 )
@@ -2794,7 +2794,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                                 rowdata.append(item.text()[len(self.gene_prefix) :])
                         elif item is not None:
                             if os.sys.version_info < (3, 0, 0):
-                                rowdata.append(unicode(item.text()).encode('utf8'))
+                                rowdata.append(str(item.text()).encode('utf8'))
                             else:
                                 rowdata.append(item.text())
                         else:
@@ -4827,7 +4827,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                     ##try:
                     ##path = os.path.join(self.getRtreeItemPath(item), key)
                     ##t = datetime.datetime.fromtimestamp(os.path.getmtime(path))
-                    ##child.setText(1, unicode('{}:{}'.format(t.hour, t.minute)))
+                    ##child.setText(1, str('{}:{}'.format(t.hour, t.minute)))
                     ##except WindowsError:
                     ##print('DEBUG: {}'.format(self.getRtreeItemPath(item)), key, value)
                     child.setExpanded(True)
