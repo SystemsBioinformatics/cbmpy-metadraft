@@ -362,6 +362,43 @@ DEL_BLAST_TMP = True
 
 
 class MetaDraftGUI(QWidget):
+    """
+    A comprehensive graphical user interface for MetaDraft application, designed for managing and analyzing biological data.
+
+    It provides capabilities to interact with databases, perform analysis using search and matching mechanisms, configure system- and user-specific settings, maintain notes, manage sessions, and export data in various formats. Additionally, it handles logging for diagnostics and integrates system versions and configuration management for templates and analysis.
+
+    Attributes:
+        appwindow (QWidget): Main application window holding the GUI.
+        stderr_logger (StreamToLogger): Logger for capturing standard error.
+        stdout_logger (StreamToLogger): Logger for capturing standard output.
+        log_files (str): Directory path for log files.
+        log_syslog (str): Path for system log files.
+        cDir (str): Directory path related to operations like saving/loading internal states.
+        _tmpDir_ (str): Temporary directory path.
+        __SYSLOG_ENABLED__ (bool): Status flag enabling or disabling system logging.
+        DEBUG_MODE (bool): Flag to toggle debug mode which provides extra information for problem solving.
+        DEL_BLAST_TMP (bool): Flag to decide whether to delete temporary BLAST files after processing.
+        _next_id_ (int): Integer to keep track of the next identifier to be used.
+        CREATE_TEMPLATE_V2 (bool): Boolean to select whether to create templates in version 2 format.
+        CREATE_TEMPLATE_ZIP (bool): Boolean to select whether to create ZIP archives of templates.
+        NO_EXPORT_SEQ (bool): Boolean that prevents the exporting of sequences, when set to True.
+        SEQUENCE_MATCH (str): String to identify the method used for sequence matching.
+
+    Methods:
+        __init__(self, appwindow): Constructor for MetaDraftGUI class.
+        _readConfig(self): Reads configuration from a file.
+        initSysLog(self): Initializes the logging system.
+        initDBs(self): Initializes the necessary databases.
+        getMetaProteomeData(self, fname): Fetches metaproteome data from a file.
+        createMenus(self): Constructs the menu for the application window.
+        widget_displayReport(self, html): Displays a provided HTML report in the GUI.
+        menu_enableBenchmark(self): Toggles benchmarking mode.
+        menu_configMenuItem(self): Shows the configuration panel.
+
+    This class is intended to be utilized as part of the MetaDraft application suite, providing a robust interface for handling biological model data.
+
+    """
+
     appwindow = None
     stderr_logger = None
     stdout_logger = None
@@ -669,6 +706,22 @@ the template library submodule has been initialised (see readme.md) and correctl
         self._loading_ = False
 
     def _readConfig(self):
+        """
+        Loads the configuration JSON file specified by self.config_file into self._CONFIG_.
+
+        The method checks if the configuration file exists in the self.cDir directory. If it exists, it reads the JSON-formatted file into self._CONFIG_. If the file does not exist, it initializes self._CONFIG_ as an empty dictionary.
+
+        Attributes:
+            self.cDir (str): The directory path where the configuration file is expected to be located.
+            self.config_file (str): The name of the configuration file to be loaded.
+
+        Side Effects:
+            self._CONFIG_ (dict): This dictionary is updated with the contents of the configuration file, or initialized as empty if the file does not exist.
+
+        Raises:
+            FileNotFoundError: Raises an exception if the config file does not exist and operation settings must halt.
+            JSONDecodeError: Raises an exception if there is an error in parsing the JSON data.
+        """
         if os.path.exists(os.path.join(self.cDir, self.config_file)):
             F = open(self.config_file, 'r')
             self._CONFIG_ = json.load(F)
@@ -677,11 +730,46 @@ the template library submodule has been initialised (see readme.md) and correctl
             self._CONFIG_ = {}
 
     def _writeConfig(self):
+        """
+        Writes the current configuration data from self._CONFIG_ to a JSON file specified by self.config_file.
+
+        The method opens the configuration file in write mode and dumps the contents of the self._CONFIG_ dictionary into it in JSON format. It ensures data persistence by saving configuration settings to a file.
+
+        Attributes:
+            self.config_file (str): The name of the configuration file where settings are saved.
+            self._CONFIG_ (dict): The dictionary containing configuration settings to be written to file.
+
+        Side Effects:
+            Modifies an external file by writing configuration data to it. If the file exists, it is overwritten.
+
+        Raises:
+            IOError: When the file cannot be opened, written to, or closed.
+            JSONException: If there's an error in converting the dictionary to JSON format.
+        """
         F = open(self.config_file, 'w')
         json.dump(self._CONFIG_, F)
         F.close()
 
     def initSysLog(self):
+        """
+        Initializes system logging by setting up file logging, stdout, and stderr redirection.
+
+        This method creates a directory for log files if it does not exist. It also sets up a daily logging system wherein each day's log is stored in a separate file named with the current date. The log records INFO level messages from standard output and ERROR level messages from standard error.
+
+        Attributes:
+            self.log_files (str): Directory path where log files are stored.
+            self.log_syslog (str): Path to the current log file, updated daily.
+            self.stdout_logger (StreamToLogger): Logger for capturing and logging info-level stdout messages.
+            self.stderr_logger (StreamToLogger): Logger for capturing and logging error-level stderr messages.
+
+        Side Effects:
+            Creates or updates log files in the designated directory.
+            Redirects the standard output and standard error streams to the logging handlers.
+
+        Raises:
+            OSError: If log directory creation fails.
+            FileExistsError: If the logging directory already exists.
+        """
         if not os.path.exists(self.log_files):
             os.makedirs(self.log_files)
         self.log_syslog = os.path.join(

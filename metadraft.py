@@ -29,6 +29,20 @@ from __future__ import absolute_import
 
 
 def run_metadraft():
+    """
+    Launches the MetaDraft application with a splash screen.
+
+    This function initializes a QApplication, displays a splash screen with an image and version information, and then runs the MetaDraft application. The version information includes MetaDraft version and CBMPy version. The splash screen remains visible for 2 seconds, after which the MetaDraft main application window is displayed.
+
+    Args:
+    None
+
+    Returns:
+    None
+
+    Raises:
+    sys.exit: Exits the application normally after the QApplication event loop ends.
+    """
     app = QApplication(sys.argv)
     widget_splash = QSplashScreen(QPixmap("images/metatoolkit1-03.jpg"))
     widget_splash.show()
