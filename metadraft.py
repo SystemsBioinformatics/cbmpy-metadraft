@@ -36,12 +36,12 @@ def run_metadraft():
         "Ver {}-({})\nAuthor: Brett G. Olivier\n(c) Systems Bioinformatics, VU University Amsterdam, Amsterdam, 2017-2023.\nSee Help - About for more details.".format(
             metadraft_version, cbmpy.__version__
         ),
-        alignment=Qt.AlignBottom,
+        alignment=QtCore.Qt.AlignmentFlag.AlignBottom,
     )
     time.sleep(2)
     ex = MetaDraftApp()
     widget_splash.finish(ex)
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

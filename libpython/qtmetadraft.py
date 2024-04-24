@@ -66,11 +66,16 @@ try:
 except ImportError:
     HAVE_DOCX = False
 
-metadraft_version = '0.9.7'
+metadraft_version = '0.9.8'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
+HAVE_QT6 = False
+
+# Qt4 support has been discontinued please use Qt5 or newer
+"""
 try:
+
     import PyQt4
     from PyQt4 import QtCore, QtGui, QtSvg
     from PyQt4.QtCore import Qt, QCoreApplication
@@ -114,62 +119,159 @@ try:
     from PyQt4.QtCore import pyqtSignal, pyqtSlot
 
     HAVE_QT4 = True
-    print('Using Qt4 - MetaMod is now also Qt5 compatible')
+
+    print('Qt4 support has been discontinued please use Qt5 or newer')
+
 except ImportError as ex:
     pass
+"""
+
+# try:
+    # import PyQt5
+    # from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
+    # from PyQt5.QtCore import QCoreApplication
+    # from PyQt5.QtWidgets import (
+        # QMainWindow,
+        # QApplication,
+        # QPushButton,
+        # QWidget,
+        # QAction,
+        # QSplashScreen,
+        # QMdiArea,
+    # )
+    # from PyQt5.QtWidgets import (
+        # QTabWidget,
+        # QVBoxLayout,
+        # QMdiSubWindow,
+        # QTableWidgetItem,
+        # QTextBrowser,
+        # QDockWidget,
+    # )
+    # from PyQt5.QtWidgets import (
+        # QLabel,
+        # QTableWidget,
+        # QLineEdit,
+        # QComboBox,
+        # QGridLayout,
+        # QHBoxLayout,
+        # QButtonGroup,
+    # )
+    # from PyQt5.QtWidgets import (
+        # QRadioButton,
+        # QFileDialog,
+        # QAbstractItemView,
+        # QMessageBox,
+        # QMenu,
+        # QSizePolicy,
+        # QFileSystemModel
+    # )
+    # from PyQt5.QtWidgets import QTextEdit, QListWidget, QStatusBar, QInputDialog, qApp
+    # from PyQt5.QtWidgets import QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog
+    # from PyQt5.QtGui import QCursor, QColor, QPalette, QFont, QPixmap, QBrush
+    # from PyQt5.QtCore import pyqtSlot, pyqtSignal
+
+    # # new from Qt6
+    # from PyQt6.QtGui import (
+        # QTextCharFormat
+    # )
+
+    # HAVE_QT5 = True
+    # print('Using Qt5')
+# except ImportError as ex:
+    # pass
 
 try:
-    import PyQt5
-    from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-    from PyQt5.QtCore import Qt, QCoreApplication
-    from PyQt5.QtWidgets import (
+    import PyQt6
+    from PyQt6 import (
+        QtCore,
+        QtGui,
+        QtWidgets,
+        QtSvg
+    )
+    from PyQt6.QtCore import (
+        QCoreApplication,
+        pyqtSlot,
+        pyqtSignal
+    )
+    from PyQt6.QtWidgets import (
         QMainWindow,
         QApplication,
         QPushButton,
         QWidget,
-        QAction,
         QSplashScreen,
-        QMdiArea,
+        QMdiArea
     )
-    from PyQt5.QtWidgets import (
+    from PyQt6.QtWidgets import (
         QTabWidget,
         QVBoxLayout,
         QMdiSubWindow,
         QTableWidgetItem,
         QTextBrowser,
-        QDockWidget,
+        QDockWidget
     )
-    from PyQt5.QtWidgets import (
+    from PyQt6.QtWidgets import (
         QLabel,
         QTableWidget,
         QLineEdit,
         QComboBox,
         QGridLayout,
         QHBoxLayout,
-        QButtonGroup,
+        QButtonGroup
     )
-    from PyQt5.QtWidgets import (
+    from PyQt6.QtWidgets import (
         QRadioButton,
         QFileDialog,
         QAbstractItemView,
         QMessageBox,
         QMenu,
-        QSizePolicy,
+        QSizePolicy
+    )
+    from PyQt6.QtWidgets import (
+        QTextEdit,
+        QListWidget,
+        QStatusBar,
+        QInputDialog
+    )
+    from PyQt6.QtWidgets import (
+        QTreeView,
+        QTreeWidget,
+        QTreeWidgetItem,
+        QProgressDialog
+    )
+    from PyQt6.QtGui import (
+        QCursor,
+        QColor,
+        QPalette,
+        QFont,
+        QPixmap,
+        QBrush,
+        QAction,
         QFileSystemModel
     )
-    from PyQt5.QtWidgets import QTextEdit, QListWidget, QStatusBar, QInputDialog, qApp
-    from PyQt5.QtWidgets import QTreeView, QTreeWidget, QTreeWidgetItem, QProgressDialog
-    from PyQt5.QtGui import QCursor, QColor, QPalette, QFont, QPixmap, QBrush
-    from PyQt5.QtCore import pyqtSlot, pyqtSignal
 
-    HAVE_QT5 = True
-    print('Using Qt5 - the next generation')
+    # new in Qt6
+    from PyQt6.QtGui import (
+        QTextCharFormat,
+        QTextImageFormat
+    )
+
+
+    HAVE_QT6 = True
+    print('Using Qt6 - in development')
 except ImportError as ex:
-    pass
-
-if not HAVE_QT4 and not HAVE_QT5:
-    print('Neither Qt4 nor Qt5 detected, please make sure PyQt is installed.')
+    print(ex)
     os.sys.exit(-1)
+
+if not HAVE_QT5 and not HAVE_QT6:
+    print('Neither Qt5 nor Qt6 detected, please make sure PyQt is installed.')
+    os.sys.exit(-1)
+
+# If both Qt5/6 detected use 6
+if HAVE_QT5 and HAVE_QT6:
+    print('Development mode: Both Qt5 and Qt6 detected, using Qt6')
+    HAVE_QT5 = False
+    HAVE_QT6 = True
+
 
 try:
     from . import biotools
@@ -185,8 +287,8 @@ except ImportError as ex:
 class NumberTableWidgetItem(QTableWidgetItem):
     def __lt__(self, other):
         if isinstance(other, QTableWidgetItem):
-            my_value = self.data(Qt.EditRole)
-            other_value = other.data(Qt.EditRole)
+            my_value = self.data(QtCore.Qt.EditRole)
+            other_value = other.data(QtCore.Qt.EditRole)
             try:
                 my_value = float(str(my_value))
                 my_ok = True
@@ -207,8 +309,8 @@ class NumberTableWidgetItem(QTableWidgetItem):
 class NumberTableListLengthItem(QTableWidgetItem):
     def __lt__(self, other):
         if isinstance(other, QTableWidgetItem):
-            my_value = len(self.data(Qt.EditRole).split(','))
-            other_value = len(other.data(Qt.EditRole).split(','))
+            my_value = len(self.data(QtCore.Qt.EditRole).split(','))
+            other_value = len(other.data(QtCore.Qt.EditRole).split(','))
             # print(my_value, other_value)
             if my_value and my_value:
                 return my_value < other_value
@@ -385,7 +487,7 @@ class MetaDraftGUI(QWidget):
         self._loading_ = True
 
         super(MetaDraftGUI, self).__init__()
-        # self.setAttribute(Qt.WA_DeleteOnClose)
+        # self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # read configuration file and enable syslog
         self._readConfig()
@@ -400,7 +502,7 @@ class MetaDraftGUI(QWidget):
         ):
             self.metadraft_db_version = 'default'
             self.widgetMsgBox(
-                QMessageBox.Warning,
+                QMessageBox.Icon.Warning,
                 'Database Load Error',
                 "Could not load template database. Please ensure \
 the template library submodule has been initialised (see readme.md) and correctly set in the _metadraft.cfg, for example: \
@@ -864,7 +966,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             )
             self._session_actions_[k].triggered.connect(self.sessionSignalMapper.map)
             self.savedSessionMenu.addAction(self._session_actions_[k])
-        self.sessionSignalMapper.mapped[str].connect(self.menu_loadSession)
+        self.sessionSignalMapper.mappedString.connect(self.menu_loadSession)
         if len(cstate_keys) > 0:
             self.status_bar.showMessage('Session saved as: {}.'.format(cstate_keys[0]))
 
@@ -916,7 +1018,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2024."
         )
 
-        self.widgetMsgBox(QMessageBox.Information, title, msg)
+        self.widgetMsgBox(QMessageBox.Icon.Information, title, msg)
 
     @pyqtSlot(QAction)
     def menu_modelTools(self, q):
@@ -1058,7 +1160,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.func_generateMetaboliteReport()
 
     def func_generateGeneReport(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']
         LD['reports']['genes']['unmatched'] = []
         LD['reports']['genes']['selected'] = []
@@ -1082,7 +1184,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         QApplication.restoreOverrideCursor()
 
     def func_generateReactionReport(self):  # r, n, o, s
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']
         LD['reports']['reactions']['selected'] = []
         LD['reports']['reactions']['unselected'] = []
@@ -1102,7 +1204,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         QApplication.restoreOverrideCursor()
 
     def func_generateMetaboliteReport(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']
         LD['reports']['metabolites']['selected'] = []
         LD['reports']['metabolites']['unselected'] = []
@@ -1122,7 +1224,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         QApplication.restoreOverrideCursor()
 
     def func_formatSummaryReport(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
         gene_stats = {'org': {}, 'score': {}}
         # summarize gene info
@@ -1270,7 +1372,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         return html.format(cp)
 
     def func_formatGeneReport(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
         nmg = ', '.join(LD['genes']['unmatched'])
         selg = '<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
@@ -1327,7 +1429,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         )
 
     def func_formatReactionReport(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
         annotR = ''
 
@@ -1389,7 +1491,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         )
 
     def func_formatMetaboliteReport(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         LD = self._DAT_LINK_DICT_['__metaproteome__']['reports']
         selg = '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
             'Metabolite', 'Name', 'Model'
@@ -1451,7 +1553,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_reportViewApp.setWindowTitle('MetaDraft Report')
         ppos = self.func_getNewPopupWindowCoords()
         self.widget_reportViewApp.setGeometry(QtCore.QRect(ppos[0], ppos[1], 600, 300))
-        self.widget_reportViewApp.setWindowModality(Qt.ApplicationModal)
+        self.widget_reportViewApp.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
 
         textWindow = QTextBrowser(self.widget_reportViewApp)
         textWindow.setOpenLinks(True)
@@ -1609,7 +1711,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         list_widge = QListWidget(parent=self.widget_userMetaDefApp_del)
         # list_widge.setDragDropMode(QAbstractItemView.InternalMove)
-        list_widge.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        list_widge.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         litems = {}
         for action in self.userMetaDefMenu.actions():
             txt = str(action.text())
@@ -1648,7 +1750,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         layout.addWidget(list_widge, 0, 0, 3, 2)
         layout.addWidget(delbut, 3, 0)
         layout.addWidget(exbut, 3, 1)
-        self.widget_userMetaDefApp_del.setWindowModality(Qt.ApplicationModal)
+        self.widget_userMetaDefApp_del.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.widget_userMetaDefApp_del.show()
 
     @pyqtSlot(QtCore.QPoint)
@@ -1684,7 +1786,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         def exportNonGPR():
             print('export nonGPR')
             print(item)
-            QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+            QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
             exm = cbmpy.CBModel.Model('metadraft_nongpr_reactions')
             notes = '<p>Metadraft nonGPR reactions for models:</p><p><br/>'
             idGlob = {}
@@ -1720,7 +1822,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widget_lview_rclickmenu = QMenu()
         if len(item) > 1:
             item = [str(i.text()) for i in item]
-            # self.widgetMsgBox(QMessageBox.Information, 'Template model menu', 'Please select only one item to enable right click menu.')
+            # self.widgetMsgBox(QMessageBox.Icon.Information, 'Template model menu', 'Please select only one item to enable right click menu.')
             menu_item2 = self.widget_lview_rclickmenu.addAction("Export non-gpr reac.")
             menu_item2.triggered.connect(exportNonGPR)
         else:
@@ -1778,7 +1880,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.widgetLogView = QTextEdit()
         ppos = self.func_getNewPopupWindowCoords()
         self.widgetLogView.setGeometry(QtCore.QRect(ppos[0], ppos[1], 600, 300))
-        self.widgetLogView.setWindowModality(Qt.ApplicationModal)
+        self.widgetLogView.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.widgetLogView.setReadOnly(True)
         self.widgetLogView.setWindowTitle('SysLog Viewer ({})'.format(self.log_syslog))
         if self.log_syslog is not None:
@@ -1840,7 +1942,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         layout.addWidget(process, 3, 1)
         self.widgetAddSeQPlus.setLayout(layout)
 
-        self.widgetAddSeQPlus.setWindowModality(Qt.ApplicationModal)
+        self.widgetAddSeQPlus.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.widgetAddSeQPlus.show()
 
     @pyqtSlot()
@@ -1894,12 +1996,12 @@ the template library submodule has been initialised (see readme.md) and correctl
         sbml = str(self.widget_seqplus_sbml.text())
         key = str(self.widget_seqplus_key.text())
         ret = 'None'
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         if gbank == 'None' or sbml == 'None' or key == 'None' or '-' in key:
             QApplication.restoreOverrideCursor()
             title = 'Create SeQPlus Template Model: error'
             msg = 'Model creation error: missing information or  \"-\" in key'
-            self.widgetMsgBox(QMessageBox.Critical, title, msg)
+            self.widgetMsgBox(QMessageBox.Icon.Critical, title, msg)
             return
         else:
             key = '{}'.format(key)
@@ -1922,7 +2024,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 QApplication.restoreOverrideCursor()
                 title = 'Create SeQPlus Template Model: error'
                 msg = 'Model creation error: input files must be in same directory'
-                self.widgetMsgBox(QMessageBox.Critical, title, msg)
+                self.widgetMsgBox(QMessageBox.Icon.Critical, title, msg)
                 return
             else:
                 try:
@@ -1940,7 +2042,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                     QApplication.restoreOverrideCursor()
                     title = 'Create SeQPlus Template Model: error'
                     msg = 'Model creation error: Model must be encoded using SBML Level 3 with FBC version 1 or 2 format!'
-                    self.widgetMsgBox(QMessageBox.Critical, title, msg)
+                    self.widgetMsgBox(QMessageBox.Icon.Critical, title, msg)
                     return
                 self.bp_lview.clear()
                 datF = []
@@ -1953,7 +2055,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         QApplication.restoreOverrideCursor()
         title = 'Create SeQPlus Template Model ({})'.format(ret[0])
         msg = 'Created new SeqPlus template model: ({})-({})'.format(ret[0], sbml)
-        self.widgetMsgBox(QMessageBox.Information, title, msg)
+        self.widgetMsgBox(QMessageBox.Icon.Information, title, msg)
         self.status_bar.showMessage(msg)
         self.widgetAddSeQPlus.setWindowTitle(title)
         self.widgetAddSeQPlus.activateWindow()
@@ -2688,7 +2790,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 raise RuntimeError('Invalid file to convert')
             # except:
             # xmod = None
-            # self.widgetMsgBox(QMessageBox.Critical, 'SBML Conversion Error', 'File conversion failed!')
+            # self.widgetMsgBox(QMessageBox.Icon.Critical, 'SBML Conversion Error', 'File conversion failed!')
             if xmod is not None:
                 cbmpy.writeSBML3FBC(
                     xmod,
@@ -2719,7 +2821,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 raise RuntimeError('Invalid file to convert')
             # except:
             # xmod = None
-            # self.widgetMsgBox(QMessageBox.Critical, 'SBML Conversion Error', 'File conversion failed!')
+            # self.widgetMsgBox(QMessageBox.Icon.Critical, 'SBML Conversion Error', 'File conversion failed!')
             if xmod is not None:
                 cbmpy.writeSBML3FBCV2(
                     xmod,
@@ -2773,7 +2875,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                     rowdata = []
                     for column in range(table.columnCount()):
                         item = table.item(row, column)
-                        if item.checkState() == Qt.Checked:
+                        if item.checkState() == QtCore.Qt.CheckState.Checked:
                             if os.sys.version_info < (3, 0, 0):
                                 rowdata.append(str('checked').encode('utf8'))
                             else:
@@ -2822,7 +2924,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     def widgetBusy(self):
         self.widget_busy = QProgressDialog(self)
-        # self.widget_busy.setWindowModality(Qt.WindowModal)
+        # self.widget_busy.setWindowModality(QtCore.Qt.WindowModal)
         self.widget_busy.setRange(0, 100)
         self.widget_busy.setMinimumDuration(0)
         self.widget_busy.setValue(100)
@@ -2835,14 +2937,14 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     def saveFile(self, title, directory, filterex):
         filename = QFileDialog.getSaveFileName(self, title, directory, filter=filterex)
-        if HAVE_QT5:
+        if HAVE_QT5 or HAVE_QT6:
             filename = filename[0]
         self._history_save_dir_ = os.path.dirname(str(filename))
         return str(filename)
 
     def openFile(self, title, directory, filterex):
         filename = QFileDialog.getOpenFileName(self, title, directory, filter=filterex)
-        if HAVE_QT5:
+        if HAVE_QT5 or HAVE_QT6:
             filename = filename[0]
         filename = os.path.abspath(str(filename))
         self._history_open_dir_ = os.path.dirname(filename)
@@ -2852,7 +2954,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         filenames = QFileDialog.getOpenFileNames(
             self, title, directory, filter=filterex
         )
-        if HAVE_QT5:
+        if HAVE_QT5 or HAVE_QT6:
             filenames = [os.path.abspath(str(a[0])) for a in filenames]
         else:
             filenames = [os.path.abspath(str(a)) for a in filenames]
@@ -2888,7 +2990,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         )
         self.table_reaction.cellChanged.connect(self.widgetTableReaction_cellChecked)
         # not sure if I want this right now until I have sorted out the persistence between sessions issues
-        # self.table_reaction.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.table_reaction.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         # self.table_reaction.customContextMenuRequested.connect(self.widgetTableReaction_tableRightClicked)
 
     def widgetTableReaction_populate(self):
@@ -2898,7 +3000,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.table_reaction.setColumnCount(0)
         selected_reactions = {}
         for row in range(self.table_gene.rowCount()):
-            if self.table_gene.item(row, 3).checkState() == QtCore.Qt.Checked:
+            if self.table_gene.item(row, 3).checkState() == QtCore.Qt.CheckState.Checked:
                 geneId = str(self.table_gene.item(row, 1).text())
                 new_geneId = str(self.table_gene.item(row, 0).text())[
                     len(self.gene_prefix) :
@@ -2956,20 +3058,20 @@ the template library submodule has been initialised (see readme.md) and correctl
             items = [item0, item1, item2, item3, item4, item5]
             for c_ in range(len(items)):
                 if c_ == 2:
-                    items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
+                    items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                     items[c_].setFlags(
-                        QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+                        QtCore.Qt.ItemFlag.ItemIsUserCheckable | QtCore.Qt.ItemFlag.ItemIsEnabled
                     )
                     if r_ in self._reaction_selected_map_:
                         # print('INFO: duplicate reaction ID in reaction table')
                         if self._reaction_selected_map_[r_]:
-                            items[c_].setCheckState(QtCore.Qt.Checked)
+                            items[c_].setCheckState(QtCore.Qt.CheckState.Checked)
                         else:
-                            items[c_].setCheckState(QtCore.Qt.Unchecked)
+                            items[c_].setCheckState(QtCore.Qt.CheckState.Unchecked)
                     else:
-                        items[c_].setCheckState(QtCore.Qt.Checked)
+                        items[c_].setCheckState(QtCore.Qt.CheckState.Checked)
                 else:
-                    items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
+                    items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                 self.table_reaction.setItem(row, c_, items[c_])
             row += 1
         self.selected_reactions = selected_reactions
@@ -2978,7 +3080,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         # self._reaction_selected_ids_ = self.widgetTableReaction_getSelectedIds()
         self.reaction_table_loading = False
         self._updateReactionMap_()
-        self.table_reaction.sortByColumn(0, Qt.SortOrder(0))
+        self.table_reaction.sortByColumn(0, QtCore.Qt.SortOrder(0))
 
     @pyqtSlot(QtCore.QPoint)
     def widgetTableReaction_tableRightClicked(self, QPos):
@@ -3042,24 +3144,24 @@ the template library submodule has been initialised (see readme.md) and correctl
         bp_btn_blast.clicked.connect(self.bp_runBLAST)
 
         bp_lview = QListWidget(bp)
-        bp_lview.setDragDropMode(QAbstractItemView.InternalMove)
-        bp_lview.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        bp_lview.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+        bp_lview.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         datF = []
         for f in os.listdir(self.seqplus_files):
             if f.endswith('.seqplus.xml'):
                 datF.append(f.replace('.seqplus.xml', ''))
         datF.sort()
         bp_lview.addItems(datF)
-        bp_lview.setContextMenuPolicy(Qt.CustomContextMenu)
+        bp_lview.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         bp_lview.customContextMenuRequested.connect(self.bp_lviewRightClicked)
         bp_label_res = QLabel(bp)
         bp_label_res.setText('Load result')
 
         ## this is the simple directory listing
         # bp_lview_res = QListWidget(bp)
-        # bp_lview_res.setDragDropMode(QAbstractItemView.InternalMove)
-        # bp_lview_res.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        # bp_lview_res.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # bp_lview_res.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+        # bp_lview_res.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        # bp_lview_res.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         # bp_lview_res.customContextMenuRequested.connect(self.bp_lviewOnRightClick)
         # datF = []
         # for f in os.listdir(self.result_files):
@@ -3138,7 +3240,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                     pgenes = pgenes[:11]
                     pgenes.append('\n{} more pseudogenes ... ignored.'.format(lpg - 10))
                     self.widgetMsgBox(
-                        QMessageBox.Information,
+                        QMessageBox.Icon.Information,
                         '{} pseudogenes detected and ignored in input FASTA file'.format(
                             lpg
                         ),
@@ -3336,13 +3438,13 @@ the template library submodule has been initialised (see readme.md) and correctl
         if _DAT_LINK_DICT_ is None and resraw is None:
             title = "About MetaDraft"
             msg = "There has been an error in the BLAST search subsystems\nplease see data_blast directory for debug information\n"
-            self.widgetMsgBox(QMessageBox.Critical, title, msg)
+            self.widgetMsgBox(QMessageBox.Icon.Critical, title, msg)
 
     def widgetMsgBox(self, status, title, msg):
         """
-        QMessageBox.Information
-        QMessageBox.Critical
-        QMessageBox.Warning
+        QMessageBox.Icon.Information
+        QMessageBox.Icon.Critical
+        QMessageBox.Icon.Warning
         """
         print('MSG: ' + msg)
         self._msg_box_ = QMessageBox(status, title, msg)
@@ -3761,7 +3863,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.table_gene.setHorizontalHeaderLabels(self.table_gene_cols)
         self.widgetTableGene_populate()
         self.table_gene.setSortingEnabled(True)
-        self.table_gene.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.table_gene.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.table_gene.customContextMenuRequested.connect(
             self.widgetTableGene_tableRightClicked
         )
@@ -3833,13 +3935,13 @@ the template library submodule has been initialised (see readme.md) and correctl
                     if low > high:
                         input_error = True
                         self.widgetMsgBox(
-                            QMessageBox.Critical, 'Input error', 'low <= high'
+                            QMessageBox.Icon.Critical, 'Input error', 'low <= high'
                         )
                         return
                     elif low > 1.0 or high > 1.0:
                         input_error = True
                         self.widgetMsgBox(
-                            QMessageBox.Critical,
+                            QMessageBox.Icon.Critical,
                             'Input error',
                             'low <= 1.0 and high <= 1.0',
                         )
@@ -3847,7 +3949,7 @@ the template library submodule has been initialised (see readme.md) and correctl
 
                 if input_error:
                     self.widgetMsgBox(
-                        QMessageBox.Critical, 'Input error', 'Invalid value'
+                        QMessageBox.Icon.Critical, 'Input error', 'Invalid value'
                     )
                     return
 
@@ -3867,9 +3969,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                     except ValueError:
                         continue
                     if score >= low and score <= high:
-                        self.table_gene.item(gidx, 3).setCheckState(Qt.Checked)
+                        self.table_gene.item(gidx, 3).setCheckState(QtCore.Qt.CheckState.Checked)
                     else:
-                        self.table_gene.item(gidx, 3).setCheckState(Qt.Unchecked)
+                        self.table_gene.item(gidx, 3).setCheckState(QtCore.Qt.CheckState.Unchecked)
 
                     # print(low, score, self.table_gene.item(gidx, 2).text(), high, self.table_gene.item(gidx, 3).checkState())
 
@@ -3944,16 +4046,16 @@ the template library submodule has been initialised (see readme.md) and correctl
                     items = [item0, item1, item2, item3, item4]
                     for c_ in range(len(items)):
                         if c_ == 3:
-                            items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
+                            items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                             items[c_].setFlags(
-                                QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+                                QtCore.Qt.ItemFlag.ItemIsUserCheckable | QtCore.Qt.ItemFlag.ItemIsEnabled
                             )
                             if sres[t_][g_] == max(vals):
-                                items[c_].setCheckState(QtCore.Qt.Checked)
+                                items[c_].setCheckState(QtCore.Qt.CheckState.Checked)
                             else:
-                                items[c_].setCheckState(QtCore.Qt.Unchecked)
+                                items[c_].setCheckState(QtCore.Qt.CheckState.Unchecked)
                         else:
-                            items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
+                            items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                         if grp_colour != None:
                             items[c_].setBackground(QColor(*grp_colour))
                         self.table_gene.setItem(row, c_, items[c_])
@@ -3964,11 +4066,11 @@ the template library submodule has been initialised (see readme.md) and correctl
                 self.table_gene.setItem(row, 1, QTableWidgetItem(''))
                 self.table_gene.setItem(row, 2, NumberTableWidgetItem(''))
                 chkBox = QTableWidgetItem()
-                chkBox.setCheckState(QtCore.Qt.Unchecked)
+                chkBox.setCheckState(QtCore.Qt.CheckState.Unchecked)
                 chkBox.setFlags(
                     chkBox.flags()
-                    & ~QtCore.Qt.ItemIsUserCheckable
-                    & ~QtCore.Qt.ItemIsEnabled
+                    & ~QtCore.Qt.ItemFlag.ItemIsUserCheckable
+                    & ~QtCore.Qt.ItemFlag.ItemIsEnabled
                 )
                 self.table_gene.setItem(row, 3, chkBox)
                 self.table_gene.setItem(row, 4, QTableWidgetItem(''))
@@ -3976,7 +4078,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         self.gene_table_loading = False
         self._updateGeneMap_()
         self._gene_status_changed_ = False
-        self.table_gene.sortByColumn(0, Qt.SortOrder(0))
+        self.table_gene.sortByColumn(0, QtCore.Qt.SortOrder(0))
 
     def widgetTableMetab(self):
         self.table_metab = QTableWidget(
@@ -4026,21 +4128,21 @@ the template library submodule has been initialised (see readme.md) and correctl
             items = [item0, item1, item2, item3]
             for c_ in range(len(items)):
                 if c_ == 3:
-                    items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
+                    items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                     items[c_].setFlags(
-                        QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+                        QtCore.Qt.ItemFlag.ItemIsUserCheckable | QtCore.Qt.ItemFlag.ItemIsEnabled
                     )
                     if s_ not in self.selected_metabolites:
-                        items[c_].setCheckState(QtCore.Qt.Unchecked)
+                        items[c_].setCheckState(QtCore.Qt.CheckState.Unchecked)
                     elif s_ in self._metab_selected_map_:
                         if self._metab_selected_map_[s_]:
-                            items[c_].setCheckState(QtCore.Qt.Checked)
+                            items[c_].setCheckState(QtCore.Qt.CheckState.Checked)
                         else:
-                            items[c_].setCheckState(QtCore.Qt.Unchecked)
+                            items[c_].setCheckState(QtCore.Qt.CheckState.Unchecked)
                     else:
-                        items[c_].setCheckState(QtCore.Qt.Unchecked)
+                        items[c_].setCheckState(QtCore.Qt.CheckState.Unchecked)
                 else:
-                    items[c_].setFlags(items[c_].flags() & ~Qt.ItemIsEditable)
+                    items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                 self.table_metab.setItem(row, c_, items[c_])
             row += 1
 
@@ -4048,7 +4150,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         # if len(self._metab_selected_map_) > 0:
         self._updateMetaboliteMap_()
         self._metab_status_changed_ = False
-        self.table_metab.sortByColumn(0, Qt.SortOrder(0))
+        self.table_metab.sortByColumn(0, QtCore.Qt.SortOrder(0))
 
     @pyqtSlot(int, int)
     def widgetTableMetab_cellClicked(self, row, column):
@@ -4071,7 +4173,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         mmap = {}
         for r in range(self.table_metab.rowCount()):
             mid = str(self.table_metab.item(r, 0).text())
-            if self.table_metab.item(r, 3).checkState() == Qt.Checked:
+            if self.table_metab.item(r, 3).checkState() == QtCore.Qt.CheckState.Checked:
                 mmap[mid] = True
                 self.selected_metabolites[mid].setBoundary()
             else:
@@ -4090,14 +4192,14 @@ the template library submodule has been initialised (see readme.md) and correctl
                 if key in mmap:
                     print('IMPOSSIBLE DUPLICATE MMAP KEY')
                     time.sleep(1)
-                if self.table_gene.item(r, 3).checkState() == Qt.Checked:
+                if self.table_gene.item(r, 3).checkState() == QtCore.Qt.CheckState.Checked:
                     mmap[key] = True
                 else:
                     mmap[key] = False
         return mmap
 
     def widgetTableGene_getSelectedIds(self):
-        # tuple([str(self.table_gene.item(r, 1).text()) for r in range(self.table_gene.rowCount()) if self.table_gene.item(r, 3).checkState() == Qt.Checked])
+        # tuple([str(self.table_gene.item(r, 1).text()) for r in range(self.table_gene.rowCount()) if self.table_gene.item(r, 3).checkState() == QtCore.Qt.CheckState.Checked])
 
         if self._gene_selected_map_ is not None:
             return [
@@ -4109,7 +4211,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             return []
 
     def widgetTableReaction_getSelectedIds(self):
-        # tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == Qt.Checked])
+        # tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == QtCore.Qt.CheckState.Checked])
         if self._reaction_selected_map_ is not None:
             return [
                 i
@@ -4129,7 +4231,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 rid = str(self.table_reaction.item(r, 0).text())
                 org = str(self.table_reaction.item(r, 3).text())
                 rkey = '{}{}{}'.format(rid, self.id_sep, org)
-                if self.table_reaction.item(r, 2).checkState() == Qt.Checked:
+                if self.table_reaction.item(r, 2).checkState() == QtCore.Qt.CheckState.Checked:
                     rmap[rkey] = True
                 else:
                     rmap[rkey] = False
@@ -4568,7 +4670,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         gpr = self._DAT_MODELS[reac._organism_].getGPRforReaction(reac.getId())
         assoc = gpr.getAssociationStr(use_labels=True)
         assoc_new = ''
-        # tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == Qt.Checked])
+        # tuple([str(self.table_reaction.item(r, 0).text()) for r in range(self.table_reaction.rowCount()) if self.table_reaction.item(r, 2).checkState() == QtCore.Qt.CheckState.Checked])
         for r in range(self.table_reaction.rowCount()):
             rkey = '{}{}{}'.format(
                 str(self.table_reaction.item(r, 0).text()),
@@ -4711,11 +4813,11 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     def widgetResultTree(self):
         self.tree_results = QTreeWidget()
-        self.tree_results.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tree_results.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.tree_results.setUniformRowHeights(True)
         self.tree_results.setColumnCount(1)
         # self.tree_results.setColumnWidth(0, 300)
-        self.tree_results.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tree_results.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree_results.customContextMenuRequested.connect(
             self.widgetTreeRightClickMenu
         )
@@ -4730,15 +4832,15 @@ the template library submodule has been initialised (see readme.md) and correctl
         indexes = self.tree_results.selectedIndexes()
         treeidx = self.tree_results.indexAt(position)
         if len(indexes) == 1:
-            print(indexes[0].parent().data(Qt.DisplayRole))
-            if indexes[0].parent().data(Qt.DisplayRole) is None:
+            print(indexes[0].parent().data(QtCore.Qt.DisplayRole))
+            if indexes[0].parent().data(QtCore.Qt.DisplayRole) is None:
                 self._widget_result_tree_rightclick_data_ = str(
-                    indexes[0].data(Qt.DisplayRole)
+                    indexes[0].data(QtCore.Qt.DisplayRole)
                 )
             else:
                 self._widget_result_tree_rightclick_data_ = os.path.join(
-                    str(indexes[0].parent().data(Qt.DisplayRole)),
-                    str(indexes[0].data(Qt.DisplayRole)),
+                    str(indexes[0].parent().data(QtCore.Qt.DisplayRole)),
+                    str(indexes[0].data(QtCore.Qt.DisplayRole)),
                 )
         if len(indexes) > 0:
             level = 0
@@ -4777,7 +4879,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 self.widgetResultTree_fill()
             else:
                 self.widgetMsgBox(
-                    QMessageBox.Warning,
+                    QMessageBox.Icon.Warning,
                     'Warning Dialog',
                     'Directory {} already exists'.format(text),
                 )
@@ -4993,7 +5095,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         if self._loading_:
             return
 
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.CursorShape.WaitCursor))
         self._last_tab_ = self._active_tab_
         self._active_tab_ = idx
         # print('tabChange', self._last_tab_, self._active_tab_)
@@ -5134,9 +5236,9 @@ the template library submodule has been initialised (see readme.md) and correctl
                 if self._DAT_LINK_DICT_['__metaproteome__']['selection_state'][
                     self.CURRENT_SELECTION_STATE
                 ]['selected_genes'][key]:
-                    self.table_gene.item(row, 3).setCheckState(QtCore.Qt.Checked)
+                    self.table_gene.item(row, 3).setCheckState(QtCore.Qt.CheckState.Checked)
                 else:
-                    self.table_gene.item(row, 3).setCheckState(QtCore.Qt.Unchecked)
+                    self.table_gene.item(row, 3).setCheckState(QtCore.Qt.CheckState.Unchecked)
         self.table_gene.update()
         self.menu_buildAll()
 
@@ -5214,7 +5316,7 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
         super(ConfigPanelWidgetINP, self).__init__()
         self.kdesc = kdescript
         self.kobjdict = {}
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
 
         keys = list(getattr(dictobject, dictname).keys())
         keys.sort()
@@ -5251,8 +5353,8 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
 
         def bp_SaveExitFunc():
             pal = QPalette()
-            textbad = QColor(Qt.red)
-            textgood = QColor(Qt.black)
+            textbad = QColor(QtCore.Qt.red)
+            textgood = QColor(QtCore.Qt.black)
 
             GO = True
             for o in self.kobjdict:
@@ -5350,7 +5452,7 @@ class CBMPyAnnotationEditor(QWidget):
 
     def __init__(self, mod, sid):
         super(CBMPyAnnotationEditor, self).__init__()
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.mod = mod
         self.sid = sid
         if sid in self.mod.getReactionIds():
@@ -5444,7 +5546,7 @@ class CBMPyAnnotationEditor(QWidget):
                 msg += '- \"{}\" is of class \"{}\" should have form: {}\n'.format(
                     fail[2], fail[1], self.miriam[fail[1]]['example']
                 )
-            self._widget_msgBox_ = QMessageBox(QMessageBox.Warning, title, msg)
+            self._widget_msgBox_ = QMessageBox(QMessageBox.Icon.Warning, title, msg)
             self._widget_msgBox_.show()
             return False
         self.obj.miriam = None
@@ -5465,9 +5567,9 @@ class CBMPyAnnotationEditor(QWidget):
             self.tblDesc.setCellWidget(newrow, 1, miriam)
         else:
             item0 = QTableWidgetItem(qual)
-            item0.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            item0.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
             item1 = QTableWidgetItem(rsrc)
-            item1.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            item1.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled)
             self.tblDesc.setItem(newrow, 0, item0)
             self.tblDesc.setItem(newrow, 1, item1)
 
@@ -5563,10 +5665,10 @@ class CBMPyAnnotationEditor(QWidget):
                 msg = 'Invalid ID! Id should be of the form: {}'.format(
                     self.miriam[entity]['example']
                 )
-                self._widget_msgBox_ = QMessageBox(QMessageBox.Warning, title, msg)
+                self._widget_msgBox_ = QMessageBox(QMessageBox.Icon.Warning, title, msg)
             else:
                 msg = 'ID check passed'
-                self._widget_msgBox_ = QMessageBox(QMessageBox.Information, title, msg)
+                self._widget_msgBox_ = QMessageBox(QMessageBox.Icon.Information, title, msg)
             self._widget_msgBox_.show()
 
         self.widget_tbldesc_rclickmenu = QMenu()
@@ -5622,37 +5724,37 @@ class CBMPyAnnotationEditor(QWidget):
         lbl_bld_font.setPointSize(10)
 
         lbl_notes.setFont(lbl_bld_font)
-        lbl_notes.setAlignment(Qt.AlignLeft)
+        lbl_notes.setAlignment(QtCore.Qt.AlignLeft)
         lbl_notes.setMaximumHeight(max_label_height)
 
         lbl_desc = QLabel(parent=self)
         lbl_desc.setFont(lbl_bld_font)
         lbl_desc.setText('Description')
-        lbl_desc.setAlignment(Qt.AlignLeft)
+        lbl_desc.setAlignment(QtCore.Qt.AlignLeft)
         lbl_desc.setMaximumHeight(max_label_height)
 
         # lbl_auth = QLabel(parent=self)
         # lbl_auth.setText('Creator')
         # lbl_auth.setFont(lbl_bld_font)
-        # lbl_auth.setAlignment(Qt.AlignLeft)
+        # lbl_auth.setAlignment(QtCore.Qt.AlignLeft)
         # lbl_auth.setMaximumHeight(max_label_height)
 
         # lbl_ref = QLabel(parent=self)
         # lbl_ref.setFont(lbl_bld_font)
         # lbl_ref.setText('References')
-        # lbl_ref.setAlignment(Qt.AlignLeft)
+        # lbl_ref.setAlignment(QtCore.Qt.AlignLeft)
         # lbl_ref.setMaximumHeight(max_label_height)
 
         lbl_kvp = QLabel(parent=self)
         lbl_kvp.setFont(lbl_bld_font)
         lbl_kvp.setText('CBMPy annotation')
-        lbl_kvp.setAlignment(Qt.AlignLeft)
+        lbl_kvp.setAlignment(QtCore.Qt.AlignLeft)
         lbl_kvp.setMaximumHeight(max_label_height)
 
         # lbl_sel = QLabel(parent=self)
         # lbl_sel.setFont(lbl_bld_font)
         # lbl_sel.setText('')
-        # lbl_sel.setAlignment(Qt.AlignCenter)
+        # lbl_sel.setAlignment(QtCore.Qt.AlignCenter)
         # lbl_sel.setMaximumHeight(max_label_height)
 
         # create tables
@@ -5676,7 +5778,7 @@ class CBMPyAnnotationEditor(QWidget):
         self.tblDesc.horizontalHeader().setVisible(True)
         # self.tblDesc.itemClicked.connect(self.action_reactionProdSelect)
         # self.tblDesc.cellChanged.connect(self.checkBalance)
-        self.tblDesc.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tblDesc.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.tblDesc.customContextMenuRequested.connect(self.tblDesc_rightClickMenu)
 
         # self.tblAuth = QTableWidget(parent=self)
@@ -5729,7 +5831,7 @@ class CBMPyAnnotationEditor(QWidget):
         self.tblKvp.verticalHeader().setVisible(True)
         self.tblKvp.horizontalHeader().setVisible(True)
         # self.tblKvp.itemClicked.connect(self.action_reactionSpeciesSelect)
-        self.tblKvp.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tblKvp.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.tblKvp.customContextMenuRequested.connect(self.tblKvp_rightClickMenu)
         self.tblKvp.update()
 
@@ -5789,7 +5891,7 @@ class CBMPyAnnotationEditor(QWidget):
         ## create textFields
         self.widget_lblnotes = QTextEdit(parent=self)
         # self.widget_lblnotes.setMaximumHeight(80)
-        # self.widget_lblnotes.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.widget_lblnotes.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         # self.widget_lblnotes.customContextMenuRequested.connect(self.modelDetail_RightClicked)
         self.widget_lblnotes.setHtml('{}'.format(self.obj.getNotes()))
         # self.widget_lblnotes.setReadOnly(True)
