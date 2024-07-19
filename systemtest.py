@@ -58,8 +58,10 @@ def test_perl_xml(output_msg):
       1;
     };
     if ($rc){
+        print "happy";
         exit 0
         } else {
+        print "sad";
         exit 1
         }
     """
@@ -68,6 +70,7 @@ def test_perl_xml(output_msg):
         PF.write(p_script)
         PF.close()
         out = int(subprocess.call(['perl', '_test.pl']))
+        print(out)
         if out:
             raise OSError
         PERL_XML_OK = True
