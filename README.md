@@ -4,7 +4,15 @@ CBMPy Metadraft: a flexible and extensible, GUI-based genome-scale model reconst
 ## UPDATE: July 2024
 Metadraft has had a core dependency on the legacy BLAST executables that are now not available or don't work for many new OS versions. I am in the process of rewriting a core part of Metadraft that will remove this dependency, and many others, and simplify its installation. A new release will include a prototype of this fucntionality ... watch this space.
 
+I've also renamed the default branch to 'main' if you have existing clones, either reclone or do the following to update your base branch:
+```shell
+git branch -m master main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
+```
 - Brett
+
 ## If you clone the Metadraft repository please be sure to include the modelDB modules
 
 ```Shell
