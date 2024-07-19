@@ -1,19 +1,19 @@
 # cbmpy-metadraft
 CBMPy Metadraft: a flexible and extensible, GUI-based genome-scale model reconstruction tool that supports multiple Systems Biology standards.
 
-## New: upgrading to MetaDraft version 0.9.7
+## UPDATE: July 2024
+Metadraft has had a core dependency on the legacy BLAST executables that are now not available or don't work for many new OS versions. I am in the process of rewriting a core part of Metadraft that will remove this dependency, and many others, and simplify its installation. A new release will include a prototype of this fucntionality ... watch this space.
 
-MetaDraft version 0.9.7 now defaults to the *2019-1* template library, if you are working directly in a cloned repository please initialise the new template library:
+- Brett
+## If you clone the Metadraft repository please be sure to include the modelDB modules
 
 ```Shell
 cd cbmpy-metadraft
 git submodule update --init --remote -- modeldb/2019-1/
 ```
-
 If you want to switch back to the *2018-1* library and results please edit the `_metadraft.cfg` file and change the value  of the `"metadraft_db_version"` key to `"2018-1"` (it is currently set to `"2019-1"`).
 
 - 0.9.7 removes the SIP dependency and is Python 3.10 compatible.
-
 
 ## Installation and system dependencies
 
