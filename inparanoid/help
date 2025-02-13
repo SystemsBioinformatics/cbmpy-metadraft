@@ -1,0 +1,112 @@
+
+###############################################################
+InParanoid version 5.1
+###############################################################
+
+Accurate and fast ortholog detection with DIAMOND.
+InParanoid-DIAMOND identifies complex orthologous relationships 
+between protein sequences from different genomes. The package is 
+capable of using either DIAMOND (default) or BLAST scores to 
+measure relatedness of proteins, and assigns confidence values 
+for all paralogs in each group.
+
+RUN WITH DEFAULT SETTINGS AND TEST-FILES:
+perl inparanoid.pl -input-dir ./testInput
+
+OPTIONS:
+-f1		Fasta file with protein sequences of species A
+-f2		Fasta file with protein sequences of species B
+-outgroup	Fasta file with protein sequences of species C 
+		to use as outgroup [Default: no outgroup]
+-input-dir	Directory containing fasta files for multiple
+		species. Will run all vs all. If this option 
+		is used, leave -f1 and -f2 empty. Note that 
+		InParanoid will run species pairs sequentially,
+		but Diamond will paralellize the sequence search
+		using all available threads.
+-out-dir	Specify a directory for the output files.
+		[Default: ./output]
+
+-seq-tool	Sequence similarity tool to use. 
+		Options: Diamond, Blast [Default: Diamond]
+-2pass		Run 2-pass approach. Not suitable for Diamond, 
+		recommended for Blast [Default: False]
+-bootstrap	Run bootstrapping to estimate confidence of 
+		orthologs [Default: False]
+-seedscore	Include calculation of Seed Score to estimate 
+		confidence of orthologs [Default: False]
+
+-score-cutoff	Set bitscore cutoff. Any match below this 
+		is ignored [Default: 40]
+-seq-cutoff	Set sequence overlap cutoff. Match area should 
+		cover at least this much of longer sequence. 
+		Match area is the area from start of first 
+		segment to end of last segment [Default: 0.5]
+-seg-cutoff	Set segment coverage cutoff. Matching 
+		segments must cover this much of the
+		longer sequence [Default: 0.25]
+-outgrp-cutoff	Set outgroup bitscore cutoff. Outgroup sequence
+		hit must be this many bits stronger to reject 
+		best-best hit between A and B [Default: 50]
+-conf-cutoff	Set confidence cutoff. Include in-paralogs 
+		with this confidence or better [Default: 0.05]
+-grp-cutoff	Set group overlap cutoff. Merge groups if 
+		ortholog in one group has more than this 
+		confidence in other group [Default: 0.5]
+-grey-zone	Set grey-zone. This many bits signifies the 
+		difference between 2 scores [Default: 0]
+-sensitivity	Set sensitivity mode for Diamond. 
+		Options: mid-sensitive, sensitive, more-sensitive, 
+		very-sensitive, ultra-sensitive. 
+		[Default: very-sensitive]
+-matrix		Specify a matrix to use when running Blast. 
+		Options: BLOSUM62, BLOSUM45, BLOSUM80, PAM30, 
+		PAM70 [Default: BLOSUM62]
+
+-out-stats	Output statistics file [Default: False]
+-out-table	Output tab-delimited table of orthologs to file 
+		[Default: False]
+-out-sqltable	Output sqltable file with orthologs [Default: True]
+-out-html	Output html file with groups of orthologs 
+		[Default: False]
+-out-allPairs	Output allPairs file collecting all ortholog pairs
+		from all SQLtable files present in the output
+		directory. [Default: False]
+
+-keep-seqfiles	Use this option to keep the resulting sequence tool
+		files in the working directory. This will let you 
+		run InParanoid without re-running the sequence 
+		similarity tool. If false, these files will be moved
+		to the output dir when done [Default: False]
+-noOverwrite	Use this option to skip running InParanoid for 
+		species-pairs if a resulting SQLtable file is 
+		already in the output directory [Default: False]
+-diamond-path	Explicitly state path to Diamond. Can be used if 
+		Diamond is in a non-standard location, and not
+		in user PATH [DEFAULT: diamond]
+-blast-path	Explicitly state directory containing blastall and 
+		formatdb. Can be used if Blast is in a non-
+		standard location, and not in user PATH.
+-cores		Use to specify the available cores. If DIAMOND is 
+		used and this number is higher than twice the 
+		-cores-diamond parameter, this number will be split 
+		by -cores-diamond to run multiple instances of 
+		InParanoid in paralell. If the number is lower, or
+		if only one proteome-pair is run, all cores will 
+		be used to run DIAMOND. If BLAST is used, this 
+		number will specify the number of paralell 
+		InParanoid instances. 
+		[Default: using all available cores]
+-cores-diamond	Use to specify the number of cores to use for each
+		DIAMOND run. To optimize performance, please make 
+		sure that this number is dividable by the total 
+		number of cores used [Default: 4]
+	
+-debug		Activate debug mode [Default: False]
+-notimes	Hide execution times [Default: False]
+-help/-h	Show help
+
+LICENSE:
+ Distributed under the GNU General Public License (GPLv3). 
+ See file COPYING
+
