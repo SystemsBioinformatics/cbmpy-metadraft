@@ -82,7 +82,7 @@ if __name__ == '__main__':
         elif BLAST_HAVE_LOCAL:
             print(
                 "\nMetaDraft requires NCBI BLAST but can make use of it's own distribution. I have set the PATH for you but please consider adding \'{}\' to your local '{}' environment variable to remove this message. Please see README.md for details.\n".format(
-                    systemtest.local_blast_path, pth
+                    systemtest.LOCAL_BLASTWIN_PATH, pth
                 )
             )
 
