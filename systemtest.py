@@ -78,10 +78,10 @@ def test_perl_xml(output_msg):
         PERL_XML_OK = True
     except (OSError):
         output_msg.append('MetaDraft requires Perl has the XML::Parser package installed, see README.md for details.')
-        
+
     if os.path.exists(os.path.join(cDir, '_test.pl')):
         os.remove(os.path.join(cDir, '_test.pl'))
-        
+
     return PERL_XML_OK, output_msg
 
 def test_blast(output_msg):
@@ -104,9 +104,9 @@ def test_blast(output_msg):
                 BLAST_OK = True
                 BLAST_HAVE_LOCAL = True
             except (OSError):
-                output_msg.append('MetaDraft requires a working NCBI BLAST2 in the path, see README.md for details.')
+                output_msg.append('Ignore: MetaDraft requires a working NCBI BLAST2 in the path, see README.md for details.')
         else:
-            output_msg.append('MetaDraft requires a working NCBI BLAST2 in the path, see README.md for details.')
+            output_msg.append('Ignore: MetaDraft requires a working NCBI BLAST2 in the path, see README.md for details.')
     if os.path.exists(os.path.join(cDir, 'formatdb.log')):
         os.remove(os.path.join(cDir, 'formatdb.log'))
 
@@ -178,20 +178,20 @@ def test_diamond(output_msg):
                 DIAMOND_OK = True
                 DIAMOND_HAVE_LOCAL = True
             except (OSError):
-                output_msg.append('MetaDraft requires a working "diamond" in the path, see README.md for details.')                
+                output_msg.append('MetaDraft requires a working "diamond" in the path, see README.md for details.')
         elif os.name == 'nt':
             for pth in ['PATH', 'path', 'Path']:
                 if pth in os.environ:
                     os.environ[pth] = os.environ[pth] + ';' + LOCAL_DIAMOND_PATH
                     break
             try:
-                out = subprocess.call(['diamond'])
+                out = subprocess.call(['diamond.exe'])
                 DIAMOND_OK = True
                 DIAMOND_HAVE_LOCAL = True
             except (OSError):
-                output_msg.append('MetaDraft requires a working "diamond" in the path, see README.md for details.')               
+                output_msg.append('MetaDraft requires a working "diamond" in the path, see README.md for details.')
         else:
-            output_msg.append('MetaDraft requires a working "diamond" in the path, see README.md for details.')               
+            output_msg.append('MetaDraft requires a working "diamond" in the path, see README.md for details.')
 
     return DIAMOND_OK, DIAMOND_HAVE_LOCAL, pth, output_msg
 
@@ -215,6 +215,13 @@ def print_test_results(*args):
     if BLAST_HAVE_LOCAL:
         print("MetaDraft requires NCBI BLAST and can make use of it's own distribution. Please consider adding \'{}\' to your local '{}' and see README.md for details.".format(LOCAL_BLASTWIN_PATH, pth))
 
+    if os.name == 'nt' and not JAVA_OK:
+        print('Make sure OpenJDk is in your path, for example: path=%path%;c:\DevTools\jdk-23.0.2\bin')
+    elif os.name == 'nt' and not PERL_OK:
+        print('Make sure perl is in your path, for example: path=%path%;c:\DevTools\strawberry\c\bin;c:\DevTools\strawberry\perl\bin')
+
+
+
 if __name__ == '__main__':
     output_msg = []
     JAVA_OK, output_msg = test_java(output_msg)
@@ -223,7 +230,7 @@ if __name__ == '__main__':
     PYTHON_DEP_OK, output_msg = test_python_dependencies(output_msg)
     BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg = test_blast(output_msg)
     DIAMOND_OK, DIAMOND_HAVE_LOCAL, pth, output_msg = test_diamond(output_msg)
-    
+
 
     print_test_results(JAVA_OK, PERL_OK, PERL_XML_OK, BLAST_OK, BLAST_HAVE_LOCAL, PYTHON_DEP_OK, DIAMOND_OK, DIAMOND_HAVE_LOCAL, \
                        pth, output_msg)
