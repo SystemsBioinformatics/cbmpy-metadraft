@@ -105,6 +105,11 @@ data_blast/
 blast_results/
 work/
 tmp/
+modeldb/2019-1/
+testfiles/default/test_faa.in.fasta
+
+diamond/diamond
+
 # run_local.bat
 wing-metadraft.wpu
 wing-metadraft.wpr
