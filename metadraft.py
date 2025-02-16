@@ -47,7 +47,7 @@ def run_metadraft():
     widget_splash = QSplashScreen(QPixmap("images/metatoolkit1-03.jpg"))
     widget_splash.show()
     widget_splash.showMessage(
-        "Ver {}-({})\nAuthor: Brett G. Olivier\n(c) Systems Bioinformatics, VU University Amsterdam, Amsterdam, 2017-2023.\nSee Help - About for more details.".format(
+        "Ver {}-({})\nAuthor: Brett G. Olivier\n(c) Systems Bioinformatics, VU University Amsterdam, Amsterdam, 2017-2025.\nSee Help - About for more details.".format(
             metadraft_version, cbmpy.__version__
         ),
         alignment=QtCore.Qt.AlignmentFlag.AlignBottom,
@@ -65,29 +65,40 @@ if __name__ == '__main__':
     F = open('_metadraft.cfg', 'r')
     config = json.load(F)
     F.close()
-    if (
-        platform.architecture() == ('64bit', 'WindowsPE')
-        and not config['system']['have_blas2']
-    ):
-        output_msg = []
-        BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg = systemtest.test_blast(output_msg)
-        if not (BLAST_OK or BLAST_HAVE_LOCAL):
-            print(output_msg[0])
-            os.sys.exit(1)
-        elif BLAST_OK and not BLAST_HAVE_LOCAL:
-            config['system']['have_blas2'] = True
-            F = open('_metadraft.cfg', 'w')
-            json.dump(config, F)
-            F.close()
-        elif BLAST_HAVE_LOCAL:
-            print(
-                "\nMetaDraft requires NCBI BLAST but can make use of it's own distribution. I have set the PATH for you but please consider adding \'{}\' to your local '{}' environment variable to remove this message. Please see README.md for details.\n".format(
-                    systemtest.LOCAL_BLASTWIN_PATH, pth
-                )
-            )
+    #if (
+        #platform.architecture() == ('64bit', 'WindowsPE')
+        #and not config['system']['have_blas2']
+    #):
+        #output_msg = []
+        #BLAST_OK, BLAST_HAVE_LOCAL, pth, output_msg = systemtest.test_blast(output_msg)
+        #if not (BLAST_OK or BLAST_HAVE_LOCAL):
+            #print(output_msg[0])
+            #os.sys.exit(1)
+        #elif BLAST_OK and not BLAST_HAVE_LOCAL:
+            #config['system']['have_blas2'] = True
+            #F = open('_metadraft.cfg', 'w')
+            #json.dump(config, F)
+            #F.close()
+        #elif BLAST_HAVE_LOCAL:
+            #print(
+                #"\nMetaDraft requires NCBI BLAST but can make use of it's own distribution. I have set the PATH for you but please consider adding \'{}\' to your local '{}' environment variable to remove this message. Please see README.md for details.\n".format(
+                    #systemtest.LOCAL_BLASTWIN_PATH, pth
+                #)
+            #)
+
+
+    DIAMOND_OK, DIAMOND_HAVE_LOCAL, pth, output_msg = systemtest.test_diamond([])
+    print('DIAMOND_OK',  DIAMOND_OK)
+    print('DIAMOND_HAVE_LOCAL', DIAMOND_HAVE_LOCAL)
+    print('pth', pth)
+    if not DIAMOND_OK:
+        print('InParanoid-DIAMOND is needed for this version of metadraft')
+        print('DIAMOND_HAVE_LOCAL', DIAMOND_HAVE_LOCAL)
+        os.sys.exit(2)
 
     # import libpython.qtmetadraft
     from libpython.qtmetadraft import *
 
     __version__ = metadraft_version
+    
     run_metadraft()
