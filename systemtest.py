@@ -79,8 +79,8 @@ def test_perl_xml(output_msg):
     except (OSError):
         output_msg.append('MetaDraft requires Perl has the XML::Parser package installed, see README.md for details.')
 
-    if os.path.exists(os.path.join(cDir, '_test.pl')):
-        os.remove(os.path.join(cDir, '_test.pl'))
+    # if os.path.exists(os.path.join(cDir, '_test.pl')):
+        # os.remove(os.path.join(cDir, '_test.pl'))
 
     return PERL_XML_OK, output_msg
 
@@ -234,7 +234,7 @@ if __name__ == '__main__':
 
     print_test_results(JAVA_OK, PERL_OK, PERL_XML_OK, BLAST_OK, BLAST_HAVE_LOCAL, PYTHON_DEP_OK, DIAMOND_OK, DIAMOND_HAVE_LOCAL, \
                        pth, output_msg)
-    if JAVA_OK and PERL_OK and PERL_XML_OK and ( BLAST_OK or BLAST_HAVE_LOCAL ) and PYTHON_DEP_OK:
+    if JAVA_OK and PERL_OK and PERL_XML_OK and ( DIAMOND_OK or DIAMOND_HAVE_LOCAL ) and PYTHON_DEP_OK:
         print('\nCongratulations you are ready to run MetaDraft! (python metadraft.py)\n')
         os.sys.exit(0)
     else:
