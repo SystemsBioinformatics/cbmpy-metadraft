@@ -106,12 +106,8 @@ blast_results/
 work/
 tmp/
 modeldb/2019-1/
-testfiles/default/test_faa.in.fasta
+*.in.fasta
 
 diamond/diamond
+diamond/diamond.exe
 
-# run_local.bat
-wing-metadraft.wpu
-wing-metadraft.wpr
-metadradt-templates.wpu
-metadradt-templates.wpr
