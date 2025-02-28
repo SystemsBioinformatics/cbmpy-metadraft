@@ -3664,7 +3664,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         # WORKING HERE !!!!!!!!!!!!!!!!
         ###############################
         print('NEEDS TO BE REWRITEN BEFORE THIS WILL WORK !#@#$RRT$RT@@$TF')
-        os.sys.exit(3666)
+        #os.sys.exit(3666)
         
         
         wdir = par[0]
@@ -3677,14 +3677,25 @@ the template library submodule has been initialised (see readme.md) and correctl
             os.remove(end_flag)
 
         os.chdir(wdir)
-        # wperl???
+        
+        # set inparanoid options needs to be structurally implemented as user options
+        DIAMOND_EXEC =  os.path.join(cDir, 'diamond', 'diamond')
+
+        print('wdir', wdir)
+        print('DIAMOND_EXEC', DIAMOND_EXEC)
+
+        #inp_opts = '-matrix {} -diamond-path {}'.format('BLOSUM45', DIAMOND_EXEC)
+        inp_opts = '-matrix {}'.format('BLOSUM45')
+        
         if out is None:
-            os_call = ['perl', 'inparanoid.pl', target, dbase]
+            os_call = ['perl', 'inparanoid.pl', '-f1 ' + target, '-f2 ' + dbase, inp_opts]
         else:
-            os_call = ['perl', 'inparanoid.pl', target, dbase, out]
+            os_call = ['perl', 'inparanoid.pl', '-f1 ' + target, '-f2 ' + dbase, '-outgroup ' + out, inp_opts]
 
         if self.DEBUG_MODE:
             print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
+        
+        print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
 
         if True:
             TSTART = time.time()
@@ -3692,9 +3703,10 @@ the template library submodule has been initialised (see readme.md) and correctl
             try:
                 if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
                     subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
-                out = subprocess.check_call(
-                    os_call, stderr=subprocess.STDOUT, shell=True
-                )
+                print('os_call:', ' '.join(os_call))
+                out = subprocess.check_call(os_call, stderr=subprocess.STDOUT, shell=True)
+                #out = subprocess.call(os_call, stderr=subprocess.STDOUT, shell=True)
+                print('out:', out)
             except subprocess.CalledProcessError as err:
                 out = err.returncode
                 if err.returncode == 2:
@@ -3782,6 +3794,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             st = os.stat(os.path.join(work_dir, 'inparanoid.pl'))
             os.chmod(os.path.join(work_dir, 'inparanoid.pl'), st.st_mode | stat.S_IEXEC)
             os.chmod(os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC)
+            os.chmod(os.path.join(work_dir, 'diamondParser.pl'), st.st_mode | stat.S_IEXEC)
         except:
             print('Could not change mode')
 
