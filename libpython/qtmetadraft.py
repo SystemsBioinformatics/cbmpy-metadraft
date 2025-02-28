@@ -285,6 +285,25 @@ except ImportError as ex:
 
 
 class NumberTableWidgetItem(QTableWidgetItem):
+    """
+    A custom QTableWidgetItem for handling numerical sorting in a table widget.
+
+    This class overrides the less-than operator to facilitate numerical comparison between
+    table items. If the items represent numerical data, they are compared as floats.
+    Otherwise, the default comparison behavior of QTableWidgetItem is used.
+
+    Methods:
+        __lt__(self, other): Implements the less-than operator for number comparison.
+            Parameters:
+                other (QTableWidgetItem): The item to compare against.
+            Returns:
+                bool: True if this item's numerical value is less than the other item's,
+                      False otherwise.
+
+    Notes:
+        - If numerical conversion fails for either item, or if the other item is not a
+          QTableWidgetItem, it falls back to the default comparison behavior.
+    """    
     def __lt__(self, other):
         if isinstance(other, QTableWidgetItem):
             my_value = self.data(QtCore.Qt.EditRole)
@@ -307,6 +326,25 @@ class NumberTableWidgetItem(QTableWidgetItem):
 
 
 class NumberTableListLengthItem(QTableWidgetItem):
+    """
+    A custom QTableWidgetItem to compare items by the length of their comma-separated list representation.
+
+    This class overrides the less-than operator to allow sorting of table items based on the length 
+    of the list obtained by splitting the item's data on commas. This is useful for cases where you 
+    want to sort items by the number of elements in a list they represent.
+
+    Methods:
+        __lt__(self, other): Implements the less-than operator for comparing list lengths.
+            Parameters:
+                other (QTableWidgetItem): The item to compare against.
+            Returns:
+                bool: True if this item's list length is less than the other item's,
+                      False otherwise.
+
+    Notes:
+        - The default comparison behavior of QTableWidgetItem is used if the other item is not a
+          QTableWidgetItem.
+    """    
     def __lt__(self, other):
         if isinstance(other, QTableWidgetItem):
             my_value = len(self.data(QtCore.Qt.EditRole).split(','))
@@ -318,6 +356,19 @@ class NumberTableListLengthItem(QTableWidgetItem):
 
 
 class MyPopup(QWidget):
+    """
+    A simple popup widget for custom painting.
+
+    This class extends QWidget to create a popup window where custom 
+    drawing operations can be performed. It uses the QPainter class 
+    to draw two intersecting lines.
+
+    Methods:
+        __init__(self): Initializes the popup widget.
+        paintEvent(self, e): Handles custom paint events, drawing lines
+                             across the widget.
+    """
+
     def __init__(self):
         QWidget.__init__(self)
 
@@ -328,6 +379,20 @@ class MyPopup(QWidget):
 
 
 class FileTreeView(QTreeView):
+    """
+    A QTreeView widget for displaying files and directories.
+
+    This class provides a tree view for navigating the filesystem. It uses
+    QFileSystemModel to manage the data related to files and directories.
+
+    Methods:
+        __init__(self, parent=None, rootpath=None): Initializes the FileTreeView with optional
+                                                    parent and rootpath parameters.
+
+    Attributes:
+        model (QFileSystemModel): The data model for this FileTreeView.
+    """
+
     def __init__(self, parent=None, rootpath=None):
         QTreeView.__init__(self)
         model = QFileSystemModel()
@@ -358,7 +423,7 @@ class StreamToLogger(object):
 
 ## Developer mode options
 DEBUG_MODE = True
-DEL_BLAST_TMP = True
+DEL_BLAST_TMP = False
 
 
 class MetaDraftGUI(QWidget):
@@ -421,7 +486,9 @@ class MetaDraftGUI(QWidget):
     CREATE_TEMPLATE_ZIP = False
 
     NO_EXPORT_SEQ = True
-    SEQUENCE_MATCH = 'orthfind1'
+    # Define the orthology algorithm
+    #SEQUENCE_MATCH = 'orthfind1' # deprectated
+    SEQUENCE_MATCH = 'inparanoid'
 
     grid = None
     status_bar = None
@@ -3499,9 +3566,10 @@ the template library submodule has been initialised (see readme.md) and correctl
         linkd = self.link_file
         metap = self.metaproteome_file
         self.widgetBusyUpdate(20)
-        if self.SEQUENCE_MATCH == 'orthfind1':
-            # inp_exec = os.path.join(self.blast_tools, 'inparanoid41_base.zip')
+        if self.SEQUENCE_MATCH == 'orthfind1': # deprecated
             inp_exec = os.path.join(self.blast_tools, 'orthfind1.zip')
+        elif self.SEQUENCE_MATCH == 'inparanoid':
+            inp_exec = os.path.join(self.blast_tools, 'inparanoid5.zip')
         self.widgetBusyUpdate(30)
         outgroup = None
         if self.bp_text_out.isEnabled():
@@ -3589,6 +3657,68 @@ the template library submodule has been initialised (see readme.md) and correctl
             )
         )
 
+
+    def runOrthfind2(self, par):
+        
+        ###############################
+        # WORKING HERE !!!!!!!!!!!!!!!!
+        ###############################
+        print('NEEDS TO BE REWRITEN BEFORE THIS WILL WORK !#@#$RRT$RT@@$TF')
+        os.sys.exit(3666)
+        
+        
+        wdir = par[0]
+        target = par[1]
+        dbase = par[2]
+        out = par[3]
+        end_flag = os.path.join(wdir, '.done')
+        error_flag = os.path.join(wdir, '.fail')
+        if os.path.exists(end_flag):
+            os.remove(end_flag)
+
+        os.chdir(wdir)
+        # wperl???
+        if out is None:
+            os_call = ['perl', 'inparanoid.pl', target, dbase]
+        else:
+            os_call = ['perl', 'inparanoid.pl', target, dbase, out]
+
+        if self.DEBUG_MODE:
+            print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
+
+        if True:
+            TSTART = time.time()
+            # print(os_call)
+            try:
+                if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+                    subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
+                out = subprocess.check_call(
+                    os_call, stderr=subprocess.STDOUT, shell=True
+                )
+            except subprocess.CalledProcessError as err:
+                out = err.returncode
+                if err.returncode == 2:
+                    print(
+                        '\n\nPERL/BLAST ERROR: possible no homology between source and target proteomes!'
+                    )
+                F = open(error_flag, 'w')
+                F.close()
+            # out = self.blast_process.start(os_call)
+            TEND = time.time()
+
+        runtime = int(math.floor((TEND - TSTART) / 60.0))
+
+        F = open(end_flag, 'w')
+        F.close()
+
+        print(
+            '\n\nSequence search took {} minutes to complete with return code: {}'.format(
+                runtime, out
+            )
+        )
+
+
+
     def setupOrthfind1(self, ip_src, work_dir, target_fasta, metaproteome, outgroup):
         """
         This sets up an Orthfind1 session
@@ -3599,6 +3729,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         assert os.path.exists(work_dir), "\nWork directory [{}] does not exist".format(
             work_dir
         )
+        print('ip_src', ip_src)
         assert os.path.exists(ip_src), "\nCannot find inparanoid"
 
         assert os.path.exists(metaproteome), "Cannot find metaproteome [{}]".format(
@@ -3607,31 +3738,36 @@ the template library submodule has been initialised (see readme.md) and correctl
         assert os.path.exists(target_fasta), "Cannot find target fasta [{}]".format(
             target_fasta
         )
-        k = base64.standard_b64decode(self._ortfind1_)
-        # assert os.path.exists(link), "Cannot find link dictionary [{}]".format(link)
-
-        zfile = zipfile.ZipFile(ip_src, 'r')
-        # zfile.extractall(work_dir)
-        zfile.extractall(work_dir, None, k)
+        if self.SEQUENCE_MATCH == 'orthfind1':
+            k = base64.standard_b64decode(self._ortfind1_)
+            zfile = zipfile.ZipFile(ip_src, 'r')
+            zfile.extractall(work_dir, None, k)
+            inoid = os.path.join(work_dir, 'inparanoid.pl')
+            del k
+            # This overwrites inparanoid.pl to set options and I think is obsolete in inparanoid5/diamond
+            # LEAVE OUT FOR NOW BUT NOTE - bgoli 20250228
+            if os.sys.platform == 'win32':
+                bionoid.writeInparanoidBase(
+                    inoid, bionoid.HEAD, bionoid.USERWIN, bionoid.BODYWIN
+                )
+            else:
+                bionoid.writeInparanoidBase(
+                    inoid, bionoid.HEAD, bionoid.USERLINUX, bionoid.BODYLINUX
+                )
+            if outgroup is None:
+                bionoid.CONFIGKEYS['PY_use_outgroup'] = '0'
+            else:
+                bionoid.CONFIGKEYS['PY_use_outgroup'] = '1'
+    
+            bionoid.USERWIN, bionoid.USERLINUX = bionoid.buildUser(
+                bionoid.CONFIGKEYS, bionoid.WINKEYS, bionoid.LINUXKEYS
+            )
+        elif self.SEQUENCE_MATCH == 'inparanoid':
+            zfile = zipfile.ZipFile(ip_src, 'r')
+            zfile.extractall(work_dir)
+            inoid = os.path.join(work_dir, 'inparanoid.pl')
         zfile.close()
-        inoid = os.path.join(work_dir, 'inparanoid.pl')
-        if outgroup is None:
-            bionoid.CONFIGKEYS['PY_use_outgroup'] = '0'
-        else:
-            bionoid.CONFIGKEYS['PY_use_outgroup'] = '1'
-        del k
-        bionoid.USERWIN, bionoid.USERLINUX = bionoid.buildUser(
-            bionoid.CONFIGKEYS, bionoid.WINKEYS, bionoid.LINUXKEYS
-        )
-
-        if os.sys.platform == 'win32':
-            bionoid.writeInparanoidBase(
-                inoid, bionoid.HEAD, bionoid.USERWIN, bionoid.BODYWIN
-            )
-        else:
-            bionoid.writeInparanoidBase(
-                inoid, bionoid.HEAD, bionoid.USERLINUX, bionoid.BODYLINUX
-            )
+        
 
         para_in = 'IN'
         para_db = 'DB'
@@ -3642,13 +3778,10 @@ the template library submodule has been initialised (see readme.md) and correctl
         if outgroup is not None:
             para_out = 'TEST'
             shutil.copyfile(outgroup, os.path.join(work_dir, para_out))
-
         try:
             st = os.stat(os.path.join(work_dir, 'inparanoid.pl'))
             os.chmod(os.path.join(work_dir, 'inparanoid.pl'), st.st_mode | stat.S_IEXEC)
-            os.chmod(
-                os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC
-            )
+            os.chmod(os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC)
         except:
             print('Could not change mode')
 
@@ -3666,7 +3799,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             print('INFO: GenBank input detected creating FASTA file:')
             input_fasta = biotools.createBasicFASTAfromFile([input_fasta])
 
-        if self.SEQUENCE_MATCH == 'orthfind1':
+        if self.SEQUENCE_MATCH == 'orthfind1': # deprecated
             # set up the Orthfind1 directory and input/output files
             psetup = self.setupOrthfind1(inp_exec, wDir, input_fasta, metap, outgroup)
             jF = open(linkd, 'r')
@@ -3788,8 +3921,133 @@ the template library submodule has been initialised (see readme.md) and correctl
             os.remove(input_fasta)
             os.chdir(self.cDir)
             self.bp_text_targ.setText('')
+            
+        elif self.SEQUENCE_MATCH == 'inparanoid':
+            # set up the Orthfind1 directory and input/output files
+            psetup = self.setupOrthfind1(inp_exec, wDir, input_fasta, metap, outgroup)
+            jF = open(linkd, 'r')
+            linkDict = json.load(jF)
+            jF.close()
+
+            linkDict['__metaproteome__']['input_fasta'] = input_fasta
+            linkDict['__metaproteome__']['selection_state'] = {}
+
+            # run inparanoid
+            print('\npsetup')
+            pprint.pprint(psetup)
+            INP_START = time.time()
+            if run_inparanoid:
+                self.runOrthfind2(psetup)
+            INP_END = time.time()
+            if os.path.exists(os.path.join(psetup[0], '.fail')):
+                os.chdir(self.cDir)
+                return None, None
+
+            # parse Orthfind1 input/output
+            inPtab = open(os.path.join(wDir, 'table.IN-DB'), 'r')
+
+            input_seq_length = {}
+            input_fasta_ids = []
+            for seq_record in biotools.SeqIO.parse(input_fasta, "fasta"):
+                # print(seq_record)
+                input_seq_length[seq_record.id] = len(seq_record.seq)
+                input_fasta_ids.append(seq_record.id)
+
+            # setup results dictionary
+            resraw = {}
+            for l in inPtab:
+                if l.startswith('OrtoID'):
+                    pass
+                else:
+                    r = [a.strip() for a in l.split('\t')]
+                    r[2] = [a.strip() for a in r[2].split()][0]
+                    r[3] = [a.strip() for a in r[3].split()]
+                    GO = True
+                    pairs = []
+                    while GO:
+                        a = r[3].pop(0)
+                        b = float(r[3].pop(0))
+                        pairs.append((a, b))
+                        if len(r[3]) < 2:
+                            r[3] = pairs
+                            GO = False
+                    # print(r)
+
+                    resraw[r[2]] = {
+                        'id': int(r[0]),
+                        'bits': int(r[1]),
+                        'source': r[2],
+                        'match': r[3],
+                        #'length' : linkDict['__metaproteome__']['protein_lengths'][r[2]],
+                        'length': input_seq_length[r[2]],
+                        'total': linkDict['__metaproteome__']['total_length'],
+                    }
+            inPtab.close()
+
+            resmatch = {}
+            for r_ in resraw:
+                resmatch[r_] = {}
+                for m_ in resraw[r_]['match']:
+                    resmatch[r_][m_[0]] = m_[1]
+            for gid in input_fasta_ids:
+                if gid not in resmatch:
+                    resmatch[gid] = None
+                    print('INFO: match not found: {}'.format(gid))
+                    linkDict['__metaproteome__']['reports']['genes'][
+                        'unmatched'
+                    ].append(str(gid))
+
+            linkDict['__metaproteome__']['search_results'] = resmatch
+            if self.bp_btn_out.isEnabled():
+                linkDict['__metaproteome__']['benchmark'] = str(self.bp_text_out.text())
+            else:
+                linkDict['__metaproteome__']['benchmark'] = None
+
+            outfname1 = os.path.split(input_fasta)[-1]
+            Fj = open(
+                os.path.join(wDir, outfname1.replace('.fasta', '.search_results.json')),
+                'w',
+            )
+            json.dump(resmatch, Fj, indent=1, separators=(',', ': '))
+            Fj.close()
+
+            # Fj = open(linkd, 'w')
+            new_ldict = os.path.join(wDir, os.path.split(linkd)[-1])
+            Fj = open(new_ldict, 'w')
+            json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
+            Fj.close()
+
+            respath = self.result_files
+            respath = os.path.join(
+                respath, self.func_getCurrentUser(), time.strftime('%y-%m-%d')
+            )
+            if not os.path.exists(respath):
+                os.makedirs(respath)
+            outfname2 = os.path.split(linkd)[-1].replace('.json', '.resplus.json')
+            if linkDict['__metaproteome__']['optimization']:
+                outfname2 = outfname2.replace('_metalink', '-(opt)_metalink')
+            if linkDict['__metaproteome__']['benchmark'] is not None:
+                outfname2 = outfname2.replace('_metalink', '-(f)_metalink')
+            outfname2 = outfname2.replace('.in.fasta', '')
+            # print(outfname1, outfname2)
+            outfname1 = outfname1.replace('.in.fasta', '')
+            # update name to current result file name
+            linkDict['__metaproteome__']['file_name'] = os.path.join(
+                respath, '({})-{}'.format(outfname1, outfname2)
+            )
+            Fj = open(
+                os.path.join(respath, '({})-{}'.format(outfname1, outfname2)), 'w'
+            )
+            json.dump(linkDict, Fj, indent=1, separators=(',', ': '))
+            Fj.close()
+            # writeLogBLAST(os.path.join(self.cDir, 'blast.log'), int(math.floor((INP_END - INP_START)/60.0)),\
+            # input_fasta, linkd, metap)
+            print(input_fasta)
+            os.remove(input_fasta)
+            os.chdir(self.cDir)
+            self.bp_text_targ.setText('')            
         else:
-            print('ERROR: unknown sequence search algorithm')
+            print('\nERROR: unknown sequence search algorithm!', self.SEQUENCE_MATCH)
         return linkDict, resraw
 
     def buildHtmlStringMetaprot(self):

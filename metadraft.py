@@ -44,10 +44,11 @@ def run_metadraft():
     sys.exit: Exits the application normally after the QApplication event loop ends.
     """
     app = QApplication(sys.argv)
-    widget_splash = QSplashScreen(QPixmap("images/metatoolkit1-03.jpg"))
+    widget_splash = QSplashScreen(QPixmap("images/binaries.jpg"))
     widget_splash.show()
+    
     widget_splash.showMessage(
-        "Ver {}-({})\nAuthor: Brett G. Olivier\n(c) Systems Bioinformatics, VU University Amsterdam, Amsterdam, 2017-2025.\nSee Help - About for more details.".format(
+        "Ver {}-({})\nAuthor: Brett G. Olivier\n(c) A-LIFE, VU University Amsterdam, Amsterdam, 2017-2025.\nSee Help - About for more details.".format(
             metadraft_version, cbmpy.__version__
         ),
         alignment=QtCore.Qt.AlignmentFlag.AlignBottom,
