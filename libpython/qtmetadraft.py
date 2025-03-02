@@ -3659,18 +3659,13 @@ the template library submodule has been initialised (see readme.md) and correctl
 
 
     def runOrthfind2(self, par):
-        
-        ###############################
-        # WORKING HERE !!!!!!!!!!!!!!!!
-        ###############################
-        print('NEEDS TO BE REWRITEN BEFORE THIS WILL WORK !#@#$RRT$RT@@$TF')
-        #os.sys.exit(3666)
-        
+    
+        # WORKING DIAMOND INPARANOID IS OPERATIONAL, remember SUBPROCESS RUN/CALL shell issue! - bgoli 20250302
         
         wdir = par[0]
         target = par[1]
         dbase = par[2]
-        out = par[3]
+        outgroup = par[3]
         end_flag = os.path.join(wdir, '.done')
         error_flag = os.path.join(wdir, '.fail')
         if os.path.exists(end_flag):
@@ -3684,38 +3679,41 @@ the template library submodule has been initialised (see readme.md) and correctl
         print('wdir', wdir)
         print('DIAMOND_EXEC', DIAMOND_EXEC)
 
-        #inp_opts = '-matrix {} -diamond-path {}'.format('BLOSUM45', DIAMOND_EXEC)
-        inp_opts = '-matrix {}'.format('BLOSUM45')
+        inp_opts = ["-matrix", "BLOSUM45"]
         
-        if out is None:
-            os_call = ['perl', 'inparanoid.pl', '-f1 ' + target, '-f2 ' + dbase, inp_opts]
+        if outgroup is None:
+            os_call = ["perl", "inparanoid.pl", "-f1", target, "-f2", dbase] + inp_opts
         else:
-            os_call = ['perl', 'inparanoid.pl', '-f1 ' + target, '-f2 ' + dbase, '-outgroup ' + out, inp_opts]
+            os_call = ["perl", "inparanoid.pl", "-f1", target, "-f2", dbase, "-outgroup", outgroup] + inp_opts
 
         if self.DEBUG_MODE:
             print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
         
-        print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
-
         if True:
             TSTART = time.time()
             # print(os_call)
             try:
                 if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
                     subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
-                print('os_call:', ' '.join(os_call))
-                out = subprocess.check_call(os_call, stderr=subprocess.STDOUT, shell=True)
-                #out = subprocess.call(os_call, stderr=subprocess.STDOUT, shell=True)
-                print('out:', out)
+                # where the magic happens
+                out = subprocess.run(os_call, check=True, capture_output=True)
+                outcode = out.returncode
+                
+                if DEBUG_MODE:
+                    print('outcode:', outcode)
+                    print("stdout")
+                    pprint.pprint(out.stdout)
+                    print("stderr")
+                    pprint.pprint(out.stderr)
+                    
             except subprocess.CalledProcessError as err:
-                out = err.returncode
+                outcode = err.returncode
                 if err.returncode == 2:
                     print(
                         '\n\nPERL/BLAST ERROR: possible no homology between source and target proteomes!'
                     )
                 F = open(error_flag, 'w')
                 F.close()
-            # out = self.blast_process.start(os_call)
             TEND = time.time()
 
         runtime = int(math.floor((TEND - TSTART) / 60.0))
@@ -3725,15 +3723,59 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         print(
             '\n\nSequence search took {} minutes to complete with return code: {}'.format(
-                runtime, out
+                runtime, outcode
             )
         )
 
 
 
+    def setupOrthfind2(self, ip_src, work_dir, target_fasta, metaproteome, outgroup):
+        """
+        This sets up an Orthfind2 session using inParanoid 5 and Diamond
+
+        """
+        if not os.path.exists(work_dir):
+            os.makedirs(work_dir)
+        assert os.path.exists(work_dir), "\nWork directory [{}] does not exist".format(
+            work_dir
+        )
+        print('ip_src', ip_src)
+        assert os.path.exists(ip_src), "\nCannot find inparanoid"
+
+        assert os.path.exists(metaproteome), "Cannot find metaproteome [{}]".format(
+            metaproteome
+        )
+        assert os.path.exists(target_fasta), "Cannot find target fasta [{}]".format(
+            target_fasta
+        )
+
+        zfile = zipfile.ZipFile(ip_src, 'r')
+        zfile.extractall(work_dir)
+        zfile.close()
+
+        para_in = 'IN'
+        para_db = 'DB'
+        para_out = None
+
+        shutil.copyfile(target_fasta, os.path.join(work_dir, para_in))
+        shutil.copyfile(metaproteome, os.path.join(work_dir, para_db))
+        if outgroup is not None:
+            para_out = 'TEST'
+            shutil.copyfile(outgroup, os.path.join(work_dir, para_out))
+        try:
+            st = os.stat(os.path.join(work_dir, 'inparanoid.pl'))
+            os.chmod(os.path.join(work_dir, 'inparanoid.pl'), st.st_mode | stat.S_IEXEC)
+            os.chmod(os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC)
+            os.chmod(os.path.join(work_dir, 'diamondParser.pl'), st.st_mode | stat.S_IEXEC)
+        except:
+            print('Could not change mode')
+
+        return (work_dir, para_in, para_db, para_out)
+
+
     def setupOrthfind1(self, ip_src, work_dir, target_fasta, metaproteome, outgroup):
         """
-        This sets up an Orthfind1 session
+        This sets up an Orthfind1 session using inparanoid 4 and legacy blast
 
         """
         if not os.path.exists(work_dir):
@@ -3774,10 +3816,6 @@ the template library submodule has been initialised (see readme.md) and correctl
             bionoid.USERWIN, bionoid.USERLINUX = bionoid.buildUser(
                 bionoid.CONFIGKEYS, bionoid.WINKEYS, bionoid.LINUXKEYS
             )
-        elif self.SEQUENCE_MATCH == 'inparanoid':
-            zfile = zipfile.ZipFile(ip_src, 'r')
-            zfile.extractall(work_dir)
-            inoid = os.path.join(work_dir, 'inparanoid.pl')
         zfile.close()
         
 
@@ -3794,11 +3832,11 @@ the template library submodule has been initialised (see readme.md) and correctl
             st = os.stat(os.path.join(work_dir, 'inparanoid.pl'))
             os.chmod(os.path.join(work_dir, 'inparanoid.pl'), st.st_mode | stat.S_IEXEC)
             os.chmod(os.path.join(work_dir, 'blast_parser.pl'), st.st_mode | stat.S_IEXEC)
-            os.chmod(os.path.join(work_dir, 'diamondParser.pl'), st.st_mode | stat.S_IEXEC)
         except:
             print('Could not change mode')
 
         return (work_dir, para_in, para_db, para_out)
+
 
     def runSequenceSearch(
         self, input_fasta, linkd, metap, wDir, inp_exec, outgroup, run_inparanoid
@@ -3937,7 +3975,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             
         elif self.SEQUENCE_MATCH == 'inparanoid':
             # set up the Orthfind1 directory and input/output files
-            psetup = self.setupOrthfind1(inp_exec, wDir, input_fasta, metap, outgroup)
+            psetup = self.setupOrthfind2(inp_exec, wDir, input_fasta, metap, outgroup)
             jF = open(linkd, 'r')
             linkDict = json.load(jF)
             jF.close()

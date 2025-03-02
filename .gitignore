@@ -108,6 +108,7 @@ tmp/
 modeldb/2019-1/
 modeldb/2018-1/
 *.in.fasta
+*.pseudo.txt
 
 diamond/diamond
 diamond/diamond.exe

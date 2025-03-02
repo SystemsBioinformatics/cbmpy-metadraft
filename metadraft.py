@@ -53,7 +53,7 @@ def run_metadraft():
         ),
         alignment=QtCore.Qt.AlignmentFlag.AlignBottom,
     )
-    time.sleep(2)
+    time.sleep(0.5)
     ex = MetaDraftApp()
     widget_splash.finish(ex)
     sys.exit(app.exec())
