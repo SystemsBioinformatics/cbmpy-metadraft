@@ -66,7 +66,7 @@ try:
 except ImportError:
     HAVE_DOCX = False
 
-metadraft_version = '0.9.8'
+metadraft_version = '0.9.9'
 
 HAVE_QT4 = False
 HAVE_QT5 = False
@@ -428,40 +428,177 @@ DEL_BLAST_TMP = False
 
 class MetaDraftGUI(QWidget):
     """
-    A comprehensive graphical user interface for MetaDraft application, designed for managing and analyzing biological data.
+    The MetaDraftGUI class is responsible for the graphical user interface of the MetaDraft application.
 
-    It provides capabilities to interact with databases, perform analysis using search and matching mechanisms, configure system- and user-specific settings, maintain notes, manage sessions, and export data in various formats. Additionally, it handles logging for diagnostics and integrates system versions and configuration management for templates and analysis.
+    This class handles the initialization and management of the GUI components, including menus, tabs, and panels. 
+    It also manages the interaction with the underlying data structures and performs tasks such as loading configuration 
+    files, setting up directories, managing session states, and handling user interactions. 
 
     Attributes:
-        appwindow (QWidget): Main application window holding the GUI.
-        stderr_logger (StreamToLogger): Logger for capturing standard error.
-        stdout_logger (StreamToLogger): Logger for capturing standard output.
-        log_files (str): Directory path for log files.
-        log_syslog (str): Path for system log files.
-        cDir (str): Directory path related to operations like saving/loading internal states.
-        _tmpDir_ (str): Temporary directory path.
-        __SYSLOG_ENABLED__ (bool): Status flag enabling or disabling system logging.
-        DEBUG_MODE (bool): Flag to toggle debug mode which provides extra information for problem solving.
-        DEL_BLAST_TMP (bool): Flag to decide whether to delete temporary BLAST files after processing.
-        _next_id_ (int): Integer to keep track of the next identifier to be used.
-        CREATE_TEMPLATE_V2 (bool): Boolean to select whether to create templates in version 2 format.
-        CREATE_TEMPLATE_ZIP (bool): Boolean to select whether to create ZIP archives of templates.
-        NO_EXPORT_SEQ (bool): Boolean that prevents the exporting of sequences, when set to True.
-        SEQUENCE_MATCH (str): String to identify the method used for sequence matching.
+        appwindow: The main application window.
+        stderr_logger: Logger for capturing standard error stream.
+        stdout_logger: Logger for capturing standard output stream.
+        log_files: Path to the log files directory.
+        log_syslog: Path to the current syslog file.
+        cDir: Current directory path.
+        _tmpDir_: Path to the temporary directory.
+        __SYSLOG_ENABLED__: Boolean indicating if syslog is enabled.
+        DEBUG_MODE: Boolean indicating if the application is in debug mode.
+        DEL_BLAST_TMP: Boolean indicating if temporary blast data is deleted after use.
+        _next_id_: Integer for keeping track of the next available ID.
+        _DAT_MODELS: Data structure for storing models.
+        _DAT_SEARCH_RES: Data structure for storing search results.
+        _DAT_G2REACT: Data structure for gene-to-reaction mappings.
+        _DAT_LINK_DICT_: Data structure for storing linkage dictionaries.
+        _CONFIG_: Data structure for storing configuration settings.
+        _SRC_TRG_MAP_: Source to target map for genes.
+        _DAT_NOTESDB_KEY_: Database key for notes.
+        CREATE_TEMPLATE_V2: Boolean for determining whether to create SBML version 2 templates.
+        CREATE_TEMPLATE_ZIP: Boolean for determining whether to compress template output.
+        NO_EXPORT_SEQ: Boolean for determining whether to export sequences.
 
     Methods:
-        __init__(self, appwindow): Constructor for MetaDraftGUI class.
-        _readConfig(self): Reads configuration from a file.
-        initSysLog(self): Initializes the logging system.
-        initDBs(self): Initializes the necessary databases.
-        getMetaProteomeData(self, fname): Fetches metaproteome data from a file.
-        createMenus(self): Constructs the menu for the application window.
-        widget_displayReport(self, html): Displays a provided HTML report in the GUI.
-        menu_enableBenchmark(self): Toggles benchmarking mode.
-        menu_configMenuItem(self): Shows the configuration panel.
-
-    This class is intended to be utilized as part of the MetaDraft application suite, providing a robust interface for handling biological model data.
-
+        __init__: Initializes the MetaDraftGUI.
+        _readConfig: Reads the configuration file.
+        _writeConfig: Writes the current configuration data to a file.
+        initSysLog: Initializes system logging.
+        initDBs: Initializes database connections for genes and notes.
+        getMetaProteomeData: Retrieves metaproteome data from a file.
+        copyFunc: Placeholder for copy functionality.
+        pasteFunc: Placeholder for paste functionality.
+        createMenus: Creates the application menus and menu actions.
+        menu_savedSessionMenu: Manages the saved session menu.
+        menu_loadSession: Loads a saved session by state.
+        menu_clearSessions: Clears all saved sessions.
+        menu_saveSession: Saves the current session state.
+        menu_buildAll: Updates gene, reaction, and metabolite maps.
+        menu_helpAbout: Displays the About MetaDraft dialog.
+        menu_modelTools: Handles actions related to model tools.
+        func_exportNotesDB: Exports notes database to CSV.
+        func_exportUnmatchedGenes: Exports unmatched genes to a FASTA file.
+        func_exportUnselectedGenes: Exports unselected genes to a FASTA file.
+        func_generateSummaryReport: Generates a summary report.
+        func_generateGeneReport: Generates a gene report.
+        func_generateReactionReport: Generates a reaction report.
+        func_generateMetaboliteReport: Generates a metabolite report.
+        func_formatSummaryReport: Formats the summary report as HTML.
+        func_formatGeneReport: Formats the gene report as HTML.
+        func_formatReactionReport: Formats the reaction report as HTML.
+        func_formatMetaboliteReport: Formats the metabolite report as HTML.
+        widget_displayReport: Displays a formatted HTML report.
+        menu_enableBenchmark: Toggles benchmark sequence usage.
+        menu_configMenuItem: Opens the BLAST configuration menu.
+        menu_userMetaDefApp: Handles user-defined metaproteome actions.
+        menu_userMetaDefApp_add: Adds a new user-defined metaproteome.
+        func_getNewPopupWindowCoords: Gets coordinates for positioning new popup windows.
+        menu_userMetaDefApp_del: Deletes a user-defined metaproteome.
+        bp_lviewRightClicked: Handles right-click actions on the library view.
+        menu_userMetaDefApp_export: Exports a user-defined metaproteome.
+        menu_viewSyslogApp: Opens the syslog viewer.
+        menu_addSeqPlusModel: Opens the interface for creating a new SeQPlus template model.
+        bp_createSeqPlusLoadFileSBML: Loads an XML/SBML file for SeQPlus model creation.
+        bp_createSeqPlusLoadFilesGB: Loads one or more GenBank files for SeQPlus model creation.
+        bp_createSeqPlusProcess: Processes the creation of a SeQPlus template model.
+        menu_resetGUI: Resets the GUI to its initial state.
+        func_getGroupMembership: Returns group membership of items in groups.
+        buildSBMLModel: Constructs an SBML model based on user-selected data.
+        menu_exportSBML0: Exports a COBRA SBML model.
+        menu_exportSBML1: Exports an SBML Level 3 FBCv1 model.
+        menu_exportSBML2: Exports an SBML Level 3 FBCv2 model.
+        menu_exportCOMBINE: Exports a COMBINE archive.
+        menu_exportSBML: General method for exporting configured SBML.
+        menu_exportExcel: Exports model data to an Excel file.
+        menu_exportTableToCSV: Exports table data to a CSV file.
+        menu_convertSBML: Allows identification and conversion of SBML files.
+        func_tableSaveCSV: Saves a table as a CSV file.
+        func_findNonGprReactionsForModel: Identifies and returns non-GPR associated reactions in a model.
+        widgetBusy: Shows a busy/loading dialog.
+        widgetBusyUpdate: Updates the progress value of the busy dialog.
+        saveFile: Opens a file dialog for saving files.
+        openFile: Opens a file dialog for selecting a single file.
+        openFiles: Opens a file dialog for selecting multiple files.
+        widgetDisplayReact: Sets up the reaction display panel.
+        widgetDisplayReact_dev: Sets up the development version reaction display.
+        widgetDisplayReact_update: Updates the text/html content of the reaction display panel.
+        widgetTableReaction: Sets up the reaction table widget.
+        widgetTableReaction_populate: Populates the reaction table with available data.
+        widgetTableReaction_tableRightClicked: Handles right-click actions for the reaction table.
+        menu_react_editAnnotation: Opens the annotation editor for a reaction.
+        widgetBuildPanel: Sets up the build panel interface.
+        bp_targetOpen: Opens a file dialog for selecting a target sequence file.
+        bp_targetOpen2: Opens a file dialog for selecting a benchmark sequence file.
+        bp_loadResult: Loads a result from a file/tree selection.
+        bp_runBLAST: Initiates the BLAST sequence search operation.
+        bp_buildMetaproteome: Constructs a metaproteome based on user-selected data.
+        runBLASTFUNC: Core function to perform BLAST sequence search.
+        widgetMsgBox: Displays a message box with specified options.
+        runOrthfind1: Executes the Orthfind1 sequence search using legacy options.
+        runOrthfind2: Executes the Orthfind2 sequence search using current options.
+        setupOrthfind2: Sets up a directory and configurations for Orthfind2.
+        setupOrthfind1: Sets up a directory and configurations for Orthfind1.
+        runSequenceSearch: General manager for sequence search operations based on current configurations.
+        buildHtmlStringMetaprot: Constructs an HTML string representation of current metaproteome data.
+        buildMetaProteomeFromSeqplus: Constructs a metaproteome using SeQPlus data and user options.
+        buildLinkedDictFromSeqplus: Constructs a data dictionary linking organism IDs to seqplus data.
+        widgetTableGene: Sets up the gene table widget.
+        widgetTableGene_tableRightClicked: Handles right-click actions for the gene table.
+        widgetTableGene_populate: Populates the gene table with available data.
+        widgetTableMetab: Sets up the metabolite table widget.
+        getMetabFromReactions: Retrieves metabolites associated with selected reactions.
+        widgetTableMetab_populate: Populates the metabolite table with data.
+        widgetTableMetab_cellClicked: Handles click events on metabolite cells.
+        widgetTableMetab_getMap: Returns a map of metabolite table states.
+        widgetTableGene_getMap: Returns a map of gene table states.
+        widgetTableGene_getSelectedIds: Returns a list of selected gene IDs.
+        widgetTableReaction_getSelectedIds: Returns a list of selected reaction IDs.
+        widgetTableReaction_getMap: Returns a map of reaction table states.
+        widgetTableGene_cellSelectionChanged: Handles gene cell selection changes.
+        widgetTableGene_cellClicked: Handles click events in the gene table.
+        widgetTableGene_cellChecked: Handles check events in the gene table.
+        widgetTableReaction_cellSelectionChanged: Handles reaction cell selection changes.
+        widgetTableReaction_cellClicked: Handles click events in the reaction table.
+        widgetTableReaction_cellChecked: Handles check events in the reaction table.
+        getGeneAnnotationFromGeneDB: Retrieves gene annotation data from the gene database.
+        insertNotesToNotesDB: Inserts or updates notes in the notes database.
+        readNotesFromNotesDB: Reads notes from the notes database.
+        note_readFromNotesWidget: Reads and stores notes from the notes widget.
+        note_writeToNotesWidget: Writes notes to the notes widget from the database.
+        getCellX: Retrieves a specific cell value from a database table.
+        getDBXrefFromGeneDB: Retrieves cross-reference annotations from the gene database.
+        func_formatGeneAnnotationToHTML: Formats and converts gene annotation to HTML.
+        buildHtmlStringsGene: Constructs an HTML representation of a gene and its annotations.
+        buildHtmlStringsReaction_getGeneInfo: Returns the gene info as HTML.
+        buildHtmlStringsReaction: Constructs an HTML representation of a reaction and associated data.
+        buildHtmlStringsMetab: Constructs an HTML representation of a metabolite.
+        widgetResultTree: Sets up the result tree view.
+        widgetTreeRightClickMenu: Handles right-click actions on the result tree.
+        widgetResultTreeRightClickRename: Rename action for result tree items.
+        widgetResultTreeRightClickDelete: Delete action for result tree items.
+        widgetResultTree_item: Adds items to the result tree.
+        bp_rtreeOnSelect: Handles selection changes in the result tree.
+        getRtreeItemPath: Constructs a filepath from a result tree item.
+        func_getTreePathOfItem: Returns the path of a tree item as a list.
+        func_getCurrentUser: Returns the currently configured user.
+        widgetResultTree_fill: Populates the result tree with available data.
+        getDirectoryStructure: Builds and returns a directory structure dictionary.
+        widgetTabPanel: Initializes the left tab panel widget.
+        widgetTabPanel_createtab: Creates a new tab in the left tab panel.
+        widgetTabPanel_add: Adds a widget as a tab in the left tab panel.
+        widgetTabPanelRight: Initializes the right tab panel widget.
+        widgetTabPanelRight_createtab: Creates a new tab in the right tab panel.
+        widgetTabPanelRight_add: Adds a widget as a tab in the right tab panel.
+        _update_Reactions_: Updates the reactions table.
+        _update_Metabolites_: Updates the metabolites table.
+        _updateReactionMap_: Updates the reaction selection map.
+        _updateMetaboliteMap_: Updates the metabolite selection map.
+        _updateGeneMap_: Updates the gene selection map.
+        onTabChange: Handles changes to the active tab.
+        func_saveSelectionState: Saves the current selection state.
+        func_saveResultsFile: Saves the current data to the results file.
+        func_loadSelectionState: Loads a previously saved selection state.
+        func_setSelectionState: Applies a previously saved selection state.
+        onTabRightChange: Handles changes to the active tab in the right pane.
+        widgetPanel: Sets up the main widget panel.
     """
 
     appwindow = None
@@ -1157,20 +1294,21 @@ the template library submodule has been initialised (see readme.md) and correctl
         title = "About MetaDraft."
         msg = "This is MetaDraft version: {} ".format(metadraft_version)
         msg += "available from\n https://systemsbioinformatics.github.io/cbmpy-metadraft/.\n\n"
-        msg += "MetaDraft makes use of CBMPy ({}) technology and is part of the".format(
+        msg += "MetaDraft is part of the CBMPy (current version {}) family.".format(
             cbmpy.__version__
         )
-        msg += "MetaToolkit project. "
         msg += "MetaDraft is distributed as Open Source Software, please see the included license.txt for details.\n\n"
         msg += "For support please use the GitHub issue tracker or contact the developers.\n\n"
         msg += "MetaDraft is distributed with template models, some of which are derived from the UCSD BiGG2 model repository.\n\n"
-        if HAVE_QT4:
-            qtv = 'Qt4'
-        else:
+        if HAVE_QT5:
             qtv = 'Qt5'
+        elif HAVE_QT6:
+            qtv = 'Qt6'
+        else:
+            qtv = '<unknown>'
         msg += "You are using Py{} provided by:\n{}.\n\n".format(qtv, os.sys.version)
         msg += (
-            "(c) Brett G. Olivier, Vrije Universiteit Amsterdam, Amsterdam, 2016-2024."
+            "(c) Brett G. Olivier, A-LIFE, Vrije Universiteit Amsterdam, Amsterdam, 2016-2025."
         )
 
         self.widgetMsgBox(QMessageBox.Icon.Information, title, msg)
@@ -3679,7 +3817,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         print('wdir', wdir)
         print('DIAMOND_EXEC', DIAMOND_EXEC)
 
-        inp_opts = ["-matrix", "BLOSUM45"]
+        inp_opts = ["-matrix", "BLOSUM45", "-out-table", "True", "-out-html", "True"]
         
         if outgroup is None:
             os_call = ["perl", "inparanoid.pl", "-f1", target, "-f2", dbase] + inp_opts
@@ -3995,7 +4133,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 return None, None
 
             # parse Orthfind1 input/output
-            inPtab = open(os.path.join(wDir, 'table.IN-DB'), 'r')
+            inPtab = open(os.path.join(wDir, 'output', 'table.IN-DB'), 'r')
 
             input_seq_length = {}
             input_fasta_ids = []
