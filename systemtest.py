@@ -78,11 +78,65 @@ def test_perl_xml(output_msg):
         PERL_XML_OK = True
     except (OSError):
         output_msg.append('MetaDraft requires Perl has the XML::Parser package installed, see README.md for details.')
+        output_msg.append('On windows MetaDraft requires Perl has the Parallel::ForkManager package installed, see README.md for details.')
 
     # if os.path.exists(os.path.join(cDir, '_test.pl')):
         # os.remove(os.path.join(cDir, '_test.pl'))
 
     return PERL_XML_OK, output_msg
+
+def test_perl_fork(output_msg):
+    PERL_FORK_OK = False
+    p_script = """\
+    my $rc = 0;
+    $rc = eval
+    {
+      require Parallel::ForkManager;
+      1;
+    };
+    if ($rc){
+        print "happy";
+        exit 0
+        } else {
+        print "sad";
+        exit 1
+        }
+    """
+    try:
+        PF = open('_test2.pl', 'w')
+        PF.write(p_script)
+        PF.close()
+        out = int(subprocess.call(['perl', '_test2.pl']))
+        print(out)
+        if out:
+            raise OSError
+        PERL_FORK_OK = True
+    except (OSError):
+        output_msg.append('On windows MetaDraft requires Perl has the Parallel::ForkManager package installed, see README.md for details.')
+
+    # if os.path.exists(os.path.join(cDir, '_test.pl')):
+        # os.remove(os.path.join(cDir, '_test.pl'))
+
+    return PERL_FORK_OK, output_msg
+
+# PERL TOUCH REPLACEMENTS
+"""
+sub create_empty_file {
+eval {
+open my $fh, '>', $_[0]
+or die "Cannot create $_[0]: $!\n";
+close $fh or die "Cannot close $_[0]: $!\n";
+};
+return $@;
+}
+
+{
+my $inane;
+open $inane, '>', $empty and close $inane
+or die "Failed to create $empty: $!\n";
+}
+"""
+
 
 def test_blast(output_msg):
     BLAST_OK = BLAST_HAVE_LOCAL = False

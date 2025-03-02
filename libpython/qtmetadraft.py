@@ -303,7 +303,7 @@ class NumberTableWidgetItem(QTableWidgetItem):
     Notes:
         - If numerical conversion fails for either item, or if the other item is not a
           QTableWidgetItem, it falls back to the default comparison behavior.
-    """    
+    """
     def __lt__(self, other):
         if isinstance(other, QTableWidgetItem):
             my_value = self.data(QtCore.Qt.EditRole)
@@ -329,8 +329,8 @@ class NumberTableListLengthItem(QTableWidgetItem):
     """
     A custom QTableWidgetItem to compare items by the length of their comma-separated list representation.
 
-    This class overrides the less-than operator to allow sorting of table items based on the length 
-    of the list obtained by splitting the item's data on commas. This is useful for cases where you 
+    This class overrides the less-than operator to allow sorting of table items based on the length
+    of the list obtained by splitting the item's data on commas. This is useful for cases where you
     want to sort items by the number of elements in a list they represent.
 
     Methods:
@@ -344,7 +344,7 @@ class NumberTableListLengthItem(QTableWidgetItem):
     Notes:
         - The default comparison behavior of QTableWidgetItem is used if the other item is not a
           QTableWidgetItem.
-    """    
+    """
     def __lt__(self, other):
         if isinstance(other, QTableWidgetItem):
             my_value = len(self.data(QtCore.Qt.EditRole).split(','))
@@ -359,8 +359,8 @@ class MyPopup(QWidget):
     """
     A simple popup widget for custom painting.
 
-    This class extends QWidget to create a popup window where custom 
-    drawing operations can be performed. It uses the QPainter class 
+    This class extends QWidget to create a popup window where custom
+    drawing operations can be performed. It uses the QPainter class
     to draw two intersecting lines.
 
     Methods:
@@ -430,9 +430,9 @@ class MetaDraftGUI(QWidget):
     """
     The MetaDraftGUI class is responsible for the graphical user interface of the MetaDraft application.
 
-    This class handles the initialization and management of the GUI components, including menus, tabs, and panels. 
-    It also manages the interaction with the underlying data structures and performs tasks such as loading configuration 
-    files, setting up directories, managing session states, and handling user interactions. 
+    This class handles the initialization and management of the GUI components, including menus, tabs, and panels.
+    It also manages the interaction with the underlying data structures and performs tasks such as loading configuration
+    files, setting up directories, managing session states, and handling user interactions.
 
     Attributes:
         appwindow: The main application window.
@@ -624,7 +624,7 @@ class MetaDraftGUI(QWidget):
 
     NO_EXPORT_SEQ = True
     # Define the orthology algorithm
-    #SEQUENCE_MATCH = 'orthfind1' # deprectated
+    #SEQUENCE_MATCH = 'orthfind1' # deprecated
     SEQUENCE_MATCH = 'inparanoid'
 
     grid = None
@@ -3797,9 +3797,9 @@ the template library submodule has been initialised (see readme.md) and correctl
 
 
     def runOrthfind2(self, par):
-    
+
         # WORKING DIAMOND INPARANOID IS OPERATIONAL, remember SUBPROCESS RUN/CALL shell issue! - bgoli 20250302
-        
+
         wdir = par[0]
         target = par[1]
         dbase = par[2]
@@ -3810,15 +3810,25 @@ the template library submodule has been initialised (see readme.md) and correctl
             os.remove(end_flag)
 
         os.chdir(wdir)
-        
-        # set inparanoid options needs to be structurally implemented as user options
-        DIAMOND_EXEC =  os.path.join(cDir, 'diamond', 'diamond')
+
+        OS_WIN = False
+        if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+            OS_WIN = True
+
+        # set inparanoid options, using os swithch but needs to be implemented as user definable option
+        if OS_WIN:
+            DIAMOND_EXEC =  os.path.join(cDir, 'diamond', 'diamond.exe')
+        else:
+            DIAMOND_EXEC =  os.path.join(cDir, 'diamond', 'diamond')
 
         print('wdir', wdir)
         print('DIAMOND_EXEC', DIAMOND_EXEC)
 
-        inp_opts = ["-matrix", "BLOSUM45", "-out-table", "True", "-out-html", "True"]
-        
+        if OS_WIN:
+            inp_opts = ["-matrix", "BLOSUM45", "-out-table", "True", "-out-html", "True", "-diamond-path", DIAMOND_EXEC]
+        else:
+            inp_opts = ["-matrix", "BLOSUM45", "-out-table", "True", "-out-html", "True"]
+
         if outgroup is None:
             os_call = ["perl", "inparanoid.pl", "-f1", target, "-f2", dbase] + inp_opts
         else:
@@ -3826,24 +3836,24 @@ the template library submodule has been initialised (see readme.md) and correctl
 
         if self.DEBUG_MODE:
             print('\nWork directory: {}\nOS call: {}'.format(wdir, ' '.join(os_call)))
-        
+
         if True:
             TSTART = time.time()
             # print(os_call)
             try:
-                if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+                if OS_WIN:
                     subprocess.STARTF_USESHOWWINDOW = subprocess.SW_HIDE
                 # where the magic happens
                 out = subprocess.run(os_call, check=True, capture_output=True)
                 outcode = out.returncode
-                
+
                 if DEBUG_MODE:
                     print('outcode:', outcode)
                     print("stdout")
                     pprint.pprint(out.stdout)
                     print("stderr")
                     pprint.pprint(out.stderr)
-                    
+
             except subprocess.CalledProcessError as err:
                 outcode = err.returncode
                 if err.returncode == 2:
@@ -3864,7 +3874,6 @@ the template library submodule has been initialised (see readme.md) and correctl
                 runtime, outcode
             )
         )
-
 
 
     def setupOrthfind2(self, ip_src, work_dir, target_fasta, metaproteome, outgroup):
@@ -3950,12 +3959,12 @@ the template library submodule has been initialised (see readme.md) and correctl
                 bionoid.CONFIGKEYS['PY_use_outgroup'] = '0'
             else:
                 bionoid.CONFIGKEYS['PY_use_outgroup'] = '1'
-    
+
             bionoid.USERWIN, bionoid.USERLINUX = bionoid.buildUser(
                 bionoid.CONFIGKEYS, bionoid.WINKEYS, bionoid.LINUXKEYS
             )
         zfile.close()
-        
+
 
         para_in = 'IN'
         para_db = 'DB'
@@ -4110,7 +4119,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             os.remove(input_fasta)
             os.chdir(self.cDir)
             self.bp_text_targ.setText('')
-            
+
         elif self.SEQUENCE_MATCH == 'inparanoid':
             # set up the Orthfind1 directory and input/output files
             psetup = self.setupOrthfind2(inp_exec, wDir, input_fasta, metap, outgroup)
@@ -4234,7 +4243,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             print(input_fasta)
             os.remove(input_fasta)
             os.chdir(self.cDir)
-            self.bp_text_targ.setText('')            
+            self.bp_text_targ.setText('')
         else:
             print('\nERROR: unknown sequence search algorithm!', self.SEQUENCE_MATCH)
         return linkDict, resraw
