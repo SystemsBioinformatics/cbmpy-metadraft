@@ -119,6 +119,15 @@ def test_perl_fork(output_msg):
 
     return PERL_FORK_OK, output_msg
 
+# PERL PACKAGES
+"""
+On windows MetaDraft requires Perl has the Parallel::ForkManager package installed
+```bash
+cpan install Parallel::ForkManager
+```
+"""
+
+
 # PERL TOUCH REPLACEMENTS
 """
 sub create_empty_file {
