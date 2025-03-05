@@ -2211,10 +2211,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                     self,
                     'Message',
                     "Are you sure you want to delete:\n{}?".format(item[0]),
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No,
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No,
                 )
-                if reply == QMessageBox.Yes:
+                if reply == QMessageBox.StandardButton.Yes:
                     os.remove(path)
                     os.remove(path.replace('.xml', '.json'))
                     print(
@@ -5531,15 +5531,15 @@ the template library submodule has been initialised (see readme.md) and correctl
         indexes = self.tree_results.selectedIndexes()
         treeidx = self.tree_results.indexAt(position)
         if len(indexes) == 1:
-            print(indexes[0].parent().data(QtCore.Qt.DisplayRole))
-            if indexes[0].parent().data(QtCore.Qt.DisplayRole) is None:
+            print(indexes[0].parent().data(QtCore.Qt.ItemDataRole.DisplayRole))
+            if indexes[0].parent().data(QtCore.Qt.ItemDataRole.DisplayRole) is None:
                 self._widget_result_tree_rightclick_data_ = str(
-                    indexes[0].data(QtCore.Qt.DisplayRole)
+                    indexes[0].data(QtCore.Qt.ItemDataRole.DisplayRole)
                 )
             else:
                 self._widget_result_tree_rightclick_data_ = os.path.join(
-                    str(indexes[0].parent().data(QtCore.Qt.DisplayRole)),
-                    str(indexes[0].data(QtCore.Qt.DisplayRole)),
+                    str(indexes[0].parent().data(QtCore.Qt.ItemDataRole.DisplayRole)),
+                    str(indexes[0].data(QtCore.Qt.ItemDataRole.DisplayRole)),
                 )
         if len(indexes) > 0:
             level = 0
@@ -5557,7 +5557,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         elif level == 1:
             menu_item1 = menu.addAction(self.tr("Delete"))
             menu_item1.triggered.connect(self.widgetResultTreeRightClickDelete)
-        menu.exec_(self.tree_results.viewport().mapToGlobal(position))
+        menu.exec(self.tree_results.viewport().mapToGlobal(position))
 
     @pyqtSlot()
     def widgetResultTreeRightClickRename(self):
@@ -5604,10 +5604,10 @@ the template library submodule has been initialised (see readme.md) and correctl
                 "Are you sure you want to delete:\n{}?".format(
                     self._widget_result_tree_rightclick_data_
                 ),
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
             )
-            if reply == QMessageBox.Yes:
+            if reply == QMessageBox.StandardButton.Yes:
                 if not DELTREE:
                     os.remove(path)
                 else:
