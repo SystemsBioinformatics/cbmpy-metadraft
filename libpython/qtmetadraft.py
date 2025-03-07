@@ -32,6 +32,11 @@ import base64, datetime, re, logging, webbrowser, copy
 import zipfile, json, shutil, subprocess, math, time
 import threading, pprint, stat, csv
 
+# configs
+from . import InpDiaOpts
+#pprint.pprint(InpDiaOpts.INPARANOID_SYSTEM_DEFAULTS)
+#pprint.pprint(InpDiaOpts.INPARANOID_USER_DEFAULTS)
+
 try:
     type(reduce)
 except NameError:
@@ -3861,7 +3866,10 @@ the template library submodule has been initialised (see readme.md) and correctl
         if self.SEQUENCE_MATCH == 'orthfind1': # deprecated
             inp_exec = os.path.join(self.blast_tools, 'orthfind1.zip')
         elif self.SEQUENCE_MATCH == 'inparanoid':
-            inp_exec = os.path.join(self.blast_tools, 'inparanoid5.zip')
+            if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+                inp_exec = os.path.join(self.blast_tools, 'inparanoid5win.zip')
+            else:
+                inp_exec = os.path.join(self.blast_tools, 'inparanoid5.zip')
         self.widgetBusyUpdate(30)
         outgroup = None
         if self.bp_text_out.isEnabled():
@@ -4337,6 +4345,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             inPtab.close()
 
             resmatch = {}
+            not_found_msg = []
             for r_ in resraw:
                 resmatch[r_] = {}
                 for m_ in resraw[r_]['match']:
@@ -4344,10 +4353,15 @@ the template library submodule has been initialised (see readme.md) and correctl
             for gid in input_fasta_ids:
                 if gid not in resmatch:
                     resmatch[gid] = None
-                    print('INFO: match not found: {}'.format(gid))
+                    not_found_msg.append(gid) 
                     linkDict['__metaproteome__']['reports']['genes'][
                         'unmatched'
                     ].append(str(gid))
+            if len(not_found_msg) > 10:
+                print('\nINFO: match not found for:\n{} and {} more genes\n'.format(not_found_msg[:10],\
+                                                                                    len(not_found_msg)-10))
+            else:
+                print('\nINFO: match not found for:\n{}\n'.format(not_found_msg))
 
             linkDict['__metaproteome__']['search_results'] = resmatch
             if self.bp_btn_out.isEnabled():
