@@ -44,7 +44,8 @@ def run_metadraft():
     sys.exit: Exits the application normally after the QApplication event loop ends.
     """
     app = QApplication(sys.argv)
-    widget_splash = QSplashScreen(QPixmap("images/binaries.jpg"))
+    #widget_splash = QSplashScreen(QPixmap("images/binaries.jpg"))
+    widget_splash = QSplashScreen(QPixmap(os.path.join("images", "honey-badger.jpg")))
     widget_splash.show()
     
     widget_splash.showMessage(
