@@ -1938,9 +1938,9 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot()
     def menu_configMenuItem(self):
-        print(bionoid.CONFIGKEYS)
-        self.widget_config = ConfigPanelWidgetINP(bionoid, 'CONFIGKEYS')
-        print(bionoid.CONFIGKEYS)
+        print(inparanoid_config.INPARANOID_USER_DEFAULTS)
+        self.widget_config = ConfigPanelWidgetINP(inparanoid_config.INPARANOID_USER_DEFAULTS, 'CONFIGKEYS')
+        print(inparanoid_config.INPARANOID_USER_DEFAULTS)
 
     @pyqtSlot(QAction)
     def menu_userMetaDefApp(self, q):
@@ -4620,7 +4620,6 @@ the template library submodule has been initialised (see readme.md) and correctl
                             items[c_].setFlags(items[c_].flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
                         if grp_colour != None:
                             items[c_].setBackground(QColor(*grp_colour))
-                            print(grp_colour)
                             # this needs to made more sophisticated but until we have darkmode detection we force dark background and white text ... hopefully.
                             if self._colour_pallet_name_ == 'RGB_DARK_COLOUR_TABLE':
                                 text_colour =  (255, 255, 255)
@@ -5880,6 +5879,13 @@ class InputValidators(object):
             return True
         else:
             return False
+        
+    def inpv_isBoolean(self, itm):
+        try:
+            itm = bool(itm)
+            return True
+        except:
+            return False
 
 
 class ConfigPanelWidgetINP(QWidget, InputValidators):
@@ -5894,38 +5900,28 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
         self.kobjdict = {}
         self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
 
-        keys = list(getattr(dictobject, dictname).keys())
+        keys = list(dictobject.keys())
         keys.sort()
 
         self.grid = QGridLayout(self)
         self.grid.setSpacing(10)
 
         # config tooltips
-        tooltips = {
-            'PY_score_cutoff': 'Value must in range 0 <= value <= 100',
-            'PY_grey_zone': 'Value must in range 0 <= value <= 1',
-            'PY_conf_cutoff': 'Value must in range 0 <= value <= 1',
-            'PY_seq_overlap_cutoff': 'Value must in range 0 <= value <= 1',
-            'PY_group_overlap_cutoff': 'Value must in range 0 <= value <= 1',
-            'PY_segment_coverage_cutoff': 'Value must in range 0 <= value <= 1',
-            'PY_outgroup_cutoff': 'Value must in range 0 <= value <= 100',
-            'PY_matrix': 'One of: BLOSUM45, BLOSUM62, BLOSUM62, BLOSUM80, PAM70, PAM30',
-        }
 
         for r in range(len(keys)):
-            if keys[r] not in ['PY_use_bootstrap', 'PY_use_outgroup']:
-                k = QLabel(parent=self)
-                k.setText(keys[r])
-                k.setToolTip(tooltips[keys[r]])
-                self.grid.addWidget(k, r, 0, 1, 1)
+            #if keys[r] not in ['PY_use_bootstrap', 'PY_use_outgroup']:
+            k = QLabel(parent=self)
+            k.setText(keys[r])
+            k.setToolTip(keys[r][2])
+            self.grid.addWidget(k, r, 0, 1, 1)
 
-                v = QLineEdit(parent=self)
-                v.setMaximumHeight(25)
-                v.setText(getattr(dictobject, dictname)[keys[r]])
-                v.mtk_keyid = keys[r]
-                v.setToolTip(tooltips[keys[r]])
-                self.kobjdict[keys[r]] = v
-                self.grid.addWidget(v, r, 1, 1, 1)
+            v = QLineEdit(parent=self)
+            v.setMaximumHeight(25)
+            v.setText(dictobject[keys[r]][0])
+            v.mtk_keyid = keys[r]
+            v.setToolTip(keys[r][2])
+            self.kobjdict[keys[r][0]] = v
+            self.grid.addWidget(v, r, 1, 1, 1)
 
         def bp_SaveExitFunc():
             pal = QPalette()
@@ -5938,7 +5934,7 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                 print(self.kobjdict[o].mtk_keyid, val)
                 pal.setColor(QPalette.Text, textgood)
                 self.kobjdict[o].setPalette(pal)
-                if self.kobjdict[o].mtk_keyid == 'PY_matrix':
+                if self.kobjdict[o].mtk_keyid == '-matrix':
                     if not val in [
                         "BLOSUM45",
                         "BLOSUM62",
@@ -5948,31 +5944,38 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                         "PAM30",
                     ]:
                         GO = False
-                        print('bad1', val)
+                        print('inputbad1', val)
                         pal.setColor(QPalette.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
                 # TODO: add type checks for numerical values
-                elif self.kobjdict[o].mtk_keyid in [
-                    'PY_outgroup_cutoff',
-                    'PY_score_cutoff',
-                ]:
+                elif self.kobjdict[o].mtk_keyid in ['-outgroup_cutoff',
+                                                    '-score_cutoff']:
                     if not self.inpv_floatItemInRange(val, 0, 100):
                         GO = False
-                        print('bad2', val)
+                        print('inputbad2', val)
                         pal.setColor(QPalette.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
-                elif self.kobjdict[o].mtk_keyid in [
-                    'PY_conf_cutoff',
-                    'PY_seq_overlap_cutoff',
-                    'PY_group_overlap_cutoff',
-                    'PY_segment_coverage_cutoff',
-                    'PY_grey_zone',
-                ]:
+                elif self.kobjdict[o].mtk_keyid in ['-seq-cutoff',
+                                                    '-seg-cutoff',
+                                                    '-conf-cutoff',
+                                                    '-grp-cutoff',
+                                                    '-grey-zone',]:
                     if not self.inpv_floatItemInRange(val, 0, 1):
                         GO = False
-                        print('bad3', val)
+                        print('inputbad3', val)
                         pal.setColor(QPalette.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
+                elif self.kobjdict[o].mtk_keyid in ['-bootstrap',
+                                                    '-seedscore',
+                                                    '-out-stats',
+                                                    '-out-html',
+                                                    '-out-allPairs',
+                                                    '-keep-seqfiles']:
+                    GO = False
+                    print('inputbad4', val)
+                    pal.setColor(QPalette.Text, textbad)
+                    self.kobjdict[o].setPalette(pal)                        
+                        
                 if GO:
                     getattr(dictobject, dictname)[o] = val
             self.update()
