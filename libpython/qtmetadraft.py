@@ -1938,9 +1938,9 @@ the template library submodule has been initialised (see readme.md) and correctl
 
     @pyqtSlot()
     def menu_configMenuItem(self):
-        print(inparanoid_config.INPARANOID_USER_DEFAULTS)
+        #print(inparanoid_config.INPARANOID_USER_DEFAULTS)
         self.widget_config = ConfigPanelWidgetINP(inparanoid_config.INPARANOID_USER_DEFAULTS, 'CONFIGKEYS')
-        print(inparanoid_config.INPARANOID_USER_DEFAULTS)
+        #print(inparanoid_config.INPARANOID_USER_DEFAULTS)
 
     @pyqtSlot(QAction)
     def menu_userMetaDefApp(self, q):
@@ -5881,11 +5881,11 @@ class InputValidators(object):
             return False
         
     def inpv_isBoolean(self, itm):
-        try:
-            itm = bool(itm)
-            return True
-        except:
+        if itm not in ['True', 'False']:
             return False
+        else:
+            return True
+            
 
 
 class ConfigPanelWidgetINP(QWidget, InputValidators):
@@ -5909,51 +5909,52 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
         # config tooltips
 
         for r in range(len(keys)):
-            #if keys[r] not in ['PY_use_bootstrap', 'PY_use_outgroup']:
             k = QLabel(parent=self)
             k.setText(keys[r])
-            k.setToolTip(keys[r][2])
+            k.setToolTip(dictobject[keys[r]][1])
             self.grid.addWidget(k, r, 0, 1, 1)
 
             v = QLineEdit(parent=self)
             v.setMaximumHeight(25)
             v.setText(dictobject[keys[r]][0])
             v.mtk_keyid = keys[r]
-            v.setToolTip(keys[r][2])
-            self.kobjdict[keys[r][0]] = v
+            v.setToolTip(dictobject[keys[r]][1])
+            self.kobjdict[keys[r]] = v
             self.grid.addWidget(v, r, 1, 1, 1)
 
         def bp_SaveExitFunc():
             pal = QPalette()
-            textbad = QColor(QtCore.Qt.red)
-            textgood = QColor(QtCore.Qt.black)
+            textbad = QColor(QtCore.Qt.GlobalColor.red)
+            textgood = QColor(QtCore.Qt.GlobalColor.darkGray)
 
             GO = True
+            print(self.kobjdict.keys())
             for o in self.kobjdict:
                 val = str(self.kobjdict[o].text())
                 print(self.kobjdict[o].mtk_keyid, val)
-                pal.setColor(QPalette.Text, textgood)
+                pal.setColor(QPalette.ColorRole.Text, textgood)
                 self.kobjdict[o].setPalette(pal)
                 if self.kobjdict[o].mtk_keyid == '-matrix':
                     if not val in [
                         "BLOSUM45",
-                        "BLOSUM62",
                         "BLOSUM62",
                         "BLOSUM80",
                         "PAM70",
                         "PAM30",
                     ]:
                         GO = False
-                        print('inputbad1', val)
-                        pal.setColor(QPalette.Text, textbad)
+                        if __debug__:
+                            print('inputbad1', val)
+                        pal.setColor(QPalette.ColorRole.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
                 # TODO: add type checks for numerical values
                 elif self.kobjdict[o].mtk_keyid in ['-outgroup_cutoff',
                                                     '-score_cutoff']:
                     if not self.inpv_floatItemInRange(val, 0, 100):
                         GO = False
-                        print('inputbad2', val)
-                        pal.setColor(QPalette.Text, textbad)
+                        if __debug__:
+                            print('inputbad2', val)
+                        pal.setColor(QPalette.ColorRole.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
                 elif self.kobjdict[o].mtk_keyid in ['-seq-cutoff',
                                                     '-seg-cutoff',
@@ -5962,8 +5963,9 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                                                     '-grey-zone',]:
                     if not self.inpv_floatItemInRange(val, 0, 1):
                         GO = False
-                        print('inputbad3', val)
-                        pal.setColor(QPalette.Text, textbad)
+                        if __debug__:
+                            print('inputbad3', val)
+                        pal.setColor(QPalette.ColorRole.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
                 elif self.kobjdict[o].mtk_keyid in ['-bootstrap',
                                                     '-seedscore',
@@ -5971,13 +5973,21 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                                                     '-out-html',
                                                     '-out-allPairs',
                                                     '-keep-seqfiles']:
-                    GO = False
-                    print('inputbad4', val)
-                    pal.setColor(QPalette.Text, textbad)
-                    self.kobjdict[o].setPalette(pal)                        
-                        
+                    if not self.inpv_isBoolean(val):
+                        GO = False
+                        if __debug__:
+                            print('inputbad4', val)
+                        pal.setColor(QPalette.ColorRole.Text, textbad)
+                        self.kobjdict[o].setPalette(pal)                        
                 if GO:
-                    getattr(dictobject, dictname)[o] = val
+                    #if __debug__:
+                        #print('self.kobjdict[o].mtk_keyid', self.kobjdict[o].mtk_keyid)
+                        #print('dictobject[self.kobjdict[o].mtk_keyid][0]', dictobject[self.kobjdict[o].mtk_keyid][0])
+                        #print(val)
+                    #getattr(dictobject, dictname)[o] = val
+                    dictobject[self.kobjdict[o].mtk_keyid][0] = val
+                    #if __debug__:
+                        #print('dictobject[self.kobjdict[o].mtk_keyid][0]', dictobject[self.kobjdict[o].mtk_keyid][0])
             self.update()
             if GO:
                 self.close()
