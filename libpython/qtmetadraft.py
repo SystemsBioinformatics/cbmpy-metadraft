@@ -33,9 +33,11 @@ import zipfile, json, shutil, subprocess, math, time
 import threading, pprint, stat, csv
 
 # configs
-from . import InpDiaOpts
-#pprint.pprint(InpDiaOpts.INPARANOID_SYSTEM_DEFAULTS)
-#pprint.pprint(InpDiaOpts.INPARANOID_USER_DEFAULTS)
+from . import inparanoid_config
+#pprint.pprint(inparanoid_config.INPARANOID_SYSTEM_DEFAULTS)
+#pprint.pprint(inparanoid_config.INPARANOID_USER_DEFAULTS)
+
+from . import rgb_tables
 
 try:
     type(reduce)
