@@ -320,8 +320,8 @@ class NumberTableWidgetItem(QTableWidgetItem):
                 print("Switching NumberTableWidgetItem to pre-QT6")
                 my_value = self.data(QtCore.Qt.EditRole)
                 other_value = other.data(QtCore.Qt.EditRole)
-                
-                
+
+
             try:
                 my_value = float(str(my_value))
                 my_ok = True
@@ -363,7 +363,7 @@ class NumberTableListLengthItem(QTableWidgetItem):
         if isinstance(other, QTableWidgetItem):
             try:
                 my_value = len(self.data(QtCore.Qt.ItemDataRole.EditRole).split(','))
-                other_value = len(other.data(QtCore.Qt.ItemDataRole.EditRole).split(','))                
+                other_value = len(other.data(QtCore.Qt.ItemDataRole.EditRole).split(','))
             except AttributeError:
                 print("Switching NumberTableListLengthItem to pre-QT6")
                 my_value = len(self.data(QtCore.Qt.EditRole).split(','))
@@ -649,8 +649,12 @@ class MetaDraftGUI(QWidget):
     grid = None
     status_bar = None
     _colourCycler_ = None
-    _colour_pallet_ = rgb_tables.RGB_DARK_COLOUR_TABLE
-    _colour_pallet_name_ =  'RGB_DARK_COLOUR_TABLE'
+    if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+        _colour_pallet_ = rgb_tables.RGB_LIGHT_COLOUR_TABLE
+        _colour_pallet_name_ =  'RGB_LIGHT_COLOUR_TABLE'
+    else:
+        _colour_pallet_ = rgb_tables.RGB_DARK_COLOUR_TABLE
+        _colour_pallet_name_ =  'RGB_DARK_COLOUR_TABLE'
     _loading_ = None
     _active_tab_ = 0
     _last_tab_ = 0
@@ -4203,7 +4207,7 @@ the template library submodule has been initialised (see readme.md) and correctl
             for gid in input_fasta_ids:
                 if gid not in resmatch:
                     resmatch[gid] = None
-                    not_found_msg.append(gid) 
+                    not_found_msg.append(gid)
                     linkDict['__metaproteome__']['reports']['genes'][
                         'unmatched'
                     ].append(str(gid))
@@ -4622,11 +4626,15 @@ the template library submodule has been initialised (see readme.md) and correctl
                             items[c_].setBackground(QColor(*grp_colour))
                             # this needs to made more sophisticated but until we have darkmode detection we force dark background and white text ... hopefully.
                             if self._colour_pallet_name_ == 'RGB_DARK_COLOUR_TABLE':
-                                text_colour =  (255, 255, 255)
+                                if os.sys.platform in ['win32', 'windows'] or os.name == 'nt':
+                                    text_colour =  (0, 0, 0)
+                                else:
+                                    text_colour =  (255, 255, 255)
                                 items[c_].setForeground(QColor(*text_colour))
-                                
+                            elif self._colour_pallet_name_ == 'RGB_DARK_COLOUR_TABLE':
+                                text_colour =  (0, 0, 0)
                         self.table_gene.setItem(row, c_, items[c_])
-                        
+
 
                     row += 1
             else:
@@ -5098,7 +5106,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 genesrc
             )
             r_html = self.func_formatGeneAnnotationToHTML(
-                genesrc, gannotsrc, r_html, color='#000000' #e6ffe6
+                genesrc, gannotsrc, r_html, color=rgb2hex(self._colour_pallet_[-1]) #'#000000' #e6ffe6
             )
 
         if realmatch:
@@ -5106,7 +5114,7 @@ the template library submodule has been initialised (see readme.md) and correctl
                 gene
             )
             r_html = self.func_formatGeneAnnotationToHTML(
-                gene, gannot, r_html, color='#000000' #ffffcc
+                gene, gannot, r_html, color=rgb2hex(self._colour_pallet_[-5]) #'#000000' #ffffcc
             )
             r_html += '<tr><td colspan="2" align=\"center\"><strong>Associated reactions(s)</strong></td></tr>'
 
@@ -5218,7 +5226,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         if reac == '':
             return 'No matching reaction'
 
-        # we are going to hack this to use our rgb_tables 
+        # we are going to hack this to use our rgb_tables
         #bkg_clr_sub = '#0000FF' #'#CCFFCC'
         #bkg_clr_prd = '#4B0082' #'#FFCCCC'
         bkg_clr_sub = rgb2hex(self._colour_pallet_[0])
@@ -5349,7 +5357,7 @@ the template library submodule has been initialised (see readme.md) and correctl
         # make more sophisticated
         #bkg_clr = '#008000'
         bkg_clr = rgb2hex(self._colour_pallet_[-15])
-        
+
         S = self.selected_metabolites[metab]
         r_html = '<html><body>'
         r_html += (
@@ -5879,13 +5887,13 @@ class InputValidators(object):
             return True
         else:
             return False
-        
+
     def inpv_isBoolean(self, itm):
         if itm not in ['True', 'False']:
             return False
         else:
             return True
-            
+
 
 
 class ConfigPanelWidgetINP(QWidget, InputValidators):
@@ -5978,7 +5986,7 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                         if __debug__:
                             print('inputbad4', val)
                         pal.setColor(QPalette.ColorRole.Text, textbad)
-                        self.kobjdict[o].setPalette(pal)                        
+                        self.kobjdict[o].setPalette(pal)
                 if GO:
                     #if __debug__:
                         #print('self.kobjdict[o].mtk_keyid', self.kobjdict[o].mtk_keyid)
