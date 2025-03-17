@@ -1,4 +1,5 @@
 import os
+import math
 from PIL import Image, ImageDraw, ImageFont
 
 # Define a 256 RGB colour table (example with a gradient approach for simplicity)
@@ -156,12 +157,30 @@ def extended_rgb_colour_table():
     
 
 # Split colours into light and dark
-def split_light_dark(colour_table, threshold=200):
+def split_light_dark(colour_table, method='luminance_opt1'):
     light_colours, dark_colours = [], []
     for colour in colour_table:
         # Calculate the brightness of the colour
-        avg_brightness = sum(colour) // 3
-        if avg_brightness >= threshold:
+        # Inspired by https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color
+        
+        if method == 'luminance':
+            # print('Using method:', 'luminance')
+            avg_brightness = math.floor(0.2126*colour[0] + 0.7152*colour[1] + 0.0722*colour[2]) 
+            threshold = 160
+        elif method == 'luminance_opt1':
+            # print('Using method:', 'luminance_opt1')
+            avg_brightness = math.floor(0.299*colour[0] + 0.587*colour[1] + 0.144 * colour[2])
+            threshold = 160
+        elif method == 'luminance_opt2':
+            # print('Using method:', 'luminance_opt2')
+            avg_brightness = math.floor(math.sqrt(0.299*colour[0]**2 + 0.587*colour[1]**2 + 0.144*colour[2]**2))
+            threshold = 160
+        else: # fallback raw RGB average
+            # print('Using method:', 'RGB avg')
+            avg_brightness = sum(colour) // 3
+            threshold = 200
+
+        if avg_brightness > threshold:
             light_colours.append(colour)
         else:
             dark_colours.append(colour)
@@ -198,8 +217,9 @@ def main():
     #colour_table = generate_rgb_colour_table()
     colour_table = extended_rgb_colour_table()
     
-    lightness_threshold = 200
-    light_colours, dark_colours = split_light_dark(colour_table, threshold=lightness_threshold)
+    luminance_method = 'luminance_opt1'
+    print('Using perceived brightness method:', luminance_method)
+    light_colours, dark_colours = split_light_dark(colour_table, method=luminance_method)
 
     # Ensuring output directory exists
     #output_dir = 'output_images'
