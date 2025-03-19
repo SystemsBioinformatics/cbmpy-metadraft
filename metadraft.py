@@ -24,8 +24,10 @@ Author: Brett G. Olivier PhD
 Contact email: b.g.olivier@vu.nl
 
 """
-from __future__ import division, print_function
-from __future__ import absolute_import
+import os, json, platform, time
+import systemtest
+
+import libpython.qtmetadraft as qtmd
 
 
 def run_metadraft():
@@ -43,26 +45,40 @@ def run_metadraft():
     Raises:
     sys.exit: Exits the application normally after the QApplication event loop ends.
     """
-    app = QApplication(sys.argv)
+    app = qtmd.QApplication(os.sys.argv)
     #widget_splash = QSplashScreen(QPixmap("images/binaries.jpg"))
-    widget_splash = QSplashScreen(QPixmap(os.path.join("images", "honey-badger.jpg")))
+    print(os.path.join(os.getcwd(), "images", "honey-badger.jpg"))
+    spsc_img = qtmd.QPixmap(os.path.join(os.getcwd(), "images", "honey-badger.jpg"))
+    widget_splash = qtmd.QSplashScreen(spsc_img)
+    
+    splashFont = qtmd.QFont()
+    splashFont.setFamily("Arial")
+    #splashFont.setBold(True)
+    splashFont.setPixelSize(32)
+    splashFont.setStretch(60)
+    
+    widget_splash.setFont(splashFont)
+    
     widget_splash.show()
+    time.sleep(1)    
+    app.processEvents()
     
     widget_splash.showMessage(
-        "Ver {}-({})\nAuthor: Brett G. Olivier\n(c) A-LIFE, VU University Amsterdam, Amsterdam, 2017-2025.\nSee Help - About for more details.".format(
-            metadraft_version, cbmpy.__version__
+        "Welcome to CBMPy Metadraft Ver {}-({})\n\n(C) Brett G. Olivier PhD\nA-LIFE, VU University Amsterdam, Amsterdam, 2017-2025.\n\nMetadraft is distributed with the inParanoid and Diamond tools, see Help -> About for details.".format(
+            qtmd.metadraft_version, qtmd.cbmpy.__version__
         ),
-        alignment=QtCore.Qt.AlignmentFlag.AlignBottom,
+        alignment=qtmd.QtCore.Qt.AlignmentFlag.AlignHCenter, color=qtmd.QColor.fromRgb(255, 255, 255)
     )
-    time.sleep(0.5)
-    ex = MetaDraftApp()
-    widget_splash.finish(ex)
-    sys.exit(app.exec())
+    app.processEvents()
+    time.sleep(2)    
+    mainwin = qtmd.MetaDraftApp()
+    widget_splash.finish(mainwin)
+    mainwin.show()
+    return(app.exec())
+    #sys.exit(app.exec())
 
 
 if __name__ == '__main__':
-    import os, json, platform
-    import systemtest
 
     F = open('_metadraft.cfg', 'r')
     config = json.load(F)
@@ -99,8 +115,9 @@ if __name__ == '__main__':
         os.sys.exit(2)
 
     # import libpython.qtmetadraft
-    from libpython.qtmetadraft import *
+    #from libpython.qtmetadraft import *
 
-    __version__ = metadraft_version
+    __version__ = qtmd.metadraft_version
     
-    run_metadraft()
+    app = run_metadraft()
+    

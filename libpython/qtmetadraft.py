@@ -5868,15 +5868,47 @@ the template library submodule has been initialised (see readme.md) and correctl
 
 
 class InputValidators(object):
-    """Various input validators"""
+    """
+    A collection of input validation methods.
 
-    def inpv_stringItemNotInList(self, itm, items):
-        if itm not in items:
+    This class provides methods for validating input values, ensuring
+    they meet specific criteria such as membership in a list, range checking,
+    or boolean string validation.
+
+    Methods:
+        inpv_stringItemInList(itm, items): Check if a string item is present in a list.
+        inpv_floatItemInRange(itm, rmin, rmax): Validate that a float item is within a specified range.
+        inpv_isBoolean(itm): Verify if a string item represents a boolean value ('True' or 'False').
+    """
+
+    def inpv_stringItemInList(self, itm, items):
+        """
+        Check if a string item is present in a list.
+
+        Parameters:
+            itm (str): The string item to check.
+            items (list): The list to check against.
+
+        Returns:
+            bool: True if the item is in the list, otherwise False.
+        """
+        if itm in items:
             return True
         else:
             return False
 
     def inpv_floatItemInRange(self, itm, rmin, rmax):
+        """
+        Validate that a float item is within a specified range.
+
+        Parameters:
+            itm (str or float): The item to convert to a float and check.
+            rmin (str or float): The minimum acceptable value (inclusive).
+            rmax (str or float): The maximum acceptable value (inclusive).
+
+        Returns:
+            bool: True if the item can be converted to a float and is within the range, otherwise False.
+        """
         try:
             itm = float(itm)
             rmin = float(rmin)
@@ -5889,6 +5921,15 @@ class InputValidators(object):
             return False
 
     def inpv_isBoolean(self, itm):
+        """
+        Verify if a string item represents a boolean value ('True' or 'False').
+
+        Parameters:
+            itm (str): The string item to check.
+
+        Returns:
+            bool: True if the item is 'True' or 'False', otherwise False.
+        """
         if itm not in ['True', 'False']:
             return False
         else:
@@ -5896,14 +5937,37 @@ class InputValidators(object):
 
 
 
-class ConfigPanelWidgetINP(QWidget, InputValidators):
-    """Generates a configurations panel from a dictionary of options"""
+class ConfigPanelWidgetINP(QWidget):
+    """Provides a configuration panel for inParanoid settings.
+
+    This class generates a user interface to view and modify configuration settings
+    stored in a dictionary for inParanoid application.
+
+    Attributes:
+        kobjdict (dict): Maps configuration keys to their respective UI components.
+        kdesc (str): A textual description of the configuration.
+
+    Methods:
+        __init__(dictobject, dictname, kdescript=None):
+            Initializes the configuration panel with dictionary-based settings.
+    """
 
     kobjdict = None
     kdesc = None
+    input_validators = None
 
     def __init__(self, dictobject, dictname, kdescript=None):
+        """Initializes the panel with configuration data.
+
+        Args:
+            dictobject (dict): A dictionary containing configurable settings.
+            dictname (str): Name of the dictionary being handled.
+            kdescript (str, optional): Optional description for the configuration.
+        """
         super(ConfigPanelWidgetINP, self).__init__()
+        
+        self.input_validators = InputValidators()
+        
         self.kdesc = kdescript
         self.kobjdict = {}
         self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
@@ -5914,8 +5978,7 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
         self.grid = QGridLayout(self)
         self.grid.setSpacing(10)
 
-        # config tooltips
-
+        # Configuration tooltip setup
         for r in range(len(keys)):
             k = QLabel(parent=self)
             k.setText(keys[r])
@@ -5931,6 +5994,11 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
             self.grid.addWidget(v, r, 1, 1, 1)
 
         def bp_SaveExitFunc():
+            """Saves validated configuration inputs.
+
+            Validates each input against predefined criteria based on its type.
+            If all inputs are valid, they are saved, and the panel is closed.
+            """
             pal = QPalette()
             textbad = QColor(QtCore.Qt.GlobalColor.red)
             textgood = QColor(QtCore.Qt.GlobalColor.darkGray)
@@ -5943,22 +6011,15 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                 pal.setColor(QPalette.ColorRole.Text, textgood)
                 self.kobjdict[o].setPalette(pal)
                 if self.kobjdict[o].mtk_keyid == '-matrix':
-                    if not val in [
-                        "BLOSUM45",
-                        "BLOSUM62",
-                        "BLOSUM80",
-                        "PAM70",
-                        "PAM30",
-                    ]:
+                    if not self.input_validators.inpv_stringItemInList(val, ["BLOSUM45", "BLOSUM62","BLOSUM80", "PAM70", "PAM30"]):
                         GO = False
                         if __debug__:
                             print('inputbad1', val)
                         pal.setColor(QPalette.ColorRole.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
-                # TODO: add type checks for numerical values
                 elif self.kobjdict[o].mtk_keyid in ['-outgroup_cutoff',
                                                     '-score_cutoff']:
-                    if not self.inpv_floatItemInRange(val, 0, 100):
+                    if not self.input_validators.inpv_floatItemInRange(val, 0, 100):
                         GO = False
                         if __debug__:
                             print('inputbad2', val)
@@ -5969,7 +6030,7 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                                                     '-conf-cutoff',
                                                     '-grp-cutoff',
                                                     '-grey-zone',]:
-                    if not self.inpv_floatItemInRange(val, 0, 1):
+                    if not self.input_validators.inpv_floatItemInRange(val, 0, 1):
                         GO = False
                         if __debug__:
                             print('inputbad3', val)
@@ -5981,21 +6042,14 @@ class ConfigPanelWidgetINP(QWidget, InputValidators):
                                                     '-out-html',
                                                     '-out-allPairs',
                                                     '-keep-seqfiles']:
-                    if not self.inpv_isBoolean(val):
+                    if not self.input_validators.inpv_isBoolean(val):
                         GO = False
                         if __debug__:
                             print('inputbad4', val)
                         pal.setColor(QPalette.ColorRole.Text, textbad)
                         self.kobjdict[o].setPalette(pal)
                 if GO:
-                    #if __debug__:
-                        #print('self.kobjdict[o].mtk_keyid', self.kobjdict[o].mtk_keyid)
-                        #print('dictobject[self.kobjdict[o].mtk_keyid][0]', dictobject[self.kobjdict[o].mtk_keyid][0])
-                        #print(val)
-                    #getattr(dictobject, dictname)[o] = val
                     dictobject[self.kobjdict[o].mtk_keyid][0] = val
-                    #if __debug__:
-                        #print('dictobject[self.kobjdict[o].mtk_keyid][0]', dictobject[self.kobjdict[o].mtk_keyid][0])
             self.update()
             if GO:
                 self.close()
